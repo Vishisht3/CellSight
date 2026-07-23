@@ -1,9 +1,9 @@
-import { Database } from '../sqlite-shim';
+import type { DbDriver } from '../driver';
 import { v4 as uuidv4 } from 'uuid';
 import { SohHistory } from '../../models/types';
 
 export class SohRepository {
-  constructor(private db: Database) {}
+  constructor(private db: DbDriver) {}
 
   create(
     assetId: string,

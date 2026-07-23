@@ -1,28 +1,47 @@
 import { Router } from 'express';
-import authRoutes from './auth.routes';
-import apmRoutes from './apm.routes';
+import authRoutes        from './auth.routes';
+import apmRoutes         from './apm.routes';
 import supplyChainRoutes from './supply-chain.routes';
-import alertRoutes from './alerts.routes';
+import alertRoutes       from './alerts.routes';
 import correlationRoutes from './correlation.routes';
-import { authenticate } from '../../middleware/auth';
+import sseRoutes         from './sse.routes';
+import { authenticate }      from '../../middleware/auth';
+import { config }            from '../../config/environment';
+import { getDatabaseContext } from '../../database';
 
 const router = Router();
 
-// Public routes
+// ── Public ────────────────────────────────────────────────────────────────
 router.use('/auth', authRoutes);
 
-// Protected routes (require authentication)
-router.use('/apm', authenticate, apmRoutes);
-router.use('/supply-chain', authenticate, supplyChainRoutes);
-router.use('/alerts', authenticate, alertRoutes);
-router.use('/correlation', authenticate, correlationRoutes);
+// ── SSE (auth handled inside the route) ──────────────────────────────────
+router.use('/sse', sseRoutes);
 
-// Health check endpoint
-router.get('/health', (_req, res) => {
-  res.json({ 
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0',
+// ── Protected REST ────────────────────────────────────────────────────────
+router.use('/apm',          authenticate, apmRoutes);
+router.use('/supply-chain', authenticate, supplyChainRoutes);
+router.use('/alerts',       authenticate, alertRoutes);
+router.use('/correlation',  authenticate, correlationRoutes);
+
+// ── Health ────────────────────────────────────────────────────────────────
+const _startedAt = Date.now();
+
+router.get('/health', async (_req, res) => {
+  let dbOk = false;
+  try {
+    const ctx = await getDatabaseContext();
+    ctx.db.prepare('SELECT 1').get();
+    dbOk = true;
+  } catch { dbOk = false; }
+
+  res.status(dbOk ? 200 : 503).json({
+    status:        dbOk ? 'ok' : 'degraded',
+    timestamp:     new Date().toISOString(),
+    version:       '1.0.0',
+    uptimeSeconds: Math.floor((Date.now() - _startedAt) / 1000),
+    environment:   config.nodeEnv,
+    db:            dbOk ? 'connected' : 'unreachable',
+    driver:        config.databaseUrl ? 'postgres' : 'sql.js',
   });
 });
 

@@ -1,16 +1,26 @@
 import path from 'path';
 import { config } from '../config/environment';
 import { Database } from './sqlite-shim';
+import { PgDatabase } from './pg-adapter';
+
+// ── sql.js (local) ────────────────────────────────────────────────────────
 
 export async function initializeDatabase(): Promise<Database> {
   const dbPath = path.resolve(config.databasePath);
   const db = await Database.open(dbPath);
-
   await createTables(db);
   return db;
 }
 
-async function createTables(db: Database): Promise<void> {
+// ── Postgres (hosted) ─────────────────────────────────────────────────────
+
+export async function initializePgDatabase(db: PgDatabase): Promise<void> {
+  await createTables(db);
+}
+
+// ── Shared DDL ────────────────────────────────────────────────────────────
+
+async function createTables(db: Database | PgDatabase): Promise<void> {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -143,6 +153,20 @@ async function createTables(db: Database): Promise<void> {
       updated_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS refresh_tokens (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      token_hash TEXT UNIQUE NOT NULL,
+      family TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      revoked INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_refresh_tokens_family ON refresh_tokens(family);
+    CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens(user_id);
+
     CREATE INDEX IF NOT EXISTS idx_telemetry_asset ON telemetry_data(asset_id);
     CREATE INDEX IF NOT EXISTS idx_soh_asset ON soh_history(asset_id);
     CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
@@ -153,7 +177,7 @@ async function createTables(db: Database): Promise<void> {
   console.log('✅ Database schema initialised');
 }
 
-export async function resetDatabase(db: Database): Promise<void> {
+export async function resetDatabase(db: Database | PgDatabase): Promise<void> {
   const tables = [
     'alerts', 'soh_history', 'telemetry_data', 'assets',
     'battery_packs', 'batch_material_links', 'cell_batches',

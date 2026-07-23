@@ -14,6 +14,7 @@
 import initSqlJs, { Database as SqlJsDatabase, SqlJsStatic } from 'sql.js';
 import fs from 'fs';
 import path from 'path';
+import type { DbDriver, DbStatement } from './driver';
 
 // ── Types that mirror better-sqlite3's public surface ────────────────────────
 
@@ -22,15 +23,9 @@ interface RunResult {
   lastInsertRowid: number | bigint;
 }
 
-interface Statement {
-  run(...params: unknown[]): RunResult;
-  get(...params: unknown[]): unknown;
-  all(...params: unknown[]): unknown[];
-}
-
 // ── Synchronous wrapper ───────────────────────────────────────────────────────
 
-export class Database {
+export class Database implements DbDriver {
   private db!: SqlJsDatabase;
   private dbPath: string;
   private static sql: SqlJsStatic | null = null;
@@ -82,7 +77,7 @@ export class Database {
   }
 
   /** Prepare a statement and return a Statement-compatible object */
-  prepare(sql: string): Statement {
+  prepare(sql: string): DbStatement {
     const self = this;
 
     return {

@@ -1,10 +1,10 @@
-import { Database } from '../sqlite-shim';
+import type { DbDriver } from '../driver';
 import { v4 as uuidv4 } from 'uuid';
 import { User, UserCreateInput } from '../../models/types';
 import { UserRole } from '../../config/constants';
 
 export class UserRepository {
-  constructor(private db: Database) {}
+  constructor(private db: DbDriver) {}
 
   create(input: UserCreateInput & { passwordHash: string }): User {
     const now = new Date().toISOString();

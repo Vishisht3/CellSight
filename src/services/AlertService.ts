@@ -14,13 +14,16 @@ export class AlertService {
     try {
       const alert = this.dbContext.alerts.create(input);
 
-      logger.info('Alert created', {
-        alertId: alert.id,
-        type: alert.type,
-        severity: alert.severity,
-        sourceAgent: alert.sourceAgent,
-      });
+      // Push to SSE clients
+      try {
+        const { sseService } = require('../services/SseService');
+        sseService.broadcast('alert', alert);
+      } catch { /* SSE service not initialised — ignore */ }
 
+      logger.info('Alert created', {
+        alertId: alert.id, type: alert.type,
+        severity: alert.severity, sourceAgent: alert.sourceAgent,
+      });
       return alert;
     } catch (error) {
       logger.error('Alert creation failed', { input, error });

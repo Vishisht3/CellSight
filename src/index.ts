@@ -5,6 +5,8 @@ import { config } from './config/environment';
 import { getDatabaseContext } from './database';
 import apiRoutes from './api/routes';
 import { errorHandler } from './middleware/errorHandler';
+import { requestLogger } from './middleware/requestLogger';
+import { apiLimiter, authLimiter } from './middleware/rateLimiter';
 import { logger } from './utils/logger';
 import { scheduler } from './utils/scheduler';
 import { TelemetryIngestionService } from './services/apm/TelemetryIngestionService';
@@ -15,44 +17,103 @@ import { CorrelationService } from './services/correlation/CorrelationService';
 
 const app = express();
 
-app.use(helmet());
-app.use(cors({ origin: config.corsOrigin }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ── Security headers ──────────────────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: config.isProduction ? undefined : false,
+  crossOriginEmbedderPolicy: false, // allow Recharts canvas
+}));
 
-app.use((req, _res, next) => {
-  logger.info(`${req.method} ${req.path}`);
-  next();
-});
+// ── CORS ──────────────────────────────────────────────────────────────────
+const allowedOrigins = Array.isArray(config.corsOrigin)
+  ? config.corsOrigin
+  : [config.corsOrigin];
 
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no origin (curl, mobile apps, SSR)
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      return cb(null, true);
+    }
+    cb(new Error(`CORS: origin "${origin}" not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400,
+}));
+
+// ── Body parsing ──────────────────────────────────────────────────────────
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// ── Request logging (with request-ID) ────────────────────────────────────
+app.use(requestLogger);
+
+// ── Rate limiting ─────────────────────────────────────────────────────────
+app.use('/api/', apiLimiter);
+app.use('/api/auth/login',   authLimiter);
+app.use('/api/auth/refresh', authLimiter);
+
+// ── Routes ────────────────────────────────────────────────────────────────
 app.use('/api', apiRoutes);
 app.use(errorHandler);
 
+// ── Server startup ────────────────────────────────────────────────────────
 async function startServer() {
-  // Initialise DB before registering scheduled tasks
   const dbContext = await getDatabaseContext();
-  logger.info('✅ Database initialised');
+  logger.info('✅ Database initialised', {
+    driver: config.databaseUrl ? 'postgres' : 'sql.js',
+  });
 
-  // Scheduled background tasks
-  scheduler.register('check-stale-assets',  5 * 60 * 1000, () => { new TelemetryIngestionService(dbContext).checkStaleAssets(); });
-  scheduler.register('calculate-soh',       10 * 60 * 1000, () => { new SohCalculationService(dbContext).calculateAllSoh(); });
-  scheduler.register('maintenance-checks',  5 * 60 * 1000, () => { new PredictiveMaintenanceService(dbContext).runMaintenanceChecksForAllAssets(); });
-  scheduler.register('update-risk-scores',  30 * 60 * 1000, () => { new RiskScoringService(dbContext).updateAllSupplierRiskScores(); });
-  scheduler.register('correlation-analysis',60 * 60 * 1000, () => { new CorrelationService(dbContext).runCorrelationAnalysis(); });
+  scheduler.register('check-stale-assets',   5 * 60 * 1000, () => {
+    new TelemetryIngestionService(dbContext).checkStaleAssets();
+  });
+  scheduler.register('calculate-soh',        10 * 60 * 1000, () => {
+    new SohCalculationService(dbContext).calculateAllSoh();
+  });
+  scheduler.register('maintenance-checks',   5 * 60 * 1000, () => {
+    new PredictiveMaintenanceService(dbContext).runMaintenanceChecksForAllAssets();
+  });
+  scheduler.register('update-risk-scores',   30 * 60 * 1000, () => {
+    new RiskScoringService(dbContext).updateAllSupplierRiskScores();
+  });
+  scheduler.register('correlation-analysis', 60 * 60 * 1000, () => {
+    new CorrelationService(dbContext).runCorrelationAnalysis();
+  });
 
   const server = app.listen(config.port, () => {
-    logger.info(`🚀 CellSight API running on http://localhost:${config.port}`);
-    logger.info(`   Demo mode: ${config.demoMode ? 'enabled' : 'disabled'}`);
+    logger.info(`🚀 CellSight API`, {
+      url: `http://localhost:${config.port}`,
+      env: config.nodeEnv,
+      demo: config.demoMode,
+      db: config.databaseUrl ? 'postgres' : 'sql.js',
+    });
     scheduler.startAll();
     logger.info('⏰ Background tasks started');
   });
 
-  process.on('SIGTERM', () => { scheduler.stopAll(); server.close(() => process.exit(0)); });
-  process.on('SIGINT',  () => { scheduler.stopAll(); server.close(() => process.exit(0)); });
+  const shutdown = (signal: string) => {
+    logger.info(`${signal} received — shutting down`);
+    scheduler.stopAll();
+    server.close(() => {
+      logger.info('HTTP server closed');
+      process.exit(0);
+    });
+    setTimeout(() => process.exit(1), 10_000); // force-kill after 10s
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT',  () => shutdown('SIGINT'));
+
+  // Surface unhandled rejections so they appear in logs
+  process.on('unhandledRejection', (reason) => {
+    logger.error('Unhandled rejection', { reason });
+  });
 }
 
 startServer().catch(err => {
-  console.error('Failed to start server:', err);
+  console.error('Fatal startup error:', err);
   process.exit(1);
 });
 

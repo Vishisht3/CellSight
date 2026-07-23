@@ -1,0 +1,100 @@
+# render.yaml — Render.com infrastructure-as-code
+# https://render.com/docs/blueprint-spec
+#
+# Deploys:
+#   1. cellsight-api   — Node.js backend (Web Service)
+#   2. cellsight-db    — PostgreSQL 15 (managed database)
+#
+# After connecting your GitHub repo to Render:
+#   1. Create a new "Blueprint" in the Render dashboard and point it at this file.
+#   2. Set the JWT_SECRET environment variable to a strong random string
+#      (generate one: openssl rand -hex 64)
+#   3. The database URL is injected automatically via fromDatabase below.
+
+databases:
+  - name: cellsight-db
+    databaseName: cellsight
+    user: cellsight
+    plan: free           # upgrade to starter ($7/mo) for persistent storage
+
+services:
+  - type: web
+    name: cellsight-api
+    runtime: node
+    plan: free           # upgrade to starter for always-on behaviour
+    region: oregon       # change to match your users (frankfurt, singapore, …)
+
+    # Build
+    rootDir: .
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/index.js
+
+    # Health check — Render uses this to determine when a deploy is live
+    # and to restart the service if it becomes unhealthy
+    healthCheckPath: /api/health
+
+    # Auto-deploy on every push to main
+    autoDeploy: true
+
+    # Run seed on first deploy (Render one-off job alternative)
+    # Comment out after first deploy to avoid re-seeding on every push
+    # preDeployCommand: node dist/scripts/seedDemoData.js
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 10000          # Render assigns port 10000 by default
+
+      # Injected automatically from the managed database above
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cellsight-db
+          property: connectionString
+
+      # REQUIRED: set this manually in the Render dashboard or via CLI
+      # render env:set JWT_SECRET=$(openssl rand -hex 64) --service cellsight-api
+      - key: JWT_SECRET
+        sync: false           # marks it as a secret — set in dashboard
+
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+
+      - key: DEMO_MODE
+        value: "true"
+
+      - key: DEMO_ASSET_COUNT
+        value: "50"
+
+      # Set to your Netlify frontend URL after first deploy
+      # e.g. https://cellsight.netlify.app
+      - key: CORS_ORIGIN
+        sync: false
+
+      - key: TELEMETRY_STALE_THRESHOLD_MINUTES
+        value: "30"
+
+      - key: TELEMETRY_MIN_HISTORY_POINTS
+        value: "100"
+
+      - key: SOH_THRESHOLD_WARNING
+        value: "85"
+
+      - key: SOH_THRESHOLD_CRITICAL
+        value: "80"
+
+      - key: SUPPLIER_CONCENTRATION_THRESHOLD
+        value: "0.35"
+
+      - key: QUALITY_DEVIATION_THRESHOLD
+        value: "0.15"
+
+      - key: GEOPOLITICAL_RISK_REGIONS
+        value: "CN,RU,VE"
+
+      - key: ALERT_RETENTION_DAYS
+        value: "90"

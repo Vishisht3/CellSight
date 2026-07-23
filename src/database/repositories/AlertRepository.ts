@@ -1,10 +1,10 @@
-import { Database } from '../sqlite-shim';
+import type { DbDriver } from '../driver';
 import { v4 as uuidv4 } from 'uuid';
 import { Alert, AlertCreateInput } from '../../models/types';
 import { AlertStatus } from '../../config/constants';
 
 export class AlertRepository {
-  constructor(private db: Database) {}
+  constructor(private db: DbDriver) {}
 
   create(input: AlertCreateInput): Alert {
     const now = new Date().toISOString();

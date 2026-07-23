@@ -1,10 +1,10 @@
-import { Database } from '../sqlite-shim';
+import type { DbDriver } from '../driver';
 import { v4 as uuidv4 } from 'uuid';
 import { Asset, AssetCreateInput } from '../../models/types';
 import { AssetStatus } from '../../config/constants';
 
 export class AssetRepository {
-  constructor(private db: Database) {}
+  constructor(private db: DbDriver) {}
 
   create(input: AssetCreateInput): Asset {
     const now = new Date().toISOString();

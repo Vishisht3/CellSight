@@ -1,9 +1,9 @@
-import { Database } from '../sqlite-shim';
+import type { DbDriver } from '../driver';
 import { v4 as uuidv4 } from 'uuid';
 import { MaterialLot, MaterialLotCreateInput } from '../../models/types';
 
 export class MaterialRepository {
-  constructor(private db: Database) {}
+  constructor(private db: DbDriver) {}
 
   create(input: MaterialLotCreateInput): MaterialLot {
     const now = new Date().toISOString();

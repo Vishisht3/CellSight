@@ -13,7 +13,7 @@ async function seedDemoData() {
     const dbContext = await getDatabaseContext();
 
     logger.info('Resetting database...');
-    await resetDatabase(dbContext.db);
+    await resetDatabase(dbContext.db as import('../database/sqlite-shim').Database);
 
     // Generate all demo data
     const generator = new DemoDataGenerator(dbContext);
