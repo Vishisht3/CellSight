@@ -1,9 +1,9 @@
-import Database from 'better-sqlite3';
+import { Database } from '../sqlite-shim';
 import { v4 as uuidv4 } from 'uuid';
 import { SohHistory } from '../../models/types';
 
 export class SohRepository {
-  constructor(private db: Database.Database) {}
+  constructor(private db: Database) {}
 
   create(
     assetId: string,

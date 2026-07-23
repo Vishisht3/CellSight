@@ -1,9 +1,9 @@
-import Database from 'better-sqlite3';
+import { Database } from '../sqlite-shim';
 import { v4 as uuidv4 } from 'uuid';
 import { Supplier, SupplierCreateInput } from '../../models/types';
 
 export class SupplierRepository {
-  constructor(private db: Database.Database) {}
+  constructor(private db: Database) {}
 
   create(input: SupplierCreateInput): Supplier {
     const now = new Date().toISOString();
@@ -105,12 +105,13 @@ export class SupplierRepository {
     }
   ): boolean {
     // Calculate composite risk score (0-100)
-    const riskScore =
+    // Each component is already 0-1, weighted sum gives 0-1, multiply by 100 for 0-100 scale
+    const riskScore = Math.min(100, Math.round(
       (risks.concentrationRisk * 30 +
         risks.geopoliticalRisk * 25 +
         risks.qualityRisk * 30 +
-        risks.complianceRisk * 15) *
-      100;
+        risks.complianceRisk * 15) * 100
+    ) / 100);
 
     const stmt = this.db.prepare(`
       UPDATE suppliers 

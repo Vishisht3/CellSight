@@ -1,28 +1,16 @@
-import Database from 'better-sqlite3';
 import path from 'path';
 import { config } from '../config/environment';
-import fs from 'fs';
+import { Database } from './sqlite-shim';
 
-export function initializeDatabase(): Database.Database {
-  // Ensure data directory exists
-  const dbDir = path.dirname(config.databasePath);
-  if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
-  }
+export async function initializeDatabase(): Promise<Database> {
+  const dbPath = path.resolve(config.databasePath);
+  const db = await Database.open(dbPath);
 
-  const db = new Database(config.databasePath);
-  
-  // Enable foreign keys
-  db.pragma('foreign_keys = ON');
-  db.pragma('journal_mode = WAL');
-
-  createTables(db);
-  
+  await createTables(db);
   return db;
 }
 
-function createTables(db: Database.Database): void {
-  // Users table
+async function createTables(db: Database): Promise<void> {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -32,11 +20,8 @@ function createTables(db: Database.Database): void {
       name TEXT NOT NULL,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    )
-  `);
+    );
 
-  // Suppliers table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS suppliers (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -50,11 +35,8 @@ function createTables(db: Database.Database): void {
       certification_expiry TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    )
-  `);
+    );
 
-  // Material lots table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS material_lots (
       id TEXT PRIMARY KEY,
       lot_number TEXT UNIQUE NOT NULL,
@@ -68,11 +50,8 @@ function createTables(db: Database.Database): void {
       specification_max REAL,
       created_at TEXT NOT NULL,
       FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
-    )
-  `);
+    );
 
-  // Cell batches table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS cell_batches (
       id TEXT PRIMARY KEY,
       batch_number TEXT UNIQUE NOT NULL,
@@ -81,11 +60,8 @@ function createTables(db: Database.Database): void {
       quantity INTEGER NOT NULL,
       created_at TEXT NOT NULL,
       FOREIGN KEY (manufacturer_id) REFERENCES suppliers(id)
-    )
-  `);
+    );
 
-  // Batch-material link table (many-to-many)
-  db.exec(`
     CREATE TABLE IF NOT EXISTS batch_material_links (
       id TEXT PRIMARY KEY,
       cell_batch_id TEXT NOT NULL,
@@ -94,11 +70,8 @@ function createTables(db: Database.Database): void {
       FOREIGN KEY (cell_batch_id) REFERENCES cell_batches(id),
       FOREIGN KEY (material_lot_id) REFERENCES material_lots(id),
       UNIQUE(cell_batch_id, material_lot_id)
-    )
-  `);
+    );
 
-  // Battery packs table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS battery_packs (
       id TEXT PRIMARY KEY,
       pack_number TEXT UNIQUE NOT NULL,
@@ -107,11 +80,8 @@ function createTables(db: Database.Database): void {
       capacity REAL NOT NULL,
       created_at TEXT NOT NULL,
       FOREIGN KEY (cell_batch_id) REFERENCES cell_batches(id)
-    )
-  `);
+    );
 
-  // Assets table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS assets (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -127,11 +97,8 @@ function createTables(db: Database.Database): void {
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       FOREIGN KEY (battery_pack_id) REFERENCES battery_packs(id)
-    )
-  `);
+    );
 
-  // Telemetry data table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS telemetry_data (
       id TEXT PRIMARY KEY,
       asset_id TEXT NOT NULL,
@@ -143,11 +110,8 @@ function createTables(db: Database.Database): void {
       cycle_count INTEGER NOT NULL,
       created_at TEXT NOT NULL,
       FOREIGN KEY (asset_id) REFERENCES assets(id)
-    )
-  `);
+    );
 
-  // SoH history table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS soh_history (
       id TEXT PRIMARY KEY,
       asset_id TEXT NOT NULL,
@@ -157,11 +121,8 @@ function createTables(db: Database.Database): void {
       computed_at TEXT NOT NULL,
       data_points_used INTEGER NOT NULL,
       FOREIGN KEY (asset_id) REFERENCES assets(id)
-    )
-  `);
+    );
 
-  // Alerts table
-  db.exec(`
     CREATE TABLE IF NOT EXISTS alerts (
       id TEXT PRIMARY KEY,
       type TEXT NOT NULL,
@@ -179,66 +140,28 @@ function createTables(db: Database.Database): void {
       resolved_at TEXT,
       metadata TEXT NOT NULL,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL,
-      FOREIGN KEY (asset_id) REFERENCES assets(id),
-      FOREIGN KEY (supplier_id) REFERENCES suppliers(id),
-      FOREIGN KEY (cell_batch_id) REFERENCES cell_batches(id),
-      FOREIGN KEY (acknowledged_by) REFERENCES users(id),
-      FOREIGN KEY (resolved_by) REFERENCES users(id)
-    )
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_telemetry_asset ON telemetry_data(asset_id);
+    CREATE INDEX IF NOT EXISTS idx_soh_asset ON soh_history(asset_id);
+    CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
+    CREATE INDEX IF NOT EXISTS idx_alerts_asset ON alerts(asset_id);
+    CREATE INDEX IF NOT EXISTS idx_assets_status ON assets(status);
   `);
 
-  // Create indexes for performance
-  db.exec(`
-    CREATE INDEX IF NOT EXISTS idx_telemetry_asset_timestamp 
-    ON telemetry_data(asset_id, timestamp DESC);
-    
-    CREATE INDEX IF NOT EXISTS idx_telemetry_timestamp 
-    ON telemetry_data(timestamp DESC);
-    
-    CREATE INDEX IF NOT EXISTS idx_soh_history_asset 
-    ON soh_history(asset_id, computed_at DESC);
-    
-    CREATE INDEX IF NOT EXISTS idx_alerts_status 
-    ON alerts(status, created_at DESC);
-    
-    CREATE INDEX IF NOT EXISTS idx_alerts_asset 
-    ON alerts(asset_id, created_at DESC);
-    
-    CREATE INDEX IF NOT EXISTS idx_alerts_supplier 
-    ON alerts(supplier_id, created_at DESC);
-    
-    CREATE INDEX IF NOT EXISTS idx_material_lots_supplier 
-    ON material_lots(supplier_id);
-    
-    CREATE INDEX IF NOT EXISTS idx_assets_status 
-    ON assets(status);
-    
-    CREATE INDEX IF NOT EXISTS idx_assets_battery_pack 
-    ON assets(battery_pack_id);
-  `);
-
-  console.log('✅ Database schema initialized');
+  console.log('✅ Database schema initialised');
 }
 
-export function resetDatabase(db: Database.Database): void {
+export async function resetDatabase(db: Database): Promise<void> {
   const tables = [
-    'alerts',
-    'soh_history',
-    'telemetry_data',
-    'assets',
-    'battery_packs',
-    'batch_material_links',
-    'cell_batches',
-    'material_lots',
-    'suppliers',
-    'users',
+    'alerts', 'soh_history', 'telemetry_data', 'assets',
+    'battery_packs', 'batch_material_links', 'cell_batches',
+    'material_lots', 'suppliers', 'users',
   ];
-
-  for (const table of tables) {
-    db.exec(`DROP TABLE IF EXISTS ${table}`);
+  for (const t of tables) {
+    db.exec(`DROP TABLE IF EXISTS ${t}`);
   }
-
-  createTables(db);
+  await createTables(db);
   console.log('✅ Database reset complete');
 }

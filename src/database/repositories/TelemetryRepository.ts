@@ -1,9 +1,9 @@
-import Database from 'better-sqlite3';
+import { Database } from '../sqlite-shim';
 import { v4 as uuidv4 } from 'uuid';
 import { TelemetryData, TelemetryIngestInput } from '../../models/types';
 
 export class TelemetryRepository {
-  constructor(private db: Database.Database) {}
+  constructor(private db: Database) {}
 
   create(input: TelemetryIngestInput): TelemetryData {
     const now = new Date().toISOString();

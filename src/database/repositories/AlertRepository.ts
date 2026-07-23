@@ -1,10 +1,10 @@
-import Database from 'better-sqlite3';
+import { Database } from '../sqlite-shim';
 import { v4 as uuidv4 } from 'uuid';
 import { Alert, AlertCreateInput } from '../../models/types';
 import { AlertStatus } from '../../config/constants';
 
 export class AlertRepository {
-  constructor(private db: Database.Database) {}
+  constructor(private db: Database) {}
 
   create(input: AlertCreateInput): Alert {
     const now = new Date().toISOString();

@@ -1,10 +1,10 @@
-import Database from 'better-sqlite3';
+import { Database } from '../sqlite-shim';
 import { v4 as uuidv4 } from 'uuid';
 import { User, UserCreateInput } from '../../models/types';
 import { UserRole } from '../../config/constants';
 
 export class UserRepository {
-  constructor(private db: Database.Database) {}
+  constructor(private db: Database) {}
 
   create(input: UserCreateInput & { passwordHash: string }): User {
     const now = new Date().toISOString();

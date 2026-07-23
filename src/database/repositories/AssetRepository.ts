@@ -1,10 +1,10 @@
-import Database from 'better-sqlite3';
+import { Database } from '../sqlite-shim';
 import { v4 as uuidv4 } from 'uuid';
 import { Asset, AssetCreateInput } from '../../models/types';
 import { AssetStatus } from '../../config/constants';
 
 export class AssetRepository {
-  constructor(private db: Database.Database) {}
+  constructor(private db: Database) {}
 
   create(input: AssetCreateInput): Asset {
     const now = new Date().toISOString();

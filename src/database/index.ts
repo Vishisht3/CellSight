@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import { Database } from './sqlite-shim';
 import { initializeDatabase } from './schema';
 import { UserRepository } from './repositories/UserRepository';
 import { AssetRepository } from './repositories/AssetRepository';
@@ -10,7 +10,7 @@ import { AlertRepository } from './repositories/AlertRepository';
 import { SohRepository } from './repositories/SohRepository';
 
 export interface DatabaseContext {
-  db: Database.Database;
+  db: Database;
   users: UserRepository;
   assets: AssetRepository;
   telemetry: TelemetryRepository;
@@ -23,23 +23,21 @@ export interface DatabaseContext {
 
 let dbContext: DatabaseContext | null = null;
 
-export function getDatabaseContext(): DatabaseContext {
+export async function getDatabaseContext(): Promise<DatabaseContext> {
   if (!dbContext) {
-    const db = initializeDatabase();
-    
+    const db = await initializeDatabase();
     dbContext = {
       db,
-      users: new UserRepository(db),
-      assets: new AssetRepository(db),
-      telemetry: new TelemetryRepository(db),
-      suppliers: new SupplierRepository(db),
-      materials: new MaterialRepository(db),
-      cellBatches: new CellBatchRepository(db),
-      alerts: new AlertRepository(db),
-      soh: new SohRepository(db),
+      users:      new UserRepository(db),
+      assets:     new AssetRepository(db),
+      telemetry:  new TelemetryRepository(db),
+      suppliers:  new SupplierRepository(db),
+      materials:  new MaterialRepository(db),
+      cellBatches:new CellBatchRepository(db),
+      alerts:     new AlertRepository(db),
+      soh:        new SohRepository(db),
     };
   }
-
   return dbContext;
 }
 

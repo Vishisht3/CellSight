@@ -106,6 +106,13 @@ export class TelemetryIngestionService {
    * REQ-1: Mark assets as stale if no telemetry received for 30+ minutes
    */
   checkStaleAssets(): number {
+    // In demo mode, synthetic telemetry timestamps are historical by design.
+    // Skip stale detection so the dashboard shows healthy/watch/critical statuses.
+    if (config.demoMode) {
+      logger.debug('Stale asset check skipped (demo mode)');
+      return 0;
+    }
+
     const now = new Date();
     const thresholdMs = config.telemetryStaleThresholdMinutes * 60 * 1000;
     const staleThresholdDate = new Date(now.getTime() - thresholdMs).toISOString();
