@@ -13,12 +13,12 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/fleet',         label: 'Fleet APM',        icon: <Truck size={14} />,        roles: ['admin','fleet_manager'] },
-  { to: '/readiness',     label: 'EV Readiness',      icon: <Map size={14} />,          roles: ['admin','fleet_manager'] },
-  { to: '/maintenance',   label: 'Maintenance Ops',   icon: <Wrench size={14} />,       roles: ['admin','fleet_manager'] },
-  { to: '/supply-chain',  label: 'Supply Chain',      icon: <PackageSearch size={14} />,roles: ['admin','supply_chain_manager'] },
+  { to: '/fleet',         label: 'Fleet Health',      icon: <Truck size={14} />,        roles: ['fleet_manager'] },
+  { to: '/readiness',     label: 'Replacement Plan',  icon: <Map size={14} />,          roles: ['fleet_manager'] },
+  { to: '/maintenance',   label: 'Work Orders',       icon: <Wrench size={14} />,       roles: ['fleet_manager'] },
+  { to: '/supply-chain',  label: 'Supplier Portal',   icon: <PackageSearch size={14} />,roles: ['supply_chain_manager'] },
   { to: '/alerts',        label: 'Alerts',            icon: <Bell size={14} /> },
-  { to: '/correlation',   label: 'Correlation',       icon: <GitMerge size={14} />,     roles: ['admin'] },
+  { to: '/correlation',   label: 'Field Claims',      icon: <GitMerge size={14} />,     roles: ['fleet_manager','supply_chain_manager'] },
   { to: '/architecture',  label: 'Architecture',      icon: <Network size={14} /> },
 ];
 
@@ -69,7 +69,7 @@ export default function Sidebar() {
               CellSight
             </div>
             <div style={{ color: '#a0c0f0', fontSize: 9, letterSpacing: 0.3 }}>
-              BATTERY INTELLIGENCE
+              SUPPLIER PORTAL
             </div>
           </div>
         </div>

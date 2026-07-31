@@ -78,9 +78,9 @@ export const alertTypeLabel: Record<AlertType, string> = {
 };
 
 export const sourceAgentLabel: Record<AlertSourceAgent, string> = {
-  apm: 'Fleet APM',
-  supply_chain: 'Supply Chain',
-  correlation: 'Correlation',
+  apm: 'Fleet Health',
+  supply_chain: 'Supplier Quality',
+  correlation: 'Field Claims',
 };
 
 export const tierLabel: Record<SupplierTier, string> = {

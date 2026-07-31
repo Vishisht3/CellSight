@@ -4,9 +4,9 @@ import { Eye, EyeOff, Zap, LogIn } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 const DEMO_USERS = [
-  { label: 'Administrator',          email: 'admin@cellsight.com',  role: 'Full access' },
-  { label: 'Fleet Manager',          email: 'fleet@cellsight.com',  role: 'Fleet APM + Maintenance' },
-  { label: 'Supply Chain Manager',   email: 'supply@cellsight.com', role: 'Supply Chain + Risk' },
+  { label: 'Maintenance Planner', email: 'maintenance@cellsight.com', role: 'Work orders + pack replacement plan' },
+  { label: 'Fleet Operations', email: 'fleet@cellsight.com', role: 'Fleet health + depot readiness' },
+  { label: 'Supplier Quality', email: 'supply@cellsight.com', role: 'Supplier scorecards + traceability' },
 ];
 
 export default function LoginPage() {
@@ -79,7 +79,7 @@ export default function LoginPage() {
             <Zap size={13} color="#fff" />
           </div>
           <span style={{ color: '#fff', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-            CellSight — Battery Intelligence Platform
+            CellSight — Battery Supplier Portal
           </span>
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
             {['─','□','✕'].map(ch => (
@@ -116,7 +116,7 @@ export default function LoginPage() {
             <Zap size={28} color="#316ac5" />
             <div>
               <div style={{ fontSize: 16, fontWeight: 'bold', color: '#0a246a' }}>CellSight</div>
-              <div style={{ fontSize: 10, color: '#4a6a9a' }}>EV Battery Intelligence Platform v1.0</div>
+              <div style={{ fontSize: 10, color: '#4a6a9a' }}>Fleet battery health, supplier scorecards, and pack traceability</div>
             </div>
           </div>
 
@@ -207,7 +207,7 @@ export default function LoginPage() {
           {/* Demo quick-login */}
           <fieldset style={{ border: '1px solid #7f9db9', borderRadius: 3, padding: '10px 12px' }}>
             <legend style={{ fontSize: 11, fontWeight: 'bold', color: '#0a246a', padding: '0 4px' }}>
-              Demo Access (password: demo123)
+              Demo portal users (password: demo123)
             </legend>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>

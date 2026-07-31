@@ -78,8 +78,8 @@ export default function AlertsPage() {
   return (
     <>
       <Navbar
-        title="Unified Alert Feed"
-        subtitle="Consolidated alerts from Fleet APM, Supply Chain, and Correlation agents"
+        title="Open Issues"
+        subtitle="Battery health, supplier quality, and field-claim items that need follow-up"
         alertCount={counts?.open}
         onRefresh={() => { setRefreshing(true); load(); }}
         refreshing={refreshing}
@@ -123,12 +123,12 @@ export default function AlertsPage() {
               })}
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:4, marginLeft:'auto' }}>
-              <label style={{ fontSize:11, color:'#4a4a4a' }}>Source agent:</label>
+              <label style={{ fontSize:11, color:'#4a4a4a' }}>Source area:</label>
               <select value={agentFilter} onChange={e => setAgentFilter(e.target.value)} style={{ fontSize:11, padding:'1px 4px' }}>
-                <option value="">All agents</option>
-                <option value="apm">Fleet APM</option>
-                <option value="supply_chain">Supply Chain</option>
-                <option value="correlation">Correlation</option>
+                <option value="">All sources</option>
+                <option value="apm">Fleet health</option>
+                <option value="supply_chain">Supplier quality</option>
+                <option value="correlation">Field claims</option>
               </select>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function AlertsPage() {
                   <th style={{ width:4 }}></th>
                   <th>Alert</th>
                   <th>Type</th>
-                  <th>Agent</th>
+                  <th>Source</th>
                   <th>Severity</th>
                   <th>Status</th>
                   <th>Age</th>

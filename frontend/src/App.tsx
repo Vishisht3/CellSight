@@ -54,40 +54,40 @@ function AppRoutes() {
         {/* ── Guest-accessible (architecture overview) ── */}
         <Route path="/architecture" element={<ArchitecturePage />} />
 
-        {/* ── Fleet APM (fleet_manager + admin) ── */}
+        {/* ── Fleet operations ── */}
         <Route path="/fleet" element={
-          <ProtectedRoute allowedRoles={['admin','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager']}>
             <FleetDashboard />
           </ProtectedRoute>
         } />
         <Route path="/fleet/:id" element={
-          <ProtectedRoute allowedRoles={['admin','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager']}>
             <AssetDetail />
           </ProtectedRoute>
         } />
 
-        {/* ── EV Readiness / Procurement (fleet_manager + admin) ── */}
+        {/* ── EV readiness / procurement ── */}
         <Route path="/readiness" element={
-          <ProtectedRoute allowedRoles={['admin','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager']}>
             <ReadinessPage />
           </ProtectedRoute>
         } />
 
-        {/* ── Maintenance Ops (fleet_manager + admin) ── */}
+        {/* ── Maintenance ops ── */}
         <Route path="/maintenance" element={
-          <ProtectedRoute allowedRoles={['admin','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager']}>
             <MaintenancePage />
           </ProtectedRoute>
         } />
 
-        {/* ── Supply Chain (supply_chain_manager + admin) ── */}
+        {/* ── Supplier quality and traceability ── */}
         <Route path="/supply-chain" element={
-          <ProtectedRoute allowedRoles={['admin','supply_chain_manager']}>
+          <ProtectedRoute allowedRoles={['supply_chain_manager']}>
             <SupplyChainDashboard />
           </ProtectedRoute>
         } />
         <Route path="/supply-chain/trace/:assetId" element={
-          <ProtectedRoute allowedRoles={['admin','supply_chain_manager','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['supply_chain_manager','fleet_manager']}>
             <TraceView />
           </ProtectedRoute>
         } />
@@ -99,9 +99,9 @@ function AppRoutes() {
           </ProtectedRoute>
         } />
 
-        {/* ── Correlation (admin only) ── */}
+        {/* ── Field-to-source investigations ── */}
         <Route path="/correlation" element={
-          <ProtectedRoute allowedRoles={['admin']}>
+          <ProtectedRoute allowedRoles={['supply_chain_manager','fleet_manager']}>
             <CorrelationPage />
           </ProtectedRoute>
         } />

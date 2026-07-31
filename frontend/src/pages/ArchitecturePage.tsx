@@ -61,7 +61,7 @@ export default function ArchitecturePage() {
     <>
       <Navbar
         title="System Architecture"
-        subtitle="CellSight platform design — agents, data flows, and technology stack"
+        subtitle="CellSight platform design, data flows, and portal technology stack"
       />
       <PageContainer>
 
@@ -80,12 +80,12 @@ export default function ArchitecturePage() {
               <Box title="ERP / Supply Chain" color="#316ac5" items={['Material lot registration','Supplier master data','Cell batch records','Certification expiry dates']} />
             </div>
 
-            {/* Middle row: agents */}
-            <SectionHeader>② Agent Layer (Core Business Logic)</SectionHeader>
+            {/* Middle row: business services */}
+            <SectionHeader>② Business Services</SectionHeader>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
               <div style={{ flex: 1, minWidth: 200 }}>
                 <div style={{ fontSize: 11, fontWeight: 'bold', color: '#0a246a', marginBottom: 6, paddingBottom: 4, borderBottom: '2px solid #316ac5' }}>
-                  APM Agent
+                  Fleet Health Services
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <Box title="TelemetryIngestionService" color="#2060b0" items={['Zod schema validation','Stale asset detection (30 min)','Batch ingest endpoint','Rejects invalid payloads']} />
@@ -100,7 +100,7 @@ export default function ArchitecturePage() {
 
               <div style={{ flex: 1, minWidth: 200 }}>
                 <div style={{ fontSize: 11, fontWeight: 'bold', color: '#0a246a', marginBottom: 6, paddingBottom: 4, borderBottom: '2px solid #6030a0' }}>
-                  Supply Chain Agent
+                  Supplier Quality Services
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <Box title="TraceabilityService"  color="#5030a0" items={['Material → batch → pack → asset','Full chain query < 3 seconds','Lot registration & linking','Coverage reporting']} />
@@ -114,12 +114,12 @@ export default function ArchitecturePage() {
 
               <div style={{ flex: 1, minWidth: 200 }}>
                 <div style={{ fontSize: 11, fontWeight: 'bold', color: '#0a246a', marginBottom: 6, paddingBottom: 4, borderBottom: '2px solid #2a8a2a' }}>
-                  Correlation Agent
+                  Field Claim Traceback
                 </div>
                 <Box title="CorrelationService" color="#2a7a2a" items={['Degradation rate per asset','Aggregation by batch / supplier','Comparison vs fleet average','Insight generation (>20% threshold)','Dual visibility: fleet + SC roles']} />
 
                 <div style={{ marginTop: 10, fontWeight: 'bold', fontSize: 11, color: '#0a246a', marginBottom: 6, paddingBottom: 4, borderBottom: '2px solid #b87000' }}>
-                  Additional Agents
+                  Planning Workflows
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <Box title="Electrification Readiness" color="#b87000" items={['Per-asset readiness score 0–100','Optimal EV match by duty cycle','OEM procurement recommendation','ROI & payback period estimate','Transition blocker identification']} />
@@ -131,7 +131,7 @@ export default function ArchitecturePage() {
             {/* Alert bus */}
             <SectionHeader>③ Unified Alert Bus</SectionHeader>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-              <Box title="AlertService" color="#c00000" items={['Single feed all agents','Source agent tag','Severity: info / warning / critical','Status: open / acknowledged / resolved','Audit trail (user + timestamp)']} />
+              <Box title="AlertService" color="#c00000" items={['Single issue queue','Business source tag','Severity: info / warning / critical','Status: open / acknowledged / resolved','Audit trail (user + timestamp)']} />
               <Arrow label="HTTP PUT" />
               <Box title="Alert Types" color="#900000" items={['Thermal event','Charge pattern','SoH degradation','RUL threshold','Concentration risk','Geopolitical exposure','Quality deviation','Compliance gap','Field↔source correlation']} />
             </div>
@@ -206,9 +206,9 @@ export default function ArchitecturePage() {
             </thead>
             <tbody>
               {[
-                ['Administrator',         '/fleet',         '✓','✓','✓','✓','✓','✓','✓'],
-                ['Fleet Manager',         '/fleet',         '✓','✓','✓','—','✓','—','✓'],
-                ['Supply Chain Manager',  '/supply-chain',  '—','—','—','✓','✓','—','✓'],
+                ['Maintenance Planner',   '/fleet',         '✓','✓','✓','—','✓','✓','✓'],
+                ['Fleet Operations',      '/fleet',         '✓','✓','✓','—','✓','✓','✓'],
+                ['Supplier Quality',      '/supply-chain',  '—','—','—','✓','✓','✓','✓'],
                 ['Guest (no login)',       '/architecture',  '—','—','—','—','—','—','✓'],
               ].map(([role, landing, ...access]) => (
                 <tr key={role}>

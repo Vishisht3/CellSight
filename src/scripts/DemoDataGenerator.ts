@@ -29,18 +29,18 @@ export class DemoDataGenerator {
   ];
 
   private supplierNames = [
-    { name: 'LithiumCorp', country: 'US', tier: SupplierTier.TIER_3 },
-    { name: 'CobaltMines Ltd', country: 'CD', tier: SupplierTier.TIER_3 },
-    { name: 'NickelSource Inc', country: 'CA', tier: SupplierTier.TIER_3 },
-    { name: 'Graphite Supplies', country: 'CN', tier: SupplierTier.TIER_3 },
-    { name: 'RareEarth Materials', country: 'AU', tier: SupplierTier.TIER_3 },
-    { name: 'GlobalCells Manufacturing', country: 'KR', tier: SupplierTier.TIER_2 },
-    { name: 'PowerCell Industries', country: 'JP', tier: SupplierTier.TIER_2 },
-    { name: 'BatteryTech Corp', country: 'DE', tier: SupplierTier.TIER_2 },
-    { name: 'ElectroCell Systems', country: 'US', tier: SupplierTier.TIER_2 },
-    { name: 'EnergyCells Ltd', country: 'CN', tier: SupplierTier.TIER_2 },
-    { name: 'Prime Battery Assembly', country: 'US', tier: SupplierTier.TIER_1 },
-    { name: 'Advanced Power Systems', country: 'JP', tier: SupplierTier.TIER_1 },
+    { name: 'Silver Peak Lithium Operations', country: 'US', tier: SupplierTier.TIER_3 },
+    { name: 'Katanga Cobalt Refining', country: 'CD', tier: SupplierTier.TIER_3 },
+    { name: 'Sudbury Nickel Works', country: 'CA', tier: SupplierTier.TIER_3 },
+    { name: 'Qingdao Graphite Materials', country: 'CN', tier: SupplierTier.TIER_3 },
+    { name: 'Pilbara Manganese and Minerals', country: 'AU', tier: SupplierTier.TIER_3 },
+    { name: 'LG Energy Solution Ochang', country: 'KR', tier: SupplierTier.TIER_2 },
+    { name: 'Panasonic Energy Suminoe', country: 'JP', tier: SupplierTier.TIER_2 },
+    { name: 'Northvolt Ett Cell Plant', country: 'SE', tier: SupplierTier.TIER_2 },
+    { name: 'Ultium Cells Spring Hill', country: 'US', tier: SupplierTier.TIER_2 },
+    { name: 'CATL Ningde Plant 3', country: 'CN', tier: SupplierTier.TIER_2 },
+    { name: 'Proterra Powered Assembly', country: 'US', tier: SupplierTier.TIER_1 },
+    { name: 'Bosch Battery Systems Stuttgart', country: 'DE', tier: SupplierTier.TIER_1 },
   ];
 
   constructor(private dbContext: DatabaseContext) {}
@@ -90,12 +90,12 @@ export class DemoDataGenerator {
   private async generateUsers(): Promise<number> {
     const passwordHash = await bcrypt.hash('demo123', 10);
 
-    // Create admin user
+    // Create demo business users. No administrator persona is exposed in the portal.
     this.dbContext.users.create({
-      email: 'admin@cellsight.com',
+      email: 'maintenance@cellsight.com',
       passwordHash,
-      role: UserRole.ADMIN,
-      name: 'Admin User',
+      role: UserRole.FLEET_MANAGER,
+      name: 'Maya Patel, Maintenance Planner',
     });
 
     // Create fleet manager
@@ -103,7 +103,7 @@ export class DemoDataGenerator {
       email: 'fleet@cellsight.com',
       passwordHash,
       role: UserRole.FLEET_MANAGER,
-      name: 'Fleet Manager',
+      name: 'Jordan Lee, Fleet Operations',
     });
 
     // Create supply chain manager
@@ -111,10 +111,10 @@ export class DemoDataGenerator {
       email: 'supply@cellsight.com',
       passwordHash,
       role: UserRole.SUPPLY_CHAIN_MANAGER,
-      name: 'Supply Chain Manager',
+      name: 'Elena Ruiz, Supplier Quality',
     });
 
-    logger.info('Created 3 demo users');
+    logger.info('Created 3 portal demo users');
     return 3;
   }
 
@@ -172,7 +172,7 @@ export class DemoDataGenerator {
         const lotCount = 2 + Math.floor(Math.random() * 4);
 
         for (let i = 0; i < lotCount; i++) {
-          const lotNumber = `${materialType.toUpperCase()}-${supplier.country}-${count.toString().padStart(4, '0')}`;
+          const lotNumber = `${materialType.toUpperCase()}-${supplier.country}-${new Date().getFullYear()}-${(count + 1842).toString().padStart(5, '0')}`;
           
           // Generate quality scores with occasional deviations
           const baseQuality = 85 + Math.random() * 10;
@@ -212,7 +212,8 @@ export class DemoDataGenerator {
       const batchCount = 3 + Math.floor(Math.random() * 4);
 
       for (let i = 0; i < batchCount; i++) {
-        const batchNumber = `BATCH-${manufacturer.name.substring(0, 3).toUpperCase()}-${count.toString().padStart(3, '0')}`;
+        const plantCode = manufacturer.name.split(' ').map(part => part[0]).join('').slice(0, 4).toUpperCase();
+        const batchNumber = `CELL-${plantCode}-${(count + 620).toString().padStart(4, '0')}`;
         
         const cellBatch = this.dbContext.cellBatches.createBatch({
           batchNumber,
@@ -250,7 +251,7 @@ export class DemoDataGenerator {
       const packCount = 2 + Math.floor(Math.random() * 3);
 
       for (let i = 0; i < packCount; i++) {
-        const packNumber = `PACK-${batch.batchNumber}-${i + 1}`;
+        const packNumber = `PACK-${batch.batchNumber}-${String(i + 1).padStart(2, '0')}`;
         
         this.dbContext.cellBatches.createPack({
           packNumber,
@@ -378,3 +379,4 @@ export class DemoDataGenerator {
 // Import constants for thermal limits
 const TEMP_MIN_SAFE = -10;
 const TEMP_MAX_SAFE = 45;
+
