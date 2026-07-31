@@ -2,6 +2,7 @@ import { DatabaseContext } from '../database';
 import { logger } from '../utils/logger';
 import { Alert, AlertCreateInput } from '../models/types';
 import { AlertStatus } from '../config/constants';
+import { sseService } from './SseService';
 
 export class AlertService {
   constructor(private dbContext: DatabaseContext) {}
@@ -16,9 +17,8 @@ export class AlertService {
 
       // Push to SSE clients
       try {
-        const { sseService } = require('../services/SseService');
         sseService.broadcast('alert', alert);
-      } catch { /* SSE service not initialised — ignore */ }
+      } catch { /* SSE broadcast failed — ignore */ }
 
       logger.info('Alert created', {
         alertId: alert.id, type: alert.type,

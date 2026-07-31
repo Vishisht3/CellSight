@@ -99,21 +99,18 @@ export class PgDatabase implements DbDriver {
   }
 
   prepare(sql: string): DbStatement {
-    const self = this;
     const translated = translatePlaceholders(sql);
 
     return {
-      run(...params: unknown[]): RunResult {
-        self.runSync(translated, params);
+      run: (...params: unknown[]): RunResult => {
+        this.runSync(translated, params);
         return { changes: 1, lastInsertRowid: 0 };
       },
-      get(...params: unknown[]): unknown {
-        const rows = self.runSync(translated, params);
+      get: (...params: unknown[]): unknown => {
+        const rows = this.runSync(translated, params);
         return rows[0] ?? undefined;
       },
-      all(...params: unknown[]): unknown[] {
-        return self.runSync(translated, params);
-      },
+      all: (...params: unknown[]): unknown[] => this.runSync(translated, params),
     };
   }
 

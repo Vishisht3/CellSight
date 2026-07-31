@@ -101,7 +101,8 @@ export class AuthService {
   getUserById(userId: string): Omit<User, 'passwordHash'> | null {
     const user = this.dbContext.users.findById(userId);
     if (!user) return null;
-    const { passwordHash: _p, ...rest } = user;
+    const { passwordHash, ...rest } = user;
+    void passwordHash;
     return rest;
   }
 
@@ -123,7 +124,8 @@ export class AuthService {
 
     this.refreshTokenRepo.create(user.id, rawRefresh, family, expiresAt);
 
-    const { passwordHash: _p, ...userSafe } = user;
+    const { passwordHash, ...userSafe } = user;
+    void passwordHash;
     return { accessToken, refreshToken: rawRefresh, user: userSafe };
   }
 }

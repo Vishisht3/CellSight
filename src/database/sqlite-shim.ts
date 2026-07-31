@@ -78,19 +78,17 @@ export class Database implements DbDriver {
 
   /** Prepare a statement and return a Statement-compatible object */
   prepare(sql: string): DbStatement {
-    const self = this;
-
     return {
-      run(...params: unknown[]): RunResult {
-        self.db.run(sql, params as any[]);
-        self.persist();
+      run: (...params: unknown[]): RunResult => {
+        this.db.run(sql, params as any[]);
+        this.persist();
         // sql.js doesn't reliably report changes via SELECT changes() after
         // a parameterised run(), so we approximate: any successful execution = 1 change.
         return { changes: 1, lastInsertRowid: 0 };
       },
 
-      get(...params: unknown[]): unknown {
-        const stmt = self.db.prepare(sql);
+      get: (...params: unknown[]): unknown => {
+        const stmt = this.db.prepare(sql);
         stmt.bind(params as any[]);
         if (stmt.step()) {
           const row = stmt.getAsObject();
@@ -101,9 +99,9 @@ export class Database implements DbDriver {
         return undefined;
       },
 
-      all(...params: unknown[]): unknown[] {
+      all: (...params: unknown[]): unknown[] => {
         const results: unknown[] = [];
-        const stmt = self.db.prepare(sql);
+        const stmt = this.db.prepare(sql);
         stmt.bind(params as any[]);
         while (stmt.step()) {
           results.push(stmt.getAsObject());
