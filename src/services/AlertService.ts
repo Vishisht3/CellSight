@@ -18,7 +18,7 @@ export class AlertService {
       // Push to SSE clients
       try {
         sseService.broadcast('alert', alert);
-      } catch { /* SSE service not initialised — ignore */ }
+      } catch { /* SSE broadcast failed — ignore */ }
 
       logger.info('Alert created', {
         alertId: alert.id, type: alert.type,
