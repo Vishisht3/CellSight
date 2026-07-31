@@ -24,6 +24,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import fs from 'fs';
 import path from 'path';
 import { Database as SqlJsDb } from '../database/sqlite-shim';
 import { PgDatabase } from '../database/pg-adapter';
@@ -90,7 +91,7 @@ async function migrate() {
 // ── Export from sql.js → Postgres ─────────────────────────────────────────
 
 async function exportFromSqlJs(pg: PgDatabase) {
-  if (!(require('fs').existsSync(SOURCE_PATH))) {
+  if (!fs.existsSync(SOURCE_PATH)) {
     err(`Source database not found at ${SOURCE_PATH}. Run 'npm run seed:demo' first.`);
     process.exit(1);
   }

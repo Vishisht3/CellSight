@@ -117,8 +117,8 @@ export class PredictiveMaintenanceService {
       // Find charge cycles (min to max transitions)
       let fullCycleCount = 0;
       let partialCycleCount = 0;
-      let minSocValues: number[] = [];
-      let maxSocValues: number[] = [];
+      const minSocValues: number[] = [];
+      const maxSocValues: number[] = [];
 
       for (let i = 1; i < socReadings.length; i++) {
         const prevSoc = socReadings[i - 1];

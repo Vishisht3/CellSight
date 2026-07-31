@@ -10,7 +10,8 @@ router.post('/register', async (req: Request, res: Response) => {
     const validated = userRegisterSchema.parse(req.body);
     const dbContext = await getDatabaseContext();
     const user = await new AuthService(dbContext).register(validated);
-    const { passwordHash: _p, ...safe } = user;
+    const { passwordHash, ...safe } = user;
+    void passwordHash;
     res.status(201).json({ user: safe });
   } catch (error) {
     if (error instanceof Error) res.status(400).json({ error: error.message });
