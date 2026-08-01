@@ -8,6 +8,7 @@ import sseRoutes         from './sse.routes';
 import { authenticate }      from '../../middleware/auth';
 import { config }            from '../../config/environment';
 import { getDatabaseContext } from '../../database';
+import { PgDatabase }        from '../../database/pg-adapter';
 
 const router = Router();
 
@@ -30,7 +31,13 @@ router.get('/health', async (_req, res) => {
   let dbOk = false;
   try {
     const ctx = await getDatabaseContext();
-    ctx.db.prepare('SELECT 1').get();
+    // Use async ping for Postgres to avoid blocking the event loop,
+    // fall back to sync prepare() for SQLite
+    if (ctx.db instanceof PgDatabase) {
+      await ctx.db.execAsync('SELECT 1');
+    } else {
+      ctx.db.prepare('SELECT 1').get();
+    }
     dbOk = true;
   } catch { dbOk = false; }
 
