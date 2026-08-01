@@ -61,6 +61,17 @@ app.use(errorHandler);
 
 // ── Server startup ────────────────────────────────────────────────────────
 async function startServer() {
+  // Bind to the port immediately so Railway's healthcheck gets a response
+  // right away. The /api/health route returns 503 while the DB is still
+  // initialising — Railway treats that as "still starting" rather than failed.
+  const server = app.listen(config.port, () => {
+    logger.info(`🚀 CellSight API`, {
+      url: `http://localhost:${config.port}`,
+      env: config.nodeEnv,
+      demo: config.demoMode,
+    });
+  });
+
   const dbContext = await getDatabaseContext();
   logger.info('✅ Database initialised', {
     driver: config.databaseUrl ? 'postgres' : 'sql.js',
@@ -82,16 +93,8 @@ async function startServer() {
     new CorrelationService(dbContext).runCorrelationAnalysis();
   });
 
-  const server = app.listen(config.port, () => {
-    logger.info(`🚀 CellSight API`, {
-      url: `http://localhost:${config.port}`,
-      env: config.nodeEnv,
-      demo: config.demoMode,
-      db: config.databaseUrl ? 'postgres' : 'sql.js',
-    });
-    scheduler.startAll();
-    logger.info('⏰ Background tasks started');
-  });
+  scheduler.startAll();
+  logger.info('⏰ Background tasks started');
 
   const shutdown = (signal: string) => {
     logger.info(`${signal} received — shutting down`);
