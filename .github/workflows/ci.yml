@@ -92,6 +92,7 @@ jobs:
 
     steps:
       - name: Trigger Render deploy
+        id: trigger-render
         # Uses the Render Deploy Hook URL stored as a GitHub secret.
         # To set this up:
         #   1. Render dashboard → cellsight-api → Settings → Deploy Hooks → Create
@@ -101,12 +102,15 @@ jobs:
         run: |
           if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
             echo "::warning::RENDER_DEPLOY_HOOK_URL not set — skipping Render trigger"
+            echo "run-health-check=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           curl -s --fail -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
           echo "Render deploy triggered"
+          echo "run-health-check=true" >> "$GITHUB_OUTPUT"
 
       - name: Wait for Render health check
+        if: steps.trigger-render.outputs.run-health-check == 'true'
         run: |
           echo "Waiting 60s for Render to spin up…"
           sleep 60
