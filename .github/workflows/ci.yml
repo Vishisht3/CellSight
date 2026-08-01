@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Restrict default GITHUB_TOKEN permissions to least privilege
+permissions:
+  contents: read
+
 # ── Jobs ──────────────────────────────────────────────────────────────────────
 jobs:
 
