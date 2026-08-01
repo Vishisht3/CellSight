@@ -8,7 +8,7 @@
  * once at startup via PgDatabase.connect() and cached just like the sql.js
  * Database singleton.
  */
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 import type { DbDriver, DbStatement } from './driver';
 
 interface RunResult {
@@ -18,11 +18,9 @@ interface RunResult {
 
 export class PgDatabase implements DbDriver {
   private pool: Pool;
-  private client!: PoolClient;
 
-  private constructor(pool: Pool, client: PoolClient) {
+  private constructor(pool: Pool) {
     this.pool = pool;
-    this.client = client;
   }
 
   static async connect(connectionString: string): Promise<PgDatabase> {
@@ -32,8 +30,10 @@ export class PgDatabase implements DbDriver {
       max: 10,
       idleTimeoutMillis: 30_000,
     });
+    // Verify connectivity at startup
     const client = await pool.connect();
-    return new PgDatabase(pool, client);
+    client.release();
+    return new PgDatabase(pool);
   }
 
   /** No-op — Postgres handles WAL, FK enforcement is per-statement */
@@ -55,23 +55,14 @@ export class PgDatabase implements DbDriver {
 
   /** Internal: run a single parameterised query synchronously via deasync trick */
   private runSync(sql: string, params: unknown[]): any[] {
-    // We need synchronous execution. Use a shared PoolClient and run the
-    // query in a way that blocks the event loop using the 'deasync' pattern.
-    // Since Node.js doesn't have true sync async, we pre-schedule via setImmediate
-    // and rely on the fact that the repositories are always called from within
-    // an already-async context (route handlers awaited getDatabaseContext first).
-    //
-    // For the hosted adapter we therefore run queries using the pool directly
-    // and store results. The caller must be inside an async function that
-    // already awaited getDatabaseContext() — which all route handlers do.
-    //
-    // This is a design trade-off: repositories stay sync, adapter does best-effort.
-    // For true async repositories a full ORM would be needed.
     let result: any[] = [];
     let done = false;
     let err: any = null;
 
-    this.client.query(sql, params as any[])
+    // Use pool.query() so each query gets its own client from the pool,
+    // avoiding the "client already executing a query" deprecation warning
+    // that occurs when a single PoolClient handles concurrent queries.
+    this.pool.query(sql, params as any[])
       .then(res => {
         result = res.rows || [];
         done = true;
@@ -115,7 +106,6 @@ export class PgDatabase implements DbDriver {
   }
 
   close(): void {
-    this.client.release();
     this.pool.end().catch(() => {});
   }
 }
