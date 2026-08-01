@@ -69,7 +69,7 @@ jobs:
         working-directory: frontend
         env:
           # Use a placeholder for CI — actual value is set in Netlify dashboard
-          VITE_API_URL: https://cellsight-api.onrender.com
+          VITE_API_URL: https://cellsight-api.up.railway.app
         run: npm run build
 
       - name: Upload build artifact
@@ -79,43 +79,29 @@ jobs:
           path: frontend/dist
           retention-days: 1
 
-  # ── 3. Deploy backend to Render ──────────────────────────────────────────
+  # ── 3. Deploy backend to Railway ─────────────────────────────────────────
   # Only runs on pushes to main after both CI jobs pass.
-  # Render's GitHub integration handles auto-deploy via render.yaml, so this
+  # Railway's GitHub integration handles auto-deploy, so this
   # job is a lightweight hook that confirms the deploy succeeded and surfaces
   # any failure in the GitHub UI.
   deploy-backend:
-    name: Deploy Backend → Render
+    name: Deploy Backend → Railway
     needs: [backend-ci, frontend-ci]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-      - name: Trigger Render deploy
-        id: trigger-render
-        # Uses the Render Deploy Hook URL stored as a GitHub secret.
-        # To set this up:
-        #   1. Render dashboard → cellsight-api → Settings → Deploy Hooks → Create
-        #   2. Copy the hook URL
-        #   3. GitHub repo → Settings → Secrets → Actions → New secret
-        #      Name: RENDER_DEPLOY_HOOK_URL
+      - name: Wait for Railway health check
+        env:
+          BACKEND_HEALTHCHECK_URL: ${{ secrets.BACKEND_HEALTHCHECK_URL }}
         run: |
-          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
-            echo "::warning::RENDER_DEPLOY_HOOK_URL not set — skipping Render trigger"
-            echo "run-health-check=false" >> "$GITHUB_OUTPUT"
+          if [ -z "$BACKEND_HEALTHCHECK_URL" ]; then
+            echo "::warning::BACKEND_HEALTHCHECK_URL not set — skipping backend health check"
             exit 0
           fi
-          curl -s --fail -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
-          echo "Render deploy triggered"
-          echo "run-health-check=true" >> "$GITHUB_OUTPUT"
-
-      - name: Wait for Render health check
-        if: steps.trigger-render.outputs.run-health-check == 'true'
-        run: |
-          echo "Waiting 60s for Render to spin up…"
+          echo "Waiting 60s for Railway deploy to spin up…"
           sleep 60
-          HEALTH_URL="https://cellsight-api.onrender.com/api/health"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$BACKEND_HEALTHCHECK_URL")
           if [ "$STATUS" = "200" ] || [ "$STATUS" = "503" ]; then
             echo "Backend is reachable (HTTP $STATUS)"
           else
@@ -155,7 +141,7 @@ jobs:
         # Required GitHub secrets:
         #   NETLIFY_AUTH_TOKEN — from Netlify User Settings → Personal Access Tokens
         #   NETLIFY_SITE_ID    — from Netlify Site → Settings → General → Site ID
-        #   VITE_API_URL       — your Render backend URL, e.g. https://cellsight-api.onrender.com
+        #   VITE_API_URL       — your backend URL, e.g. https://cellsight-api.up.railway.app
         uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: frontend/dist
