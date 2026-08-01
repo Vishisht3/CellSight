@@ -15,13 +15,12 @@ export async function initializeDatabase(): Promise<Database> {
 // ── Postgres (hosted) ─────────────────────────────────────────────────────
 
 export async function initializePgDatabase(db: PgDatabase): Promise<void> {
-  await createTables(db);
+  await createTablesPg(db);
 }
 
 // ── Shared DDL ────────────────────────────────────────────────────────────
 
-async function createTables(db: Database | PgDatabase): Promise<void> {
-  db.exec(`
+const SCHEMA_SQL = `
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -172,8 +171,17 @@ async function createTables(db: Database | PgDatabase): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
     CREATE INDEX IF NOT EXISTS idx_alerts_asset ON alerts(asset_id);
     CREATE INDEX IF NOT EXISTS idx_assets_status ON assets(status);
-  `);
+`;
 
+/** SQLite — synchronous exec is fine (in-memory, no network) */
+async function createTables(db: Database): Promise<void> {
+  db.exec(SCHEMA_SQL);
+  console.log('✅ Database schema initialised');
+}
+
+/** Postgres — use execAsync so the event loop stays free during startup */
+async function createTablesPg(db: PgDatabase): Promise<void> {
+  await db.execAsync(SCHEMA_SQL);
   console.log('✅ Database schema initialised');
 }
 
@@ -183,9 +191,16 @@ export async function resetDatabase(db: Database | PgDatabase): Promise<void> {
     'battery_packs', 'batch_material_links', 'cell_batches',
     'material_lots', 'suppliers', 'users',
   ];
-  for (const t of tables) {
-    db.exec(`DROP TABLE IF EXISTS ${t}`);
+  if (db instanceof PgDatabase) {
+    for (const t of tables) {
+      await db.execAsync(`DROP TABLE IF EXISTS ${t}`);
+    }
+    await createTablesPg(db);
+  } else {
+    for (const t of tables) {
+      db.exec(`DROP TABLE IF EXISTS ${t}`);
+    }
+    await createTables(db);
   }
-  await createTables(db);
   console.log('✅ Database reset complete');
 }

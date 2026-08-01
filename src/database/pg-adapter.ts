@@ -4,9 +4,11 @@
  *
  * Because pg is inherently async but our repository layer is sync,
  * we use a connection pool and run queries synchronously-from-the-caller's
- * perspective by collecting results eagerly.  The adapter is initialised
- * once at startup via PgDatabase.connect() and cached just like the sql.js
- * Database singleton.
+ * perspective by collecting results eagerly via Atomics.wait spin loops.
+ * The adapter is initialised once at startup via PgDatabase.connect().
+ *
+ * IMPORTANT: exec() for DDL at startup uses a true async path (execAsync)
+ * to avoid blocking the event loop during schema initialisation.
  */
 import { Pool } from 'pg';
 import type { DbDriver, DbStatement } from './driver';
@@ -40,28 +42,36 @@ export class PgDatabase implements DbDriver {
   pragma(_str: string): void {}
 
   /**
-   * Execute DDL / multi-statement SQL synchronously using a dedicated
-   * client.  We run each statement in sequence.
+   * Async DDL execution — use this for schema initialisation at startup.
+   * Runs each statement sequentially with true async/await so the event
+   * loop stays free and Railway's healthcheck can respond during init.
    */
-  exec(sql: string): void {
-    // Split on semicolons, ignore empty statements
+  async execAsync(sql: string): Promise<void> {
     const stmts = sql.split(';').map(s => s.trim()).filter(Boolean);
     for (const stmt of stmts) {
-      // Use a fire-and-forget pattern via the already-connected client.
-      // For DDL at startup this is fine — we block on the promise below.
+      await this.pool.query(stmt);
+    }
+  }
+
+  /**
+   * Synchronous exec — kept for interface compatibility.
+   * For startup DDL, prefer execAsync instead.
+   */
+  exec(sql: string): void {
+    const stmts = sql.split(';').map(s => s.trim()).filter(Boolean);
+    for (const stmt of stmts) {
       this.runSync(stmt, []);
     }
   }
 
-  /** Internal: run a single parameterised query synchronously via deasync trick */
+  /** Internal: run a single parameterised query synchronously via Atomics.wait spin */
   private runSync(sql: string, params: unknown[]): any[] {
     let result: any[] = [];
     let done = false;
     let err: any = null;
 
     // Use pool.query() so each query gets its own client from the pool,
-    // avoiding the "client already executing a query" deprecation warning
-    // that occurs when a single PoolClient handles concurrent queries.
+    // avoiding the "client already executing a query" deprecation warning.
     this.pool.query(sql, params as any[])
       .then(res => {
         result = res.rows || [];
@@ -72,17 +82,10 @@ export class PgDatabase implements DbDriver {
         done = true;
       });
 
-    // Spin until resolved (micro-task queue drains between iterations)
-    // This works because Node.js I/O callbacks run between iterations of
-    // the event loop — but ONLY if we yield via a synchronous spin that
-    // allows micro-tasks to execute. This is NOT suitable for high-throughput
-    // production use; for a hackathon portal with low concurrency it is fine.
     const start = Date.now();
     while (!done) {
-      // Force micro-task queue to drain by calling Atomics.wait on a
-      // SharedArrayBuffer — this is the proper deasync approach for Node ≥ 18.
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1);
-      if (Date.now() - start > 10_000) break; // safety timeout
+      if (Date.now() - start > 10_000) break;
     }
 
     if (err) throw err;
