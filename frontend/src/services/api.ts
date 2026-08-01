@@ -17,7 +17,7 @@ import type {
 } from '../types';
 
 // ── Base URL ──────────────────────────────────────────────────────────────
-// In production VITE_API_URL points to the hosted backend (e.g. Render).
+// In production VITE_API_URL points to the hosted backend (e.g. Railway).
 // In local dev it is empty so the Vite proxy at /api → localhost:3000 is used.
 const API_BASE = ((import.meta as any).env?.VITE_API_URL ?? '') + '/api';
 
