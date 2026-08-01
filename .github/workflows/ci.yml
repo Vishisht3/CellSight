@@ -105,11 +105,20 @@ jobs:
           fi
           echo "Waiting 60s for Railway deploy to spin up…"
           sleep 60
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$BACKEND_HEALTHCHECK_URL")
+          HEALTHCHECK_URL="$BACKEND_HEALTHCHECK_URL"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTHCHECK_URL")
+          if [ "$STATUS" = "404" ]; then
+            FALLBACK_URL="${BACKEND_HEALTHCHECK_URL%/}/api/health"
+            if [ "$FALLBACK_URL" != "$HEALTHCHECK_URL" ]; then
+              echo "Primary health check returned 404, retrying with $FALLBACK_URL"
+              HEALTHCHECK_URL="$FALLBACK_URL"
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTHCHECK_URL")
+            fi
+          fi
           if [ "$STATUS" = "200" ] || [ "$STATUS" = "503" ]; then
-            echo "Backend is reachable (HTTP $STATUS)"
+            echo "Backend is reachable (HTTP $STATUS) at $HEALTHCHECK_URL"
           else
-            echo "::error::Backend health check failed (HTTP $STATUS)"
+            echo "::error::Backend health check failed at $HEALTHCHECK_URL (HTTP $STATUS)"
             exit 1
           fi
 
