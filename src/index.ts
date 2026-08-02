@@ -84,13 +84,23 @@ async function startServer() {
     new SohCalculationService(dbContext).calculateAllSoh();
   });
   scheduler.register('maintenance-checks',   5 * 60 * 1000, () => {
-    new PredictiveMaintenanceService(dbContext).runMaintenanceChecksForAllAssets();
+    // Run for each org in the database
+    const orgs = dbContext.orgs.list();
+    for (const org of orgs) {
+      new PredictiveMaintenanceService(dbContext, org.id).runMaintenanceChecksForAllAssets();
+    }
   });
   scheduler.register('update-risk-scores',   30 * 60 * 1000, () => {
-    new RiskScoringService(dbContext).updateAllSupplierRiskScores();
+    const orgs = dbContext.orgs.list();
+    for (const org of orgs) {
+      new RiskScoringService(dbContext, org.id).updateAllSupplierRiskScores();
+    }
   });
   scheduler.register('correlation-analysis', 60 * 60 * 1000, () => {
-    new CorrelationService(dbContext).runCorrelationAnalysis();
+    const orgs = dbContext.orgs.list();
+    for (const org of orgs) {
+      new CorrelationService(dbContext, org.id).runCorrelationAnalysis();
+    }
   });
 
   scheduler.startAll();

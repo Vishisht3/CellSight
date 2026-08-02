@@ -33,7 +33,7 @@ import { DemoDataGenerator } from './DemoDataGenerator';
 import { getDatabaseContext, closeDatabaseContext } from '../database';
 import { SohCalculationService } from '../services/apm/SohCalculationService';
 import { RiskScoringService } from '../services/supply-chain/RiskScoringService';
-import { AssetStatus } from '../config/constants';
+import { DEMO_ORG_ID, AssetStatus } from '../config/constants';
 
 const TARGET_URL  = process.env.TARGET_DATABASE_URL;
 const SOURCE_PATH = process.env.DATABASE_PATH ?? path.join(process.cwd(), 'data', 'cellsight.db');
@@ -142,13 +142,13 @@ async function seedPostgres(_pg: PgDatabase) {
   const stats = await gen.generate();
 
   // Clear stale flags then compute SoH + risk
-  const assets = ctx.assets.list();
+  const assets = ctx.db.prepare('SELECT id FROM assets').all() as Array<{ id: string }>;
   for (const a of assets) ctx.assets.updateStatus(a.id, AssetStatus.INSUFFICIENT_DATA);
 
   const sohResult = new SohCalculationService(ctx).calculateAllSoh();
   log(`SoH: ${sohResult.calculated} calculated`);
 
-  const riskResult = new RiskScoringService(ctx).updateAllSupplierRiskScores();
+  const riskResult = new RiskScoringService(ctx, DEMO_ORG_ID).updateAllSupplierRiskScores();
   log(`Risk: ${riskResult.updated} suppliers updated, ${riskResult.alertsCreated} alerts`);
 
   log(`Seeding complete — ${JSON.stringify(stats)}`);

@@ -3,7 +3,7 @@ import { resetDatabase } from '../database/schema';
 import { DemoDataGenerator } from './DemoDataGenerator';
 import { SohCalculationService } from '../services/apm/SohCalculationService';
 import { RiskScoringService } from '../services/supply-chain/RiskScoringService';
-import { AssetStatus } from '../config/constants';
+import { DEMO_ORG_ID, AssetStatus } from '../config/constants';
 import { logger } from '../utils/logger';
 
 async function seedDemoData() {
@@ -20,7 +20,7 @@ async function seedDemoData() {
     const stats = await generator.generate();
 
     // ── Post-seed: ensure all assets are not stale so SoH can compute ──
-    const assets = dbContext.assets.list();
+    const assets = dbContext.db.prepare('SELECT id FROM assets').all() as Array<{ id: string }>;
     for (const asset of assets) {
       dbContext.assets.updateStatus(asset.id, AssetStatus.INSUFFICIENT_DATA);
     }
@@ -33,7 +33,7 @@ async function seedDemoData() {
 
     // ── Update supplier risk scores ──
     logger.info('Updating supplier risk scores...');
-    const riskSvc = new RiskScoringService(dbContext);
+    const riskSvc = new RiskScoringService(dbContext, DEMO_ORG_ID);
     const riskResult = riskSvc.updateAllSupplierRiskScores();
     logger.info(`Risk scores: ${riskResult.updated} updated, ${riskResult.alertsCreated} alerts created`);
 

@@ -14,6 +14,7 @@ import type {
   BatchCorrelation,
   SupplierCorrelation,
   User,
+  Organization,
 } from '../types';
 
 // ── Base URL ──────────────────────────────────────────────────────────────
@@ -99,11 +100,17 @@ function _clearSession() {
 export const authApi = {
   login: async (email: string, password: string) => {
     const { data } = await client.post('/auth/login', { email, password });
-    // Store both tokens
     localStorage.setItem('cs_access_token',  data.accessToken);
     localStorage.setItem('cs_refresh_token', data.refreshToken);
     localStorage.setItem('cs_user', JSON.stringify(data.user));
     return data as { accessToken: string; refreshToken: string; user: User };
+  },
+  signup: async (companyName: string, orgType: string, email: string, password: string) => {
+    const { data } = await client.post('/auth/signup', { companyName, orgType, email, password });
+    localStorage.setItem('cs_access_token',  data.accessToken);
+    localStorage.setItem('cs_refresh_token', data.refreshToken);
+    localStorage.setItem('cs_user', JSON.stringify(data.user));
+    return data as { accessToken: string; refreshToken: string; user: User; organization: Organization };
   },
   logout: async () => {
     const refreshToken = localStorage.getItem('cs_refresh_token');

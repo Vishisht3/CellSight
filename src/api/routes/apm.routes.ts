@@ -10,31 +10,38 @@ router.use(authenticate);
 
 router.get('/assets', async (req: Request, res: Response) => {
   try {
+    const orgId = req.user!.organizationId;
     const dbContext = await getDatabaseContext();
     const { status, type } = req.query;
-    let assets = status ? dbContext.assets.listByStatus(status as any) : dbContext.assets.list();
+    let assets = status
+      ? dbContext.assets.listByStatus(status as any, orgId)
+      : dbContext.assets.list(orgId);
     if (type) assets = assets.filter(a => a.assetType === type);
-    const summary = dbContext.assets.getFleetSummary();
+    const summary = dbContext.assets.getFleetSummary(orgId);
     res.json({ assets, summary });
-  } catch (error) { res.status(500).json({ error: 'Failed to fetch assets' }); }
+  } catch { res.status(500).json({ error: 'Failed to fetch assets' }); }
 });
 
 router.get('/assets/:id', async (req: Request, res: Response) => {
   try {
+    const orgId = req.user!.organizationId;
     const dbContext = await getDatabaseContext();
     const asset = dbContext.assets.findById(req.params.id);
-    if (!asset) { res.status(404).json({ error: 'Asset not found' }); return; }
+    if (!asset || asset.organizationId !== orgId) {
+      res.status(404).json({ error: 'Asset not found' }); return;
+    }
     const sohHistory = dbContext.soh.findByAsset(asset.id, 30);
-    const alerts = dbContext.alerts.listByAsset(asset.id, 10);
+    const alerts = dbContext.alerts.listByAsset(asset.id, orgId, 10);
     res.json({ asset, sohHistory, alerts });
-  } catch (error) { res.status(500).json({ error: 'Failed to fetch asset details' }); }
+  } catch { res.status(500).json({ error: 'Failed to fetch asset details' }); }
 });
 
 router.post('/assets', async (req: Request, res: Response) => {
   try {
+    const orgId = req.user!.organizationId;
     const validated = assetCreateSchema.parse(req.body);
     const dbContext = await getDatabaseContext();
-    const asset = dbContext.assets.create(validated);
+    const asset = dbContext.assets.create({ ...validated, organizationId: orgId });
     res.status(201).json({ asset });
   } catch (error) {
     if (error instanceof Error) res.status(400).json({ error: error.message });
@@ -44,23 +51,24 @@ router.post('/assets', async (req: Request, res: Response) => {
 
 router.get('/assets/:id/telemetry', async (req: Request, res: Response) => {
   try {
+    const orgId = req.user!.organizationId;
     const dbContext = await getDatabaseContext();
     const { limit = '100' } = req.query;
     const asset = dbContext.assets.findById(req.params.id);
-    if (!asset) { res.status(404).json({ error: 'Asset not found' }); return; }
-    const telemetryService = new TelemetryIngestionService(dbContext);
-    const telemetry = telemetryService.getTelemetryHistory(req.params.id, parseInt(limit as string));
+    if (!asset || asset.organizationId !== orgId) {
+      res.status(404).json({ error: 'Asset not found' }); return;
+    }
+    const telemetry = new TelemetryIngestionService(dbContext).getTelemetryHistory(req.params.id, parseInt(limit as string));
     res.json({ telemetry });
-  } catch (error) { res.status(500).json({ error: 'Failed to fetch telemetry' }); }
+  } catch { res.status(500).json({ error: 'Failed to fetch telemetry' }); }
 });
 
 router.post('/telemetry', async (req: Request, res: Response) => {
   try {
     const validated = telemetryIngestSchema.parse(req.body);
     const dbContext = await getDatabaseContext();
-    const telemetryService = new TelemetryIngestionService(dbContext);
-    const result = await telemetryService.ingest(validated);
-    if (result.success) res.status(201).json({ message: 'Telemetry ingested successfully', telemetryId: result.telemetryId });
+    const result = await new TelemetryIngestionService(dbContext).ingest(validated);
+    if (result.success) res.status(201).json({ message: 'Telemetry ingested', telemetryId: result.telemetryId });
     else res.status(400).json({ error: result.error });
   } catch (error) {
     if (error instanceof Error) res.status(400).json({ error: error.message });
@@ -71,21 +79,21 @@ router.post('/telemetry', async (req: Request, res: Response) => {
 router.post('/telemetry/batch', async (req: Request, res: Response) => {
   try {
     const { telemetry } = req.body;
-    if (!Array.isArray(telemetry)) { res.status(400).json({ error: 'Expected array of telemetry records' }); return; }
+    if (!Array.isArray(telemetry)) { res.status(400).json({ error: 'Expected array' }); return; }
     const dbContext = await getDatabaseContext();
-    const telemetryService = new TelemetryIngestionService(dbContext);
-    const result = await telemetryService.ingestBatch(telemetry);
+    const result = await new TelemetryIngestionService(dbContext).ingestBatch(telemetry);
     res.json({ successCount: result.successCount, failureCount: result.failureCount, errors: result.errors });
-  } catch (error) { res.status(500).json({ error: 'Batch ingestion failed' }); }
+  } catch { res.status(500).json({ error: 'Batch ingestion failed' }); }
 });
 
-router.get('/dashboard', async (_req: Request, res: Response) => {
+router.get('/dashboard', async (req: Request, res: Response) => {
   try {
+    const orgId = req.user!.organizationId;
     const dbContext = await getDatabaseContext();
-    const fleetSummary = dbContext.assets.getFleetSummary();
-    const openAlerts = dbContext.alerts.countByStatus(AlertStatus.OPEN);
+    const fleetSummary = dbContext.assets.getFleetSummary(orgId);
+    const openAlerts = dbContext.alerts.countByStatus(AlertStatus.OPEN, orgId);
     res.json({ ...fleetSummary, openAlerts });
-  } catch (error) { res.status(500).json({ error: 'Failed to fetch dashboard data' }); }
+  } catch { res.status(500).json({ error: 'Failed to fetch dashboard data' }); }
 });
 
 export default router;

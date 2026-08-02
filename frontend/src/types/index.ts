@@ -3,12 +3,21 @@
 // ===========================
 
 export type UserRole = 'admin' | 'fleet_manager' | 'supply_chain_manager';
+export type OrgType  = 'fleet_operator' | 'ev_manufacturer' | 'both' | 'demo';
+
+export interface Organization {
+  id: string;
+  name: string;
+  orgType: OrgType;
+  createdAt: string;
+}
 
 export interface User {
   id: string;
   email: string;
   name: string;
   role: UserRole;
+  organizationId: string;
   createdAt: string;
   updatedAt: string;
 }

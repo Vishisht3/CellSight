@@ -2,6 +2,7 @@ import { config } from '../config/environment';
 import type { DbDriver } from './driver';
 import { initializeDatabase, initializePgDatabase } from './schema';
 import { PgDatabase } from './pg-adapter';
+import { OrganizationRepository } from './repositories/OrganizationRepository';
 import { UserRepository } from './repositories/UserRepository';
 import { AssetRepository } from './repositories/AssetRepository';
 import { TelemetryRepository } from './repositories/TelemetryRepository';
@@ -15,6 +16,7 @@ export type AnyDatabase = DbDriver;
 
 export interface DatabaseContext {
   db: DbDriver;
+  orgs: OrganizationRepository;
   users: UserRepository;
   assets: AssetRepository;
   telemetry: TelemetryRepository;
@@ -42,6 +44,7 @@ export async function getDatabaseContext(): Promise<DatabaseContext> {
 
   dbContext = {
     db,
+    orgs:        new OrganizationRepository(db),
     users:       new UserRepository(db),
     assets:      new AssetRepository(db),
     telemetry:   new TelemetryRepository(db),

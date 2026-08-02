@@ -5,6 +5,18 @@ export enum UserRole {
   SUPPLY_CHAIN_MANAGER = 'supply_chain_manager',
 }
 
+// Organization types
+export enum OrgType {
+  FLEET_OPERATOR  = 'fleet_operator',
+  EV_MANUFACTURER = 'ev_manufacturer',
+  BOTH            = 'both',
+  DEMO            = 'demo',
+}
+
+// Reserved demo organization
+export const DEMO_ORG_ID   = 'demo-org-00000000-0000-0000-0000-000000000000';
+export const DEMO_ORG_NAME = '__demo__';
+
 // Asset status
 export enum AssetStatus {
   HEALTHY = 'healthy',

@@ -1,5 +1,6 @@
 import {
   UserRole,
+  OrgType,
   AssetStatus,
   AssetType,
   AlertSeverity,
@@ -11,6 +12,22 @@ import {
 } from '../config/constants';
 
 // ===========================
+// Organization Models
+// ===========================
+
+export interface Organization {
+  id: string;
+  name: string;
+  orgType: OrgType;
+  createdAt: string;
+}
+
+export interface OrganizationCreateInput {
+  name: string;
+  orgType: OrgType;
+}
+
+// ===========================
 // User Models
 // ===========================
 
@@ -20,6 +37,7 @@ export interface User {
   passwordHash: string;
   role: UserRole;
   name: string;
+  organizationId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -51,12 +69,13 @@ export interface Asset {
   assetType: AssetType;
   batteryPackId: string;
   status: AssetStatus;
-  currentSoh: number | null; // percentage
-  sohConfidence: number | null; // 0-1
+  currentSoh: number | null;
+  sohConfidence: number | null;
   predictedRulDays: number | null;
   predictedRulCycles: number | null;
   lastTelemetryAt: string | null;
   totalCycles: number;
+  organizationId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -65,6 +84,7 @@ export interface AssetCreateInput {
   name: string;
   assetType: AssetType;
   batteryPackId: string;
+  organizationId: string;
 }
 
 // ===========================
@@ -126,12 +146,13 @@ export interface Supplier {
   name: string;
   tier: SupplierTier;
   country: string;
-  riskScore: number; // 0-100
-  concentrationRisk: number; // 0-1
-  geopoliticalRisk: number; // 0-1
-  qualityRisk: number; // 0-1
-  complianceRisk: number; // 0-1
+  riskScore: number;
+  concentrationRisk: number;
+  geopoliticalRisk: number;
+  qualityRisk: number;
+  complianceRisk: number;
   certificationExpiry: string | null;
+  organizationId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -141,6 +162,7 @@ export interface SupplierCreateInput {
   tier: SupplierTier;
   country: string;
   certificationExpiry?: string;
+  organizationId: string;
 }
 
 export interface MaterialLot {
@@ -148,12 +170,13 @@ export interface MaterialLot {
   lotNumber: string;
   materialType: MaterialType;
   supplierId: string;
-  quantity: number; // kg or units
+  quantity: number;
   country: string;
   receivedAt: string;
-  qualityScore: number | null; // 0-100
+  qualityScore: number | null;
   specificationMin: number | null;
   specificationMax: number | null;
+  organizationId: string;
   createdAt: string;
 }
 
@@ -167,14 +190,16 @@ export interface MaterialLotCreateInput {
   qualityScore?: number;
   specificationMin?: number;
   specificationMax?: number;
+  organizationId: string;
 }
 
 export interface CellBatch {
   id: string;
   batchNumber: string;
-  manufacturerId: string; // supplier ID
+  manufacturerId: string;
   productionDate: string;
-  quantity: number; // number of cells
+  quantity: number;
+  organizationId: string;
   createdAt: string;
 }
 
@@ -183,6 +208,7 @@ export interface CellBatchCreateInput {
   manufacturerId: string;
   productionDate?: string;
   quantity: number;
+  organizationId: string;
 }
 
 export interface BatteryPack {
@@ -190,7 +216,8 @@ export interface BatteryPack {
   packNumber: string;
   cellBatchId: string;
   assemblyDate: string;
-  capacity: number; // kWh
+  capacity: number;
+  organizationId: string;
   createdAt: string;
 }
 
@@ -199,6 +226,7 @@ export interface BatteryPackCreateInput {
   cellBatchId: string;
   assemblyDate?: string;
   capacity: number;
+  organizationId: string;
 }
 
 // Traceability link between cell batches and material lots
@@ -228,7 +256,8 @@ export interface Alert {
   acknowledgedAt: string | null;
   resolvedBy: string | null;
   resolvedAt: string | null;
-  metadata: string; // JSON string
+  metadata: string;
+  organizationId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -243,6 +272,7 @@ export interface AlertCreateInput {
   title: string;
   description: string;
   metadata?: Record<string, any>;
+  organizationId: string;
 }
 
 // ===========================

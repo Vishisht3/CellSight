@@ -117,7 +117,12 @@ export class TelemetryIngestionService {
     const thresholdMs = config.telemetryStaleThresholdMinutes * 60 * 1000;
     const staleThresholdDate = new Date(now.getTime() - thresholdMs).toISOString();
 
-    const assets = this.dbContext.assets.list();
+    const assets = (() => {
+      const stmt = this.dbContext.db.prepare(
+        `SELECT id, status, name, last_telemetry_at as lastTelemetryAt FROM assets`
+      );
+      return stmt.all() as Array<{ id: string; status: string; name: string; lastTelemetryAt: string | null }>;
+    })();
     let staleCount = 0;
 
     for (const asset of assets) {

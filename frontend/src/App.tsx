@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import AppShell from './components/layout/AppShell';
 import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
 import FleetDashboard from './pages/FleetDashboard';
 import AssetDetail from './pages/AssetDetail';
 import SupplyChainDashboard from './pages/SupplyChainDashboard';
@@ -44,7 +45,8 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public — no auth needed */}
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login"  element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
 
       {/* Root redirect */}
       <Route path="/" element={<RootRedirect />} />

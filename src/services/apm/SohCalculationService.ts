@@ -1,261 +1,317 @@
 import { DatabaseContext } from '../../database';
 import { logger } from '../../utils/logger';
 import { config } from '../../config/environment';
-import { AssetStatus } from '../../config/constants';
-import { SOH_MODEL_VERSION } from '../../config/constants';
+import { AssetStatus, SOH_MODEL_VERSION } from '../../config/constants';
 import { DegradationPrediction } from '../../models/types';
 
-export class SohCalculationService {
-  constructor(private dbContext: DatabaseContext) {}
+// ── Tiny OLS regression (no external ML library) ──────────────────────────
+// Feature vector per 100-point window:
+//   [totalCycles, avgVoltage, avgTemperature, avgStateOfCharge, voltageStdDev, tempStdDev]
+// Target: SoH computed from the legacy rule-based formula on the same window (ground truth).
 
-  /**
-   * Calculate State of Health for an asset
-   * REQ-2: Compute SoH with confidence score and model version
-   */
-  calculateSoh(assetId: string): {
-    success: boolean;
-    soh?: number;
-    confidence?: number;
-    error?: string;
-  } {
-    try {
-      const asset = this.dbContext.assets.findById(assetId);
-      if (!asset) {
-        return { success: false, error: 'Asset not found' };
-      }
+function mean(arr: number[]): number {
+  return arr.reduce((s, v) => s + v, 0) / arr.length;
+}
 
-      // Check if asset has sufficient telemetry history
-      const telemetryCount = this.dbContext.telemetry.countByAsset(assetId);
-      if (telemetryCount < config.telemetryMinHistoryPoints) {
-        logger.debug(`Insufficient telemetry data for asset ${assetId}`, {
-          count: telemetryCount,
-          required: config.telemetryMinHistoryPoints,
-        });
-        return {
-          success: false,
-          error: 'Insufficient telemetry history',
-        };
-      }
+function stddev(arr: number[], avg: number): number {
+  return Math.sqrt(arr.reduce((s, v) => s + (v - avg) ** 2, 0) / arr.length);
+}
 
-      // Get recent telemetry data
-      const telemetryData = this.dbContext.telemetry.findByAsset(assetId, 500);
+/**
+ * Compute OLS coefficients via the normal equation: β = (XᵀX)⁻¹ Xᵀy
+ * X is (n × k), y is (n). Returns β of length k, or null if singular.
+ */
+function fitOLS(X: number[][], y: number[]): number[] | null {
+  const n = X.length;
+  const k = X[0].length;
 
-      // Calculate SoH using simplified degradation model
-      const sohResult = this.computeSohFromTelemetry(telemetryData, asset.totalCycles);
-
-      // Store SoH history
-      this.dbContext.soh.create(
-        assetId,
-        sohResult.soh,
-        sohResult.confidence,
-        SOH_MODEL_VERSION,
-        telemetryData.length
-      );
-
-      // Update asset with new SoH
-      this.dbContext.assets.updateSohData(
-        assetId,
-        sohResult.soh,
-        sohResult.confidence,
-        null, // RUL will be calculated separately
-        null
-      );
-
-      // Update asset status based on SoH
-      this.updateAssetStatusBySoh(assetId, sohResult.soh);
-
-      logger.info('SoH calculated', {
-        assetId,
-        soh: sohResult.soh.toFixed(2),
-        confidence: sohResult.confidence.toFixed(2),
-      });
-
-      return {
-        success: true,
-        soh: sohResult.soh,
-        confidence: sohResult.confidence,
-      };
-    } catch (error) {
-      logger.error('SoH calculation failed', { assetId, error });
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+  // XᵀX  (k×k)
+  const XtX: number[][] = Array.from({ length: k }, () => new Array(k).fill(0));
+  for (let i = 0; i < k; i++) {
+    for (let j = 0; j < k; j++) {
+      for (let r = 0; r < n; r++) XtX[i][j] += X[r][i] * X[r][j];
     }
   }
 
-  /**
-   * Compute SoH from telemetry data using a simplified model
-   */
+  // Xᵀy  (k)
+  const Xty: number[] = new Array(k).fill(0);
+  for (let i = 0; i < k; i++) {
+    for (let r = 0; r < n; r++) Xty[i] += X[r][i] * y[r];
+  }
+
+  // Gauss-Jordan inversion of XᵀX
+  const aug: number[][] = XtX.map((row, i) => {
+    const ext = new Array(k).fill(0);
+    ext[i] = 1;
+    return [...row, ...ext];
+  });
+
+  for (let col = 0; col < k; col++) {
+    let pivot = -1;
+    let pivotVal = 0;
+    for (let row = col; row < k; row++) {
+      if (Math.abs(aug[row][col]) > pivotVal) { pivotVal = Math.abs(aug[row][col]); pivot = row; }
+    }
+    if (pivotVal < 1e-12) return null; // singular
+    [aug[col], aug[pivot]] = [aug[pivot], aug[col]];
+    const div = aug[col][col];
+    for (let j = 0; j < 2 * k; j++) aug[col][j] /= div;
+    for (let row = 0; row < k; row++) {
+      if (row === col) continue;
+      const factor = aug[row][col];
+      for (let j = 0; j < 2 * k; j++) aug[row][j] -= factor * aug[col][j];
+    }
+  }
+
+  // Extract inverse and multiply by Xᵀy
+  const inv: number[][] = aug.map(row => row.slice(k));
+  return inv.map(row => row.reduce((s, v, j) => s + v * Xty[j], 0));
+}
+
+// ── SoH rule-based formula (kept as training target + fallback) ───────────
+
+function ruleBased(
+  telemetry: Array<{ voltage: number; temperature: number; stateOfCharge: number }>,
+  totalCycles: number
+): number {
+  const recent = telemetry.slice(0, 100);
+  const avgVoltage = mean(recent.map(t => t.voltage));
+  const nominalVoltage = 400;
+  const voltageFade = Math.max(0, (nominalVoltage - avgVoltage) / nominalVoltage) * 10;
+  const avgTemp = mean(recent.map(t => t.temperature));
+  const tempStress = avgTemp > 35 ? (avgTemp - 35) * 0.2 : 0;
+  const cycleDeg = totalCycles * 0.05;
+  return Math.max(50, Math.min(100, 100 - cycleDeg - voltageFade - tempStress));
+}
+
+// ── Service ───────────────────────────────────────────────────────────────
+
+export class SohCalculationService {
+  /** OLS weights: [bias, totalCycles, avgVoltage, avgTemp, avgSoC, voltStd, tempStd] */
+  private weights: number[] | null = null;
+  private modelRmse: number = 0;
+  private modelTrained = false;
+
+  constructor(private dbContext: DatabaseContext) {}
+
+  // ── Model training ──────────────────────────────────────────────────────
+
+  /** Build feature vector (with bias column 1) for a telemetry window. */
+  private buildFeatures(
+    telemetry: Array<{ voltage: number; temperature: number; stateOfCharge: number }>,
+    totalCycles: number
+  ): number[] {
+    const w = telemetry.slice(0, 100);
+    const voltages = w.map(t => t.voltage);
+    const temps    = w.map(t => t.temperature);
+    const socs     = w.map(t => t.stateOfCharge);
+    const avgV  = mean(voltages);
+    const avgT  = mean(temps);
+    const avgS  = mean(socs);
+    const stdV  = stddev(voltages, avgV);
+    const stdT  = stddev(temps,    avgT);
+    return [1, totalCycles, avgV, avgT, avgS, stdV, stdT];
+  }
+
+  trainModel(): void {
+    try {
+      // Collect ALL assets (across all orgs) that have sufficient data
+      const allAssets = (() => {
+        const stmt = this.dbContext.db.prepare(
+          `SELECT id, total_cycles as totalCycles FROM assets`
+        );
+        return stmt.all() as Array<{ id: string; totalCycles: number }>;
+      })();
+
+      const X: number[][] = [];
+      const y: number[]   = [];
+
+      for (const asset of allAssets) {
+        const count = this.dbContext.telemetry.countByAsset(asset.id);
+        if (count < config.telemetryMinHistoryPoints) continue;
+
+        const telemetry = this.dbContext.telemetry.findByAsset(asset.id, 500);
+        // Build sliding 100-point windows
+        for (let start = 0; start + 100 <= telemetry.length; start += 50) {
+          const window = telemetry.slice(start, start + 100);
+          const label  = ruleBased(window, asset.totalCycles);
+          X.push(this.buildFeatures(window, asset.totalCycles));
+          y.push(label);
+        }
+      }
+
+      if (X.length < 10) {
+        logger.info('SoH model: insufficient training data, using rule-based fallback', { samples: X.length });
+        return;
+      }
+
+      // 80/20 train/test split
+      const splitIdx = Math.floor(X.length * 0.8);
+      const Xtrain = X.slice(0, splitIdx);
+      const ytrain = y.slice(0, splitIdx);
+      const Xtest  = X.slice(splitIdx);
+      const ytest  = y.slice(splitIdx);
+
+      const beta = fitOLS(Xtrain, ytrain);
+      if (!beta) {
+        logger.warn('SoH model: OLS matrix singular, using rule-based fallback');
+        return;
+      }
+
+      // RMSE on held-out set
+      const preds = Xtest.map(row => row.reduce((s, v, i) => s + v * beta[i], 0));
+      const rmse  = Math.sqrt(
+        preds.reduce((s, p, i) => s + (p - ytest[i]) ** 2, 0) / preds.length
+      );
+
+      this.weights    = beta;
+      this.modelRmse  = rmse;
+      this.modelTrained = true;
+
+      logger.info('SoH regression model trained', {
+        trainSamples: Xtrain.length,
+        testSamples:  Xtest.length,
+        rmse:         rmse.toFixed(4),
+      });
+    } catch (error) {
+      logger.error('SoH model training failed, using rule-based fallback', { error });
+    }
+  }
+
+  // ── Prediction ──────────────────────────────────────────────────────────
+
   private computeSohFromTelemetry(
-    telemetryData: any[],
+    telemetry: any[],
     totalCycles: number
   ): { soh: number; confidence: number } {
-    if (telemetryData.length === 0) {
-      return { soh: 100, confidence: 0 };
+    if (telemetry.length === 0) return { soh: 100, confidence: 0 };
+
+    let soh: number;
+
+    if (this.weights && telemetry.length >= 100) {
+      const features = this.buildFeatures(telemetry, totalCycles);
+      const raw = features.reduce((s, v, i) => s + v * this.weights![i], 0);
+      soh = Math.max(50, Math.min(100, raw));
+    } else {
+      // Fallback to rule-based formula
+      soh = ruleBased(telemetry, totalCycles);
     }
 
-    // Simplified SoH model based on:
-    // 1. Cycle count degradation
-    // 2. Voltage capacity fade
-    // 3. Temperature stress
-
-    // Baseline degradation from cycles (0.05% per cycle)
-    const cycleDegradation = totalCycles * 0.05;
-
-    // Voltage-based capacity fade estimation
-    const recentTelemetry = telemetryData.slice(0, 100);
-    const avgVoltage = recentTelemetry.reduce((sum, t) => sum + t.voltage, 0) / recentTelemetry.length;
-    const nominalVoltage = 400; // Typical EV pack voltage
-    const voltageFade = Math.max(0, (nominalVoltage - avgVoltage) / nominalVoltage) * 10;
-
-    // Temperature stress factor
-    const avgTemp = recentTelemetry.reduce((sum, t) => sum + t.temperature, 0) / recentTelemetry.length;
-    const tempStress = avgTemp > 35 ? (avgTemp - 35) * 0.2 : 0;
-
-    // Combined SoH
-    const totalDegradation = cycleDegradation + voltageFade + tempStress;
-    const soh = Math.max(50, Math.min(100, 100 - totalDegradation));
-
-    // Confidence based on data quantity and variance
-    const confidence = Math.min(1.0, telemetryData.length / (config.telemetryMinHistoryPoints * 2));
-
+    const confidence = Math.min(1.0, telemetry.length / (config.telemetryMinHistoryPoints * 2));
     return { soh, confidence };
   }
 
-  /**
-   * Predict Remaining Useful Life
-   * REQ-2: Generate RUL estimate when SoH crosses threshold
-   */
+  // ── Public API (unchanged interface) ───────────────────────────────────
+
+  calculateSoh(assetId: string): { success: boolean; soh?: number; confidence?: number; error?: string } {
+    // Lazily train on first call
+    if (!this.modelTrained) this.trainModel();
+
+    try {
+      const asset = this.dbContext.assets.findById(assetId);
+      if (!asset) return { success: false, error: 'Asset not found' };
+
+      const telemetryCount = this.dbContext.telemetry.countByAsset(assetId);
+      if (telemetryCount < config.telemetryMinHistoryPoints) {
+        return { success: false, error: 'Insufficient telemetry history' };
+      }
+
+      const telemetryData = this.dbContext.telemetry.findByAsset(assetId, 500);
+      const { soh, confidence } = this.computeSohFromTelemetry(telemetryData, asset.totalCycles);
+
+      this.dbContext.soh.create(assetId, soh, confidence, SOH_MODEL_VERSION, telemetryData.length);
+      this.dbContext.assets.updateSohData(assetId, soh, confidence, null, null);
+      this.updateAssetStatusBySoh(assetId, soh);
+
+      logger.info('SoH calculated', {
+        assetId,
+        soh: soh.toFixed(2),
+        confidence: confidence.toFixed(2),
+        method: this.weights ? 'regression' : 'rule-based',
+        ...(this.weights ? { modelRmse: this.modelRmse.toFixed(4) } : {}),
+      });
+
+      return { success: true, soh, confidence };
+    } catch (error) {
+      logger.error('SoH calculation failed', { assetId, error });
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  }
+
   predictRemainingUsefulLife(assetId: string): DegradationPrediction | null {
     try {
       const asset = this.dbContext.assets.findById(assetId);
-      if (!asset || !asset.currentSoh) {
-        return null;
-      }
+      if (!asset?.currentSoh) return null;
 
-      // Get SoH history to calculate degradation rate
       const sohHistory = this.dbContext.soh.findByAsset(assetId, 100);
-      if (sohHistory.length < 2) {
-        return null;
-      }
+      if (sohHistory.length < 2) return null;
 
-      // Calculate degradation rate (SoH % per day)
       const oldest = sohHistory[sohHistory.length - 1];
       const newest = sohHistory[0];
-      const sohDelta = oldest.sohValue - newest.sohValue;
-      const timeDeltaMs = new Date(newest.computedAt).getTime() - new Date(oldest.computedAt).getTime();
-      const daysDelta = timeDeltaMs / (1000 * 60 * 60 * 24);
+      const sohDelta   = oldest.sohValue - newest.sohValue;
+      const daysDelta  = (new Date(newest.computedAt).getTime() - new Date(oldest.computedAt).getTime()) / 86_400_000;
 
-      if (daysDelta <= 0 || sohDelta <= 0) {
-        return null;
-      }
+      if (daysDelta <= 0 || sohDelta <= 0) return null;
 
-      const degradationRatePerDay = sohDelta / daysDelta;
-
-      // Calculate degradation rate per cycle
-      const cycleDelta = asset.totalCycles - (oldest.dataPointsUsed > 0 ? asset.totalCycles * 0.8 : 0);
+      const degradationRatePerDay   = sohDelta / daysDelta;
+      const cycleDelta              = asset.totalCycles * 0.2;
       const degradationRatePerCycle = cycleDelta > 0 ? sohDelta / cycleDelta : 0;
 
-      // Project RUL to threshold
-      const threshold = config.sohThresholdCritical;
+      const threshold     = config.sohThresholdCritical;
       const sohToThreshold = asset.currentSoh - threshold;
 
       if (sohToThreshold <= 0) {
-        // Already below threshold
-        return {
-          assetId,
-          currentSoh: asset.currentSoh,
-          predictedRulDays: 0,
-          predictedRulCycles: 0,
-          confidence: newest.confidence,
-          threshold,
-          degradationRatePerCycle,
-        };
+        return { assetId, currentSoh: asset.currentSoh, predictedRulDays: 0, predictedRulCycles: 0, confidence: newest.confidence, threshold, degradationRatePerCycle };
       }
 
-      const predictedRulDays = Math.floor(sohToThreshold / degradationRatePerDay);
-      const predictedRulCycles = degradationRatePerCycle > 0 
-        ? Math.floor(sohToThreshold / degradationRatePerCycle) 
-        : 999999;
-
+      const predictedRulDays   = Math.floor(sohToThreshold / degradationRatePerDay);
+      const predictedRulCycles = degradationRatePerCycle > 0
+        ? Math.floor(sohToThreshold / degradationRatePerCycle)
+        : 999_999;
       const confidence = Math.min(newest.confidence, 0.95);
 
-      // Update asset with RUL
-      this.dbContext.assets.updateSohData(
-        assetId,
-        asset.currentSoh,
-        asset.sohConfidence || confidence,
-        predictedRulDays,
-        predictedRulCycles
-      );
+      this.dbContext.assets.updateSohData(assetId, asset.currentSoh, asset.sohConfidence ?? confidence, predictedRulDays, predictedRulCycles);
 
-      logger.info('RUL predicted', {
-        assetId,
-        rulDays: predictedRulDays,
-        rulCycles: predictedRulCycles,
-        confidence: confidence.toFixed(2),
-      });
-
-      return {
-        assetId,
-        currentSoh: asset.currentSoh,
-        predictedRulDays,
-        predictedRulCycles,
-        confidence,
-        threshold,
-        degradationRatePerCycle,
-      };
+      logger.info('RUL predicted', { assetId, rulDays: predictedRulDays, rulCycles: predictedRulCycles });
+      return { assetId, currentSoh: asset.currentSoh, predictedRulDays, predictedRulCycles, confidence, threshold, degradationRatePerCycle };
     } catch (error) {
       logger.error('RUL prediction failed', { assetId, error });
       return null;
     }
   }
 
-  /**
-   * Update asset status based on SoH
-   */
   private updateAssetStatusBySoh(assetId: string, soh: number): void {
-    let status: AssetStatus;
-
-    if (soh >= config.sohThresholdWarning) {
-      status = AssetStatus.HEALTHY;
-    } else if (soh >= config.sohThresholdCritical) {
-      status = AssetStatus.WATCH;
-    } else {
-      status = AssetStatus.CRITICAL;
-    }
-
+    const status = soh >= config.sohThresholdWarning
+      ? AssetStatus.HEALTHY
+      : soh >= config.sohThresholdCritical
+      ? AssetStatus.WATCH
+      : AssetStatus.CRITICAL;
     this.dbContext.assets.updateStatus(assetId, status);
   }
 
-  /**
-   * Calculate SoH for all assets with sufficient data
-   */
   calculateAllSoh(): { calculated: number; skipped: number } {
-    const assets = this.dbContext.assets.list();
+    if (!this.modelTrained) this.trainModel();
+
+    const assets = (() => {
+      const stmt = this.dbContext.db.prepare(`SELECT id, status FROM assets`);
+      return stmt.all() as Array<{ id: string; status: string }>;
+    })();
+
     let calculated = 0;
-    let skipped = 0;
+    let skipped    = 0;
 
     for (const asset of assets) {
-      // Skip stale assets
-      if (asset.status === AssetStatus.DATA_STALE) {
-        skipped++;
-        continue;
-      }
-
+      if (asset.status === AssetStatus.DATA_STALE) { skipped++; continue; }
       const result = this.calculateSoh(asset.id);
       if (result.success) {
         calculated++;
-        
-        // Also predict RUL if we have enough data
         this.predictRemainingUsefulLife(asset.id);
       } else {
         skipped++;
       }
     }
 
-    logger.info(`SoH calculation batch complete`, { calculated, skipped });
+    logger.info('SoH calculation batch complete', { calculated, skipped });
     return { calculated, skipped };
   }
 }

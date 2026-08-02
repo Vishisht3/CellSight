@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Zap, LogIn, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -213,6 +213,10 @@ export default function LoginPage() {
               </div>
             </form>
           </fieldset>
+          <div style={{ fontSize: 10, color: '#6a6a6a', textAlign: 'center' }}>
+            New to CellSight?{' '}
+            <Link to="/signup" style={{ color: '#316ac5' }}>Create your company account</Link>
+          </div>
         </div>
       </div>
     </div>

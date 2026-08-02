@@ -2,7 +2,8 @@ import { DatabaseContext } from '../database';
 import { RefreshTokenRepository } from '../database/repositories/RefreshTokenRepository';
 import { logger } from '../utils/logger';
 import { config } from '../config/environment';
-import { User } from '../models/types';
+import { User, Organization } from '../models/types';
+import { UserRole, OrgType, DEMO_ORG_NAME } from '../config/constants';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +14,10 @@ export interface AuthTokenPair {
   user: Omit<User, 'passwordHash'>;
 }
 
+export interface SignupResult extends AuthTokenPair {
+  organization: Organization;
+}
+
 export class AuthService {
   private refreshTokenRepo: RefreshTokenRepository;
 
@@ -20,11 +25,67 @@ export class AuthService {
     this.refreshTokenRepo = new RefreshTokenRepository(dbContext.db);
   }
 
+  // ── Sign-up: create org + first admin user ─────────────────────────────
+
+  async signup(input: {
+    companyName: string;
+    orgType: OrgType;
+    email: string;
+    password: string;
+  }): Promise<SignupResult> {
+    // Block reserved demo org name
+    if (input.companyName.trim() === DEMO_ORG_NAME) {
+      throw Object.assign(new Error('That organization name is reserved.'), { status: 409 });
+    }
+
+    // Uniqueness check
+    const existing = this.dbContext.orgs.findByName(input.companyName.trim());
+    if (existing) {
+      throw Object.assign(
+        new Error(`An organization named "${input.companyName}" already exists.`),
+        { status: 409 }
+      );
+    }
+
+    // Email uniqueness
+    const existingUser = this.dbContext.users.findByEmail(input.email);
+    if (existingUser) {
+      throw Object.assign(new Error('A user with that email already exists.'), { status: 409 });
+    }
+
+    const org = this.dbContext.orgs.create({
+      name: input.companyName.trim(),
+      orgType: input.orgType,
+    });
+
+    const passwordHash = await bcrypt.hash(input.password, 12);
+    const user = this.dbContext.users.create({
+      email: input.email,
+      passwordHash,
+      name: input.email.split('@')[0], // default display name from email prefix
+      role: UserRole.ADMIN,
+      organizationId: org.id,
+    });
+
+    logger.info('Organization and admin user created', {
+      orgId: org.id,
+      orgName: org.name,
+      userId: user.id,
+      email: user.email,
+    });
+
+    const tokens = this.issueTokenPair(user);
+    return { ...tokens, organization: org };
+  }
+
+  // ── Register (internal / testing use) ─────────────────────────────────
+
   async register(input: {
     email: string;
     password: string;
     name: string;
     role: string;
+    organizationId: string;
   }): Promise<User> {
     const existing = this.dbContext.users.findByEmail(input.email);
     if (existing) throw new Error('User with this email already exists');
@@ -34,12 +95,15 @@ export class AuthService {
       email: input.email,
       passwordHash,
       name: input.name,
-      role: input.role as any,
+      role: input.role as UserRole,
+      organizationId: input.organizationId,
     });
 
     logger.info('User registered', { userId: user.id, email: user.email, role: user.role });
     return user;
   }
+
+  // ── Login ──────────────────────────────────────────────────────────────
 
   async login(email: string, password: string): Promise<AuthTokenPair> {
     const user = this.dbContext.users.findByEmail(email);
@@ -49,50 +113,54 @@ export class AuthService {
     if (!valid) throw new Error('Invalid email or password');
 
     logger.info('User logged in', { userId: user.id, email: user.email });
-
     return this.issueTokenPair(user);
   }
+
+  // ── Refresh token rotation ─────────────────────────────────────────────
 
   async refresh(rawRefreshToken: string): Promise<AuthTokenPair> {
     const record = this.refreshTokenRepo.findByTokenHash(rawRefreshToken);
 
-    // Token not found or already revoked → possible reuse attack
     if (!record || record.revoked) {
       if (record) {
-        // Revoke entire family to invalidate all sibling tokens
         this.refreshTokenRepo.revokeFamily(record.family);
         logger.warn('Refresh token reuse detected — family revoked', { family: record.family });
       }
       throw new Error('Invalid or expired refresh token');
     }
 
-    // Expired?
     if (new Date(record.expiresAt) < new Date()) {
       this.refreshTokenRepo.revokeOne(record.id);
       throw new Error('Refresh token expired');
     }
 
-    // Rotate: revoke old token, issue new pair in same family
     this.refreshTokenRepo.revokeOne(record.id);
-
     const user = this.dbContext.users.findById(record.userId);
     if (!user) throw new Error('User not found');
-
     return this.issueTokenPair(user, record.family);
   }
 
   async logout(rawRefreshToken: string): Promise<void> {
     const record = this.refreshTokenRepo.findByTokenHash(rawRefreshToken);
-    if (record) {
-      this.refreshTokenRepo.revokeOne(record.id);
-    }
+    if (record) this.refreshTokenRepo.revokeOne(record.id);
   }
 
-  /** Verify an access token and return its payload */
-  verifyToken(token: string): { userId: string; email: string; role: string } {
+  // ── Token verification ─────────────────────────────────────────────────
+
+  verifyToken(token: string): {
+    userId: string;
+    email: string;
+    role: string;
+    organizationId: string;
+  } {
     try {
       const decoded = jwt.verify(token, config.jwtSecret) as any;
-      return { userId: decoded.userId, email: decoded.email, role: decoded.role };
+      return {
+        userId:         decoded.userId,
+        email:          decoded.email,
+        role:           decoded.role,
+        organizationId: decoded.organizationId,
+      };
     } catch {
       throw new Error('Invalid or expired token');
     }
@@ -112,12 +180,17 @@ export class AuthService {
     const family = existingFamily ?? uuidv4();
 
     const accessToken = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      {
+        userId:         user.id,
+        email:          user.email,
+        role:           user.role,
+        organizationId: user.organizationId,
+      },
       config.jwtSecret as string,
       { expiresIn: config.jwtAccessExpiresIn as any }
     );
 
-    const rawRefresh = uuidv4() + '-' + uuidv4(); // high-entropy random token
+    const rawRefresh = uuidv4() + '-' + uuidv4();
     const expiresAt = new Date();
     const days = parseInt(config.jwtRefreshExpiresIn.replace('d', ''), 10) || 7;
     expiresAt.setDate(expiresAt.getDate() + days);

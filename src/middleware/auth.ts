@@ -9,12 +9,12 @@ declare module 'express-serve-static-core' {
       userId: string;
       email: string;
       role: string;
+      organizationId: string;
     };
   }
 }
 
 export function authenticate(req: Request, res: Response, next: NextFunction): void {
-  // Accept token from Authorization header OR ?token= query param (SSE fallback)
   const authHeader = req.headers.authorization;
   const queryToken = req.query.token as string | undefined;
 
@@ -27,11 +27,9 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
     return;
   }
 
-  // getDatabaseContext is now async — we resolve it then verify
   getDatabaseContext()
     .then(dbContext => {
-      const authService = new AuthService(dbContext);
-      const decoded = authService.verifyToken(raw);
+      const decoded = new AuthService(dbContext).verifyToken(raw);
       req.user = decoded;
       next();
     })

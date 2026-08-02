@@ -1,6 +1,6 @@
 import Navbar from '../components/layout/Navbar';
 import PageContainer from '../components/ui/PageContainer';
-import { Zap, GitMerge } from 'lucide-react';
+import { GitMerge } from 'lucide-react';
 
 function Box({ title, items, color }: { title: string; items: string[]; color: string }) {
   return (
