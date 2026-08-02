@@ -1,6 +1,6 @@
 import Navbar from '../components/layout/Navbar';
 import PageContainer from '../components/ui/PageContainer';
-import { Zap, Database, Server, Globe, Link, Users, GitMerge } from 'lucide-react';
+import { Zap, GitMerge } from 'lucide-react';
 
 function Box({ title, items, color }: { title: string; items: string[]; color: string }) {
   return (
@@ -223,60 +223,7 @@ export default function ArchitecturePage() {
           </table>
         </div>
 
-        {/* Challenge mapping */}
-        <div className="win-panel" style={{ overflow: 'hidden' }}>
-          <div className="win-section-header">Challenge Deliverable Mapping</div>
-          <table style={{ width: '100%', fontSize: 11 }}>
-            <thead>
-              <tr>
-                <th>Challenge Area</th>
-                <th>CellSight Component</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ['EV APM Agent (SoH, degradation, RUL, thermal)', 'Fleet APM dashboard + AssetDetail + TelemetryIngestionService + SohCalculationService + PredictiveMaintenanceService', '✓ Complete'],
-                ['Fleet Electrification Readiness & Procurement Intelligence', 'EV Readiness page — per-asset scores, OEM recommendations, ROI/payback, blockers', '✓ Complete'],
-                ['EV Supply Chain Risk & Traceability', 'Supply Chain dashboard + TraceView + RiskScoringService + TraceabilityService', '✓ Complete'],
-                ['Manufacturing Quality Intelligence (QMS)', 'Material lot quality scores, deviation alerts, field-to-source correlation linking batch quality to field degradation', '✓ Partial'],
-                ['Net Zero / Carbon Intelligence', 'CO₂ reduction estimates on Readiness page per asset and fleet total', '✓ Partial'],
-                ['Maintenance Operations Optimiser', 'Maintenance Ops page — job queue, shift patterns, workshop capacity, charging infrastructure uptime', '✓ Complete'],
-                ['Working Prototype', 'Full-stack Node.js + React, SQLite, seeded demo data, all endpoints operational', '✓ Complete'],
-                ['Architecture Diagram', 'This page — interactive component map, tech stack table, role matrix', '✓ Complete'],
-                ['Role-Based Access', 'JWT auth, 3 roles, ProtectedRoute guards, role-filtered sidebar navigation, guest access', '✓ Complete'],
-                ['Demo / Synthetic Data Mode', 'DemoDataGenerator with 50 assets, realistic degradation curves, injected anomalies, intentional risk flags', '✓ Complete'],
-              ].map(([area, component, status]) => (
-                <tr key={area}>
-                  <td style={{ fontWeight: 'bold', color: '#0a246a' }}>{area}</td>
-                  <td style={{ fontSize: 10, color: '#4a4a4a' }}>{component}</td>
-                  <td>
-                    <span className={status.startsWith('✓') ? 'badge-green' : 'badge-yellow'}>
-                      {status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#6a6a6a' }}>
-            <Users size={12}/> Guest mode: navigate to /architecture without logging in
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#6a6a6a' }}>
-            <Database size={12}/> Demo data: run <code style={{ fontFamily:'Courier New,monospace', background:'#e8f0fb', padding:'0 4px' }}>npm run seed:demo</code> then <code style={{ fontFamily:'Courier New,monospace', background:'#e8f0fb', padding:'0 4px' }}>npm run dev</code>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#6a6a6a' }}>
-            <Globe size={12}/> Frontend: <code style={{ fontFamily:'Courier New,monospace', background:'#e8f0fb', padding:'0 4px' }}>cd frontend && npm run dev</code> → http://localhost:5173
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#6a6a6a' }}>
-            <Server size={12}/> API: http://localhost:3000/api/health
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#6a6a6a' }}>
-            <Link size={12}/> <Zap size={12}/> Judging criteria: Innovation 25% · Business Impact 25% · Technical Excellence 20% · Scalability 15% · UX 15%
-          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#6a6a6a' }}>
             <GitMerge size={12}/> Core differentiator: field degradation correlated back to originating cell batch and supplier — visible to both fleet and supply chain roles simultaneously
           </div>

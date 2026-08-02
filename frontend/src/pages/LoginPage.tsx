@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Zap, LogIn } from 'lucide-react';
+import { Eye, EyeOff, Zap, LogIn, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function LoginPage() {
@@ -9,8 +9,18 @@ export default function LoginPage() {
 
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
+  const [company,  setCompany]  = useState('');
   const [showPw,   setShowPw]   = useState(false);
   const [error,    setError]    = useState('');
+  const [adminMode, setAdminMode] = useState(false);
+
+  function switchToAdmin() {
+    setAdminMode(true);
+    setEmail('admin@cellsight.com');
+    setPassword('demo123');
+    setCompany('CellSight Operations');
+    setError('');
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -26,10 +36,6 @@ export default function LoginPage() {
     }
   }
 
-  async function continueAsGuest() {
-    navigate('/architecture');
-  }
-
   return (
     <div style={{
       minHeight: '100vh',
@@ -41,6 +47,8 @@ export default function LoginPage() {
       padding: 16,
     }}>
       <div style={{ width: '100%', maxWidth: 420 }}>
+
+        {/* Title bar */}
         <div style={{
           background: 'linear-gradient(to right, #0a246a, #316ac5 60%, #6fa8dc 100%)',
           borderRadius: '4px 4px 0 0',
@@ -64,6 +72,7 @@ export default function LoginPage() {
           </span>
         </div>
 
+        {/* Window body */}
         <div style={{
           background: '#f0f4f8',
           border: '2px solid #0a246a',
@@ -72,6 +81,7 @@ export default function LoginPage() {
           padding: 20,
           boxShadow: '4px 4px 16px rgba(0,0,0,0.5)',
         }}>
+          {/* Banner */}
           <div style={{
             background: 'linear-gradient(to right, #dce6f5, #b8cfe8)',
             border: '1px solid #7f9db9',
@@ -89,6 +99,7 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Error */}
           {error && (
             <div style={{
               background: '#f8d7da', border: '1px solid #e07070', borderRadius: 2,
@@ -99,6 +110,18 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* Admin mode notice */}
+          {adminMode && (
+            <div style={{
+              background: '#e8f0fb', border: '1px solid #7f9db9', borderRadius: 2,
+              padding: '5px 10px', marginBottom: 12, fontSize: 11, color: '#0a246a',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <Building2 size={12} /> Signing in as administrator — credentials pre-filled
+            </div>
+          )}
+
+          {/* Login form */}
           <fieldset style={{ border: '1px solid #7f9db9', borderRadius: 3, padding: '10px 12px', marginBottom: 14 }}>
             <legend style={{ fontSize: 11, fontWeight: 'bold', color: '#0a246a', padding: '0 4px' }}>
               Sign In
@@ -106,6 +129,22 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <tbody>
+                  {adminMode && (
+                    <tr>
+                      <td style={{ padding: '4px 8px 4px 0', fontSize: 12, whiteSpace: 'nowrap', color: '#1a1a1a', border: 'none', background: 'transparent' }}>
+                        <label htmlFor="company">Company:</label>
+                      </td>
+                      <td style={{ padding: 4, border: 'none', background: 'transparent' }}>
+                        <input
+                          id="company"
+                          type="text"
+                          value={company}
+                          onChange={e => setCompany(e.target.value)}
+                          style={{ width: '100%', boxSizing: 'border-box' }}
+                        />
+                      </td>
+                    </tr>
+                  )}
                   <tr>
                     <td style={{ padding: '4px 8px 4px 0', fontSize: 12, whiteSpace: 'nowrap', color: '#1a1a1a', border: 'none', background: 'transparent' }}>
                       <label htmlFor="email">Email address:</label>
@@ -161,20 +200,19 @@ export default function LoginPage() {
                   <LogIn size={12} />
                   {isLoading ? 'Signing in…' : 'Sign In'}
                 </button>
-                <button
-                  type="button"
-                  onClick={continueAsGuest}
-                  className="win-btn"
-                >
-                  Continue as Guest
-                </button>
+                {!adminMode && (
+                  <button
+                    type="button"
+                    onClick={switchToAdmin}
+                    className="win-btn"
+                  >
+                    <Building2 size={12} />
+                    Admin Login
+                  </button>
+                )}
               </div>
             </form>
           </fieldset>
-
-          <div style={{ fontSize: 10, color: '#6a6a6a', textAlign: 'center' }}>
-            ℹ️ Guest mode provides read-only access to the Architecture overview.
-          </div>
         </div>
       </div>
     </div>
