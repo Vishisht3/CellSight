@@ -31,7 +31,8 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
 
 /** Redirect authenticated users to their role's default page */
 function RootRedirect() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <LoadingSpinner fullPage size="lg" label="Loading…" />;
   if (!isAuthenticated) return <Navigate to="/architecture" replace />;
   if (user?.role === 'supply_chain_manager') return <Navigate to="/supply-chain" replace />;
   return <Navigate to="/fleet" replace />;

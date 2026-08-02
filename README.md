@@ -11,6 +11,21 @@ CellSight pairs two flagship agents:
 
 The platform's core differentiator: **correlating field degradation back to the batch or supplier that produced it**.
 
+## Live Demo
+
+**Portal:** https://evcell.netlify.app  
+**Architecture overview:** https://evcell.netlify.app/architecture *(no login required)*
+
+### Demo credentials (password: `demo123`)
+
+| Role | Email | Access |
+|---|---|---|
+| Maintenance Planner | `maintenance@cellsight.com` | Fleet APM, maintenance ops, EV readiness |
+| Fleet Operations | `fleet@cellsight.com` | Fleet APM, maintenance ops, EV readiness |
+| Supplier Quality | `supply@cellsight.com` | Supply chain, traceability, risk scores |
+
+> The architecture diagram and platform overview are accessible without logging in at `/architecture`.
+
 ## Key Features
 
 - Real-time battery telemetry ingestion with validation
