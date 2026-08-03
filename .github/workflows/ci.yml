@@ -122,18 +122,10 @@ jobs:
           fi
 
   # ── 4. Deploy frontend to Vercel ─────────────────────────────────────────
-  # Only runs on pushes to main after both CI jobs pass.
-  #
   # Required GitHub secrets:
-  #   VERCEL_TOKEN   — Vercel → Account Settings → Tokens → Create
-  #   VERCEL_ORG_ID  — run `vercel whoami --json` or find in .vercel/project.json
-  #   VERCEL_PROJECT_ID — created when you first link the project (see setup below)
-  #   VITE_API_URL   — your Railway backend URL (also set in Vercel dashboard)
-  #
-  # One-time setup (run locally once):
-  #   npm i -g vercel
-  #   cd frontend && vercel link   # follow prompts, creates .vercel/project.json
-  #   # Copy org-id and project-id from .vercel/project.json into GitHub secrets
+  #   VERCEL_TOKEN      — Vercel → Account Settings → Tokens → Create (scope: Full Account)
+  #   VERCEL_ORG_ID     — team_unrKNjZLTHkBcOo7OYK7Owcc
+  #   VERCEL_PROJECT_ID — prj_fSCEDFUna7MyiBb3IF55fhRU6Dt4
   deploy-frontend:
     name: Deploy Frontend → Vercel
     needs: [backend-ci, frontend-ci]
@@ -143,36 +135,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: amondnet/vercel-action@v25
         with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Pull Vercel environment
-        working-directory: frontend
-        env:
-          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-
-      - name: Build for production
-        working-directory: frontend
-        env:
-          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel build --prod --token=$VERCEL_TOKEN
-
-      - name: Deploy to Vercel
-        working-directory: frontend
-        env:
-          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+          vercel-token:      ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id:     ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'
