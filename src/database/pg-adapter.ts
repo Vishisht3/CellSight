@@ -54,6 +54,15 @@ export class PgDatabase implements DbDriver {
   }
 
   /**
+   * Async parameterised query — returns rows directly.
+   * Use for Postgres-specific queries where runSync would block the event loop.
+   */
+  async queryAsync(sql: string, params: unknown[] = []): Promise<unknown[]> {
+    const res = await this.pool.query(sql, params as any[]);
+    return res.rows ?? [];
+  }
+
+  /**
    * Synchronous exec — kept for interface compatibility.
    * For startup DDL, prefer execAsync instead.
    */
