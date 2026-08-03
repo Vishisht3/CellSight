@@ -43,7 +43,7 @@ export default function LoginPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: 'Tahoma, Arial, sans-serif',
+      fontFamily: "'Inter','Segoe UI',Arial,sans-serif",
       padding: 16,
     }}>
       <div style={{ width: '100%', maxWidth: 420 }}>

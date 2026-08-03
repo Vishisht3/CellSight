@@ -188,12 +188,12 @@ export default function AssetDetail() {
               <ResponsiveContainer width="100%" height={240}>
                 <LineChart data={chart.data} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#d0dce8" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#6a6a6a', fontFamily: 'Tahoma' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                  <YAxis tick={{ fontSize: 9, fill: '#6a6a6a', fontFamily: 'Tahoma' }} tickLine={false} axisLine={false} domain={chart.domain} width={36} />
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#6a6a6a', fontFamily: 'Inter' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                  <YAxis tick={{ fontSize: 9, fill: '#6a6a6a', fontFamily: 'Inter' }} tickLine={false} axisLine={false} domain={chart.domain} width={36} />
                   <Tooltip content={<ChartTooltip unit={chart.lines[0]?.unit} />} />
                   {chart.refs.map(r => (
                     <ReferenceLine key={r.label} y={r.y} stroke={r.color} strokeDasharray="4 3"
-                      label={{ value: r.label, fill: r.color, fontSize: 9, position: 'insideTopRight', fontFamily: 'Tahoma' }} />
+                      label={{ value: r.label, fill: r.color, fontSize: 9, position: 'insideTopRight', fontFamily: 'Inter' }} />
                   ))}
                   {chart.lines.map(l => (
                     <Line key={l.key} type="monotone" dataKey={l.key} stroke={l.color} strokeWidth={1.5} dot={false} activeDot={{ r: 3 }} />

@@ -77,6 +77,29 @@ async function startServer() {
     driver: config.databaseUrl ? 'postgres' : 'sql.js',
   });
 
+  // ── Auto-seed demo data if DEMO_MODE=true and DB is empty ──────────────
+  if (config.demoMode) {
+    const userCount = (dbContext.db.prepare('SELECT COUNT(*) as c FROM users').get() as any).c;
+    if (userCount === 0) {
+      logger.info('Demo mode: no users found — running seed...');
+      try {
+        const { DemoDataGenerator } = await import('./scripts/DemoDataGenerator');
+        const { SohCalculationService: SohSvc } = await import('./services/apm/SohCalculationService');
+        const { RiskScoringService: RiskSvc } = await import('./services/supply-chain/RiskScoringService');
+        const { DEMO_ORG_ID, AssetStatus } = await import('./config/constants');
+        const gen = new DemoDataGenerator(dbContext);
+        await gen.generate();
+        const assets = (dbContext.db.prepare('SELECT id FROM assets').all() as Array<{ id: string }>);
+        for (const a of assets) dbContext.assets.updateStatus(a.id, AssetStatus.INSUFFICIENT_DATA);
+        new SohSvc(dbContext).calculateAllSoh();
+        new RiskSvc(dbContext, DEMO_ORG_ID).updateAllSupplierRiskScores();
+        logger.info('Demo data seeded successfully');
+      } catch (seedErr) {
+        logger.error('Demo seed failed', { error: seedErr });
+      }
+    }
+  }
+
   scheduler.register('check-stale-assets',   5 * 60 * 1000, () => {
     new TelemetryIngestionService(dbContext).checkStaleAssets();
   });

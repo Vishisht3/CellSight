@@ -106,7 +106,7 @@ export default function FleetDashboard() {
                     style={{
                       padding: '2px 10px',
                       fontSize: 11,
-                      fontFamily: 'Tahoma, Arial, sans-serif',
+                      fontFamily: "'Inter','Segoe UI',Arial,sans-serif",
                       cursor: 'pointer',
                       border: '1px solid #7f9db9',
                       borderRadius: '3px 3px 0 0',

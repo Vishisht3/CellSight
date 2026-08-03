@@ -45,3 +45,6 @@ temp/
 .vercel
 !.vercel/project.json
 .env*
+
+.vercel
+.env*

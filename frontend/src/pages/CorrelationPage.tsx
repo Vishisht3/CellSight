@@ -113,21 +113,21 @@ export default function CorrelationPage() {
                 <BarChart data={chartData} margin={{ top: 4, right: 16, bottom: 44, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#d0dce8" vertical={false} />
                   <XAxis dataKey="name"
-                    tick={{ fontSize: 9, fill: '#4a4a4a', fontFamily: 'Tahoma' }}
+                    tick={{ fontSize: 9, fill: '#4a4a4a', fontFamily: 'Inter' }}
                     tickLine={false} axisLine={false}
                     angle={-35} textAnchor="end" interval={0} />
                   <YAxis
-                    tick={{ fontSize: 9, fill: '#4a4a4a', fontFamily: 'Tahoma' }}
+                    tick={{ fontSize: 9, fill: '#4a4a4a', fontFamily: 'Inter' }}
                     tickLine={false} axisLine={false} unit="%" width={36} />
                   <Tooltip
                     formatter={(v: number) => [`${v > 0 ? '+' : ''}${v}%`, 'Deviation vs fleet avg']}
-                    contentStyle={{ fontSize: 11, fontFamily: 'Tahoma', border: '1px solid #7f9db9', borderRadius: 2 }}
+                    contentStyle={{ fontSize: 11, fontFamily: 'Inter', border: '1px solid #7f9db9', borderRadius: 2 }}
                   />
                   <ReferenceLine y={0}  stroke="#7f9db9" />
                   <ReferenceLine y={20} stroke="#c00000" strokeDasharray="4 3"
-                    label={{ value: 'Flag (>20%)', fill: '#c00000', fontSize: 9, position: 'insideTopRight', fontFamily: 'Tahoma' }} />
+                    label={{ value: 'Flag (>20%)', fill: '#c00000', fontSize: 9, position: 'insideTopRight', fontFamily: 'Inter' }} />
                   <ReferenceLine y={10} stroke="#b87000" strokeDasharray="4 3"
-                    label={{ value: 'Watch (>10%)', fill: '#b87000', fontSize: 9, position: 'insideTopRight', fontFamily: 'Tahoma' }} />
+                    label={{ value: 'Watch (>10%)', fill: '#b87000', fontSize: 9, position: 'insideTopRight', fontFamily: 'Inter' }} />
                   <Bar dataKey="deviation" maxBarSize={32} radius={[2, 2, 0, 0]}>
                     {chartData.map(entry => (
                       <Cell key={entry.name} fill={barColor(entry.deviation)} />
@@ -155,7 +155,7 @@ export default function CorrelationPage() {
                   borderBottom: active ? '1px solid #f0f4f8' : '1px solid #7f9db9',
                   background: active ? '#f0f4f8' : 'linear-gradient(to bottom,#e8f0fb,#c8d8ef)',
                   color: active ? '#0a246a' : '#4a4a4a', fontWeight: active ? 'bold' : 'normal',
-                  fontFamily: 'Tahoma,Arial,sans-serif',
+                  fontFamily: "'Inter','Segoe UI',Arial,sans-serif",
                   marginBottom: active ? -1 : 0, position: 'relative', zIndex: active ? 1 : 0,
                 }}>
                   {t === 'suppliers' ? 'Suppliers' : 'Cell Batches'}

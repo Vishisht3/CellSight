@@ -91,7 +91,7 @@ export default function Sidebar() {
               margin: '1px 4px',
               borderRadius: 2,
               fontSize: 12,
-              fontFamily: 'Tahoma, Arial, sans-serif',
+              fontFamily: "'Inter','Segoe UI',Arial,sans-serif",
               color: isActive ? '#fff' : '#c0d8f8',
               background: isActive
                 ? 'linear-gradient(to right, #316ac5, #1a4a9c)'

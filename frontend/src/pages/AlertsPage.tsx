@@ -114,7 +114,7 @@ export default function AlertsPage() {
                     borderBottom: active ? '1px solid #f0f4f8' : '1px solid #7f9db9',
                     background: active ? '#f0f4f8' : 'linear-gradient(to bottom,#e8f0fb,#c8d8ef)',
                     color: active ? '#0a246a' : '#4a4a4a', fontWeight: active ? 'bold' : 'normal',
-                    fontFamily:'Tahoma,Arial,sans-serif',
+                    fontFamily: "'Inter','Segoe UI',Arial,sans-serif",
                     marginBottom: active ? -1 : 0, position:'relative', zIndex: active ? 1 : 0,
                   }}>
                     {t.label}{t.count != null ? ` (${t.count})` : ''}
