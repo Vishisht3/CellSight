@@ -203,10 +203,46 @@ async function createTables(db: Database): Promise<void> {
 
 /** Postgres — use execAsync so the event loop stays free during startup */
 async function createTablesPg(db: PgDatabase): Promise<void> {
+  // ── Step 1: migrate existing databases that predate multi-tenancy ─────
+  // These statements are safe to run on a fresh DB too — IF NOT EXISTS / ADD
+  // COLUMN IF NOT EXISTS are idempotent.
+  const MIGRATION_SQL = `
+    CREATE TABLE IF NOT EXISTS organizations (
+      id         TEXT PRIMARY KEY,
+      name       TEXT UNIQUE NOT NULL,
+      org_type   TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+
+    INSERT INTO organizations (id, name, org_type, created_at)
+    VALUES ('${DEMO_ORG_ID}', '${DEMO_ORG_NAME}', 'demo', '${new Date().toISOString()}')
+    ON CONFLICT (id) DO NOTHING;
+
+    ALTER TABLE users         ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE suppliers     ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE material_lots ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE cell_batches  ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE battery_packs ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE assets        ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE alerts        ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+
+    UPDATE users         SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE suppliers     SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE material_lots SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE cell_batches  SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE battery_packs SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE assets        SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE alerts        SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+
+    CREATE INDEX IF NOT EXISTS idx_assets_org    ON assets(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_suppliers_org ON suppliers(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_alerts_org    ON alerts(organization_id);
+  `;
+  await db.execAsync(MIGRATION_SQL);
+
+  // ── Step 2: create any tables that don't exist yet (fresh DB) ─────────
   await db.execAsync(SCHEMA_SQL);
-  // Postgres uses INSERT ... ON CONFLICT DO NOTHING instead of INSERT OR IGNORE
-  const pgDemoSql = `INSERT INTO organizations (id, name, org_type, created_at) VALUES ('${DEMO_ORG_ID}', '${DEMO_ORG_NAME}', 'demo', '${new Date().toISOString()}') ON CONFLICT (id) DO NOTHING`;
-  await db.execAsync(pgDemoSql);
+
   console.log('✅ Database schema initialised');
 }
 
