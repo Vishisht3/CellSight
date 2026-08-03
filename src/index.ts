@@ -78,22 +78,15 @@ async function startServer() {
   });
 
   // ── Auto-seed demo data if DEMO_MODE=true and DB is empty ──────────────
-  if (config.demoMode) {
+  // NOTE: For Postgres deployments, seeding happens via the Railway shell:
+  //   node dist/scripts/seedDemoData.js
+  // Startup auto-seed is skipped on Postgres to avoid blocking the event loop
+  // during healthcheck (the sync adapter is too slow for bulk inserts).
+  if (config.demoMode && !config.databaseUrl) {
     try {
-      // Use execAsync on Postgres to avoid the Atomics spin-loop returning undefined
-      let userCount = 0;
-      if (config.databaseUrl) {
-        const { PgDatabase } = await import('./database/pg-adapter');
-        if (dbContext.db instanceof PgDatabase) {
-          const rows = await dbContext.db.queryAsync('SELECT COUNT(*) as c FROM users');
-          userCount = parseInt((rows[0] as any)?.c ?? '0', 10);
-        }
-      } else {
-        userCount = (dbContext.db.prepare('SELECT COUNT(*) as c FROM users').get() as any).c ?? 0;
-      }
-
+      const userCount = (dbContext.db.prepare('SELECT COUNT(*) as c FROM users').get() as any).c ?? 0;
       if (userCount === 0) {
-        logger.info('Demo mode: no users found — running seed...');
+        logger.info('Demo mode (SQLite): no users found — running seed...');
         const { DemoDataGenerator } = await import('./scripts/DemoDataGenerator');
         const { SohCalculationService: SohSvc } = await import('./services/apm/SohCalculationService');
         const { RiskScoringService: RiskSvc } = await import('./services/supply-chain/RiskScoringService');
@@ -107,7 +100,7 @@ async function startServer() {
         logger.info('Demo data seeded successfully');
       }
     } catch (seedErr) {
-      logger.error('Demo seed check failed', { error: seedErr });
+      logger.error('Demo seed failed', { error: seedErr });
     }
   }
 
