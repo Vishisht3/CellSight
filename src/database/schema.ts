@@ -203,21 +203,21 @@ async function createTables(db: Database): Promise<void> {
 
 /** Postgres — use execAsync so the event loop stays free during startup */
 async function createTablesPg(db: PgDatabase): Promise<void> {
-  // ── Step 1: migrate existing databases that predate multi-tenancy ─────
-  // These statements are safe to run on a fresh DB too — IF NOT EXISTS / ADD
-  // COLUMN IF NOT EXISTS are idempotent.
+  const now = new Date().toISOString();
+
+  // Step 1: Create all tables (fresh DB or tables already exist — both safe)
+  await db.execAsync(SCHEMA_SQL);
+
+  // Step 2: Seed demo org row
+  await db.execAsync(
+    `INSERT INTO organizations (id, name, org_type, created_at)
+     VALUES ('${DEMO_ORG_ID}', '${DEMO_ORG_NAME}', 'demo', '${now}')
+     ON CONFLICT (id) DO NOTHING`
+  );
+
+  // Step 3: Migrate pre-existing rows that may lack organization_id
+  // (ADD COLUMN IF NOT EXISTS is a no-op if the column already exists)
   const MIGRATION_SQL = `
-    CREATE TABLE IF NOT EXISTS organizations (
-      id         TEXT PRIMARY KEY,
-      name       TEXT UNIQUE NOT NULL,
-      org_type   TEXT NOT NULL,
-      created_at TEXT NOT NULL
-    );
-
-    INSERT INTO organizations (id, name, org_type, created_at)
-    VALUES ('${DEMO_ORG_ID}', '${DEMO_ORG_NAME}', 'demo', '${new Date().toISOString()}')
-    ON CONFLICT (id) DO NOTHING;
-
     ALTER TABLE users         ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
     ALTER TABLE suppliers     ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
     ALTER TABLE material_lots ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
@@ -239,9 +239,6 @@ async function createTablesPg(db: PgDatabase): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_alerts_org    ON alerts(organization_id);
   `;
   await db.execAsync(MIGRATION_SQL);
-
-  // ── Step 2: create any tables that don't exist yet (fresh DB) ─────────
-  await db.execAsync(SCHEMA_SQL);
 
   console.log('✅ Database schema initialised');
 }
