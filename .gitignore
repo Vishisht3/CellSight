@@ -41,3 +41,7 @@ coverage/
 tmp/
 temp/
 *.tmp
+
+.vercel
+!.vercel/project.json
+.env*
