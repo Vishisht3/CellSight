@@ -209,10 +209,18 @@ export class DemoDataGenerator {
   }
 
   private async generateTelemetry(): Promise<number> {
-    // Use raw SQL query to avoid runSync returning empty on Postgres
-    const assetRows = this.dbContext.db.prepare(
-      `SELECT id FROM assets WHERE organization_id = ?`
-    ).all(this.orgId) as Array<{ id: string }>;
+    // Use queryAsync on Postgres to bypass the runSync spin loop
+    let assetRows: Array<{ id: string }> = [];
+    const { PgDatabase } = await import('../database/pg-adapter');
+    if (this.dbContext.db instanceof PgDatabase) {
+      assetRows = await this.dbContext.db.queryAsync(
+        `SELECT id FROM assets WHERE organization_id = $1`, [this.orgId]
+      ) as Array<{ id: string }>;
+    } else {
+      assetRows = this.dbContext.db.prepare(
+        `SELECT id FROM assets WHERE organization_id = ?`
+      ).all(this.orgId) as Array<{ id: string }>;
+    }
 
     let totalRecords = 0;
     for (const { id: assetId } of assetRows) {

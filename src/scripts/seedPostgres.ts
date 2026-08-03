@@ -37,8 +37,15 @@ async function seed() {
   logger.info('Generation complete', stats);
 
   // Reset asset statuses then run SoH + risk
-  const assets = (ctx.db.prepare('SELECT id FROM assets').all() as Array<{ id: string }>);
-  for (const a of assets) ctx.assets.updateStatus(a.id, AssetStatus.INSUFFICIENT_DATA);
+  const { PgDatabase } = await import('../database/pg-adapter');
+  let assetIds: string[] = [];
+  if (ctx.db instanceof PgDatabase) {
+    const rows = await ctx.db.queryAsync(`SELECT id FROM assets`) as Array<{ id: string }>;
+    assetIds = rows.map(r => r.id);
+  } else {
+    assetIds = (ctx.db.prepare('SELECT id FROM assets').all() as Array<{ id: string }>).map(r => r.id);
+  }
+  for (const id of assetIds) ctx.assets.updateStatus(id, AssetStatus.INSUFFICIENT_DATA);
 
   const soh = new SohCalculationService(ctx).calculateAllSoh();
   logger.info('SoH', soh);
