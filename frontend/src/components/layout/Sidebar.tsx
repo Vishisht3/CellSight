@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Truck, PackageSearch, Bell, GitMerge, LogOut,
-  Zap, Map, Wrench, Network,
+  Zap, Map, Wrench,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -19,7 +19,6 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/supply-chain',  label: 'Supplier Portal',   icon: <PackageSearch size={14} />,roles: ['supply_chain_manager'] },
   { to: '/alerts',        label: 'Alerts',            icon: <Bell size={14} /> },
   { to: '/correlation',   label: 'Field Claims',      icon: <GitMerge size={14} />,     roles: ['fleet_manager','supply_chain_manager'] },
-  { to: '/architecture',  label: 'Architecture',      icon: <Network size={14} /> },
 ];
 
 export default function Sidebar() {

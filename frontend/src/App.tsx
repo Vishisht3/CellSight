@@ -11,7 +11,6 @@ import AlertsPage from './pages/AlertsPage';
 import CorrelationPage from './pages/CorrelationPage';
 import ReadinessPage from './pages/ReadinessPage';
 import MaintenancePage from './pages/MaintenancePage';
-import ArchitecturePage from './pages/ArchitecturePage';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 import type { UserRole } from './types';
 
@@ -30,11 +29,10 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   return <>{children}</>;
 }
 
-/** Redirect authenticated users to their role's default page */
 function RootRedirect() {
   const { user, isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <LoadingSpinner fullPage size="lg" label="Loading…" />;
-  if (!isAuthenticated) return <Navigate to="/architecture" replace />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (user?.role === 'supply_chain_manager') return <Navigate to="/supply-chain" replace />;
   return <Navigate to="/fleet" replace />;
 }
@@ -44,53 +42,50 @@ function RootRedirect() {
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public — no auth needed */}
+      {/* Public */}
       <Route path="/login"  element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
 
       {/* Root redirect */}
       <Route path="/" element={<RootRedirect />} />
 
-      {/* Shell wraps all inner pages */}
+      {/* Shell wraps all authenticated pages */}
       <Route element={<AppShell />}>
-
-        {/* ── Guest-accessible (architecture overview) ── */}
-        <Route path="/architecture" element={<ArchitecturePage />} />
 
         {/* ── Fleet operations ── */}
         <Route path="/fleet" element={
-          <ProtectedRoute allowedRoles={['fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <FleetDashboard />
           </ProtectedRoute>
         } />
         <Route path="/fleet/:id" element={
-          <ProtectedRoute allowedRoles={['fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <AssetDetail />
           </ProtectedRoute>
         } />
 
         {/* ── EV readiness / procurement ── */}
         <Route path="/readiness" element={
-          <ProtectedRoute allowedRoles={['fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <ReadinessPage />
           </ProtectedRoute>
         } />
 
         {/* ── Maintenance ops ── */}
         <Route path="/maintenance" element={
-          <ProtectedRoute allowedRoles={['fleet_manager']}>
+          <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <MaintenancePage />
           </ProtectedRoute>
         } />
 
         {/* ── Supplier quality and traceability ── */}
         <Route path="/supply-chain" element={
-          <ProtectedRoute allowedRoles={['supply_chain_manager']}>
+          <ProtectedRoute allowedRoles={['supply_chain_manager', 'admin']}>
             <SupplyChainDashboard />
           </ProtectedRoute>
         } />
         <Route path="/supply-chain/trace/:assetId" element={
-          <ProtectedRoute allowedRoles={['supply_chain_manager','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['supply_chain_manager', 'fleet_manager', 'admin']}>
             <TraceView />
           </ProtectedRoute>
         } />
@@ -104,7 +99,7 @@ function AppRoutes() {
 
         {/* ── Field-to-source investigations ── */}
         <Route path="/correlation" element={
-          <ProtectedRoute allowedRoles={['supply_chain_manager','fleet_manager']}>
+          <ProtectedRoute allowedRoles={['supply_chain_manager', 'fleet_manager', 'admin']}>
             <CorrelationPage />
           </ProtectedRoute>
         } />

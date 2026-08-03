@@ -16,9 +16,9 @@ export default function LoginPage() {
 
   function switchToAdmin() {
     setAdminMode(true);
-    setEmail('admin@cellsight.com');
+    setEmail('fleet@cellsight.com');
     setPassword('demo123');
-    setCompany('CellSight Operations');
+    setCompany('CellSight Demo');
     setError('');
   }
 
