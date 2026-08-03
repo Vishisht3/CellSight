@@ -10,6 +10,7 @@ import {
   TEMP_MIN_SAFE,
   TEMP_MAX_SAFE,
 } from '../config/constants';
+import { Supplier, MaterialLot, CellBatch, BatteryPack } from '../models/types';
 import bcrypt from 'bcryptjs';
 
 interface GeneratedData {
@@ -25,15 +26,21 @@ interface GeneratedData {
 export class DemoDataGenerator {
   private readonly orgId = DEMO_ORG_ID;
 
+  // In-memory caches so subsequent steps don't need to read back from DB
+  private suppliers: Supplier[] = [];
+  private materialLots: MaterialLot[] = [];
+  private cellBatches: CellBatch[] = [];
+  private batteryPacks: BatteryPack[] = [];
+
   private assetNames = [
     'FreightLiner-001', 'FreightLiner-002', 'FreightLiner-003', 'FreightLiner-004', 'FreightLiner-005',
-    'Haul-Truck-A1', 'Haul-Truck-A2', 'Haul-Truck-B1', 'Haul-Truck-B2', 'Haul-Truck-C1',
-    'Forklift-FL01', 'Forklift-FL02', 'Forklift-FL03', 'Forklift-FL04', 'Forklift-FL05',
-    'Forklift-FL06', 'Forklift-FL07', 'Forklift-FL08', 'Forklift-FL09', 'Forklift-FL10',
-    'Excavator-EX1', 'Excavator-EX2', 'Excavator-EX3', 'Loader-LD1', 'Loader-LD2',
+    'Haul-Truck-A1',    'Haul-Truck-A2',    'Haul-Truck-B1',    'Haul-Truck-B2',    'Haul-Truck-C1',
+    'Forklift-FL01',    'Forklift-FL02',    'Forklift-FL03',    'Forklift-FL04',    'Forklift-FL05',
+    'Forklift-FL06',    'Forklift-FL07',    'Forklift-FL08',    'Forklift-FL09',    'Forklift-FL10',
+    'Excavator-EX1',    'Excavator-EX2',    'Excavator-EX3',    'Loader-LD1',       'Loader-LD2',
   ];
 
-  private supplierNames = [
+  private supplierDefs = [
     { name: 'Silver Peak Lithium Operations', country: 'US', tier: SupplierTier.TIER_3 },
     { name: 'Katanga Cobalt Refining',         country: 'CD', tier: SupplierTier.TIER_3 },
     { name: 'Sudbury Nickel Works',             country: 'CA', tier: SupplierTier.TIER_3 },
@@ -56,6 +63,7 @@ export class DemoDataGenerator {
       users: 0, suppliers: 0, materialLots: 0, cellBatches: 0,
       batteryPacks: 0, assets: 0, telemetryRecords: 0,
     };
+
     stats.users          = await this.generateUsers();
     stats.suppliers      = await this.generateSuppliers();
     stats.materialLots   = await this.generateMaterialLots();
@@ -63,50 +71,52 @@ export class DemoDataGenerator {
     stats.batteryPacks   = await this.generateBatteryPacks();
     stats.assets         = await this.generateAssets();
     stats.telemetryRecords = await this.generateTelemetry();
+
     logger.info('Demo data generation complete', stats);
     return stats;
   }
 
   private async generateUsers(): Promise<number> {
     const passwordHash = await bcrypt.hash('demo123', 10);
-    this.dbContext.users.create({ email: 'maintenance@cellsight.com', passwordHash, role: UserRole.FLEET_MANAGER,         name: 'Maya Patel, Maintenance Planner', organizationId: this.orgId });
-    this.dbContext.users.create({ email: 'fleet@cellsight.com',       passwordHash, role: UserRole.FLEET_MANAGER,         name: 'Jordan Lee, Fleet Operations',    organizationId: this.orgId });
-    this.dbContext.users.create({ email: 'supply@cellsight.com',      passwordHash, role: UserRole.SUPPLY_CHAIN_MANAGER,  name: 'Elena Ruiz, Supplier Quality',    organizationId: this.orgId });
+    this.dbContext.users.create({ email: 'maintenance@cellsight.com', passwordHash, role: UserRole.FLEET_MANAGER,        name: 'Maya Patel, Maintenance Planner', organizationId: this.orgId });
+    this.dbContext.users.create({ email: 'fleet@cellsight.com',       passwordHash, role: UserRole.FLEET_MANAGER,        name: 'Jordan Lee, Fleet Operations',    organizationId: this.orgId });
+    this.dbContext.users.create({ email: 'supply@cellsight.com',      passwordHash, role: UserRole.SUPPLY_CHAIN_MANAGER, name: 'Elena Ruiz, Supplier Quality',    organizationId: this.orgId });
     logger.info('Created 3 portal demo users');
     return 3;
   }
 
   private async generateSuppliers(): Promise<number> {
-    const suppliers = [];
-    for (const sd of this.supplierNames) {
+    for (const sd of this.supplierDefs) {
       const rand = Math.random();
       const certificationExpiry = rand < 0.2
         ? new Date(Date.now() - 30 * 86_400_000).toISOString()
         : rand < 0.4
         ? new Date(Date.now() + 30 * 86_400_000).toISOString()
         : new Date(Date.now() + 365 * 86_400_000).toISOString();
-      suppliers.push(this.dbContext.suppliers.create({
+      const supplier = this.dbContext.suppliers.create({
         name: sd.name, tier: sd.tier, country: sd.country,
         certificationExpiry, organizationId: this.orgId,
-      }));
+      });
+      this.suppliers.push(supplier);  // cache in memory
     }
-    logger.info(`Created ${suppliers.length} suppliers`);
-    return suppliers.length;
+    logger.info(`Created ${this.suppliers.length} suppliers`);
+    return this.suppliers.length;
   }
 
   private async generateMaterialLots(): Promise<number> {
-    const suppliers = this.dbContext.suppliers.list(this.orgId);
+    // Use in-memory suppliers — no DB read needed
     const materialTypes = [MaterialType.LITHIUM, MaterialType.COBALT, MaterialType.NICKEL, MaterialType.GRAPHITE, MaterialType.MANGANESE];
+    const tier3 = this.suppliers.filter(s => s.tier === SupplierTier.TIER_3);
     let count = 0;
+
     for (const materialType of materialTypes) {
-      const matSuppliers = suppliers.filter(s => s.tier === SupplierTier.TIER_3);
-      for (const supplier of matSuppliers) {
+      for (const supplier of tier3) {
         const lotCount = 2 + Math.floor(Math.random() * 4);
         for (let i = 0; i < lotCount; i++) {
           const lotNumber = `${materialType.toUpperCase()}-${supplier.country}-${new Date().getFullYear()}-${(count + 1842).toString().padStart(5, '0')}`;
           const baseQuality = 85 + Math.random() * 10;
           const qualityScore = Math.random() < 0.15 ? baseQuality - 10 - Math.random() * 5 : baseQuality;
-          this.dbContext.materials.create({
+          const lot = this.dbContext.materials.create({
             lotNumber, materialType, supplierId: supplier.id,
             quantity: 1000 + Math.random() * 4000, country: supplier.country,
             receivedAt: new Date(Date.now() - Math.random() * 180 * 86_400_000).toISOString(),
@@ -114,6 +124,7 @@ export class DemoDataGenerator {
             specificationMin: 85, specificationMax: 95,
             organizationId: this.orgId,
           });
+          this.materialLots.push(lot);  // cache
           count++;
         }
       }
@@ -123,11 +134,11 @@ export class DemoDataGenerator {
   }
 
   private async generateCellBatches(): Promise<number> {
-    const suppliers   = this.dbContext.suppliers.list(this.orgId);
-    const cellMfrs    = suppliers.filter(s => s.tier === SupplierTier.TIER_2);
-    const materialLots = this.dbContext.materials.list(this.orgId);
+    // Use in-memory suppliers and materialLots
+    const tier2 = this.suppliers.filter(s => s.tier === SupplierTier.TIER_2);
     let count = 0;
-    for (const mfr of cellMfrs) {
+
+    for (const mfr of tier2) {
       const batchCount = 3 + Math.floor(Math.random() * 4);
       for (let i = 0; i < batchCount; i++) {
         const code = mfr.name.split(' ').map(p => p[0]).join('').slice(0, 4).toUpperCase();
@@ -138,11 +149,17 @@ export class DemoDataGenerator {
           quantity: 5000 + Math.floor(Math.random() * 5000),
           organizationId: this.orgId,
         });
+        this.cellBatches.push(batch);  // cache
+
+        // Link to random material lots
         const linked = new Set<string>();
         const linkCount = 3 + Math.floor(Math.random() * 3);
-        while (linked.size < linkCount && linked.size < materialLots.length) {
-          const lot = materialLots[Math.floor(Math.random() * materialLots.length)];
-          if (!linked.has(lot.id)) { this.dbContext.cellBatches.linkBatchToMaterial(batch.id, lot.id); linked.add(lot.id); }
+        while (linked.size < linkCount && linked.size < this.materialLots.length) {
+          const lot = this.materialLots[Math.floor(Math.random() * this.materialLots.length)];
+          if (!linked.has(lot.id)) {
+            this.dbContext.cellBatches.linkBatchToMaterial(batch.id, lot.id);
+            linked.add(lot.id);
+          }
         }
         count++;
       }
@@ -152,18 +169,19 @@ export class DemoDataGenerator {
   }
 
   private async generateBatteryPacks(): Promise<number> {
-    const batches = this.dbContext.cellBatches.listBatches(this.orgId);
+    // Use in-memory cellBatches
     let count = 0;
-    for (const batch of batches) {
+    for (const batch of this.cellBatches) {
       const packCount = 2 + Math.floor(Math.random() * 3);
       for (let i = 0; i < packCount; i++) {
-        this.dbContext.cellBatches.createPack({
+        const pack = this.dbContext.cellBatches.createPack({
           packNumber:   `PACK-${batch.batchNumber}-${String(i + 1).padStart(2, '0')}`,
           cellBatchId:  batch.id,
           assemblyDate: new Date(Date.now() - Math.random() * 90 * 86_400_000).toISOString(),
           capacity:     100 + Math.random() * 200,
           organizationId: this.orgId,
         });
+        this.batteryPacks.push(pack);  // cache
         count++;
       }
     }
@@ -172,15 +190,16 @@ export class DemoDataGenerator {
   }
 
   private async generateAssets(): Promise<number> {
-    const packs     = this.dbContext.cellBatches.listPacks(this.orgId);
+    // Use in-memory batteryPacks
     const assetTypes = [AssetType.FREIGHT_TRUCK, AssetType.MINING_VEHICLE, AssetType.FORKLIFT, AssetType.CONSTRUCTION_EQUIPMENT];
-    const target     = config.demoAssetCount;
+    const target = config.demoAssetCount;
     let count = 0;
-    for (let i = 0; i < target && i < packs.length && i < this.assetNames.length; i++) {
+
+    for (let i = 0; i < target && i < this.batteryPacks.length && i < this.assetNames.length; i++) {
       this.dbContext.assets.create({
         name: this.assetNames[i],
         assetType: assetTypes[i % assetTypes.length],
-        batteryPackId: packs[i].id,
+        batteryPackId: this.batteryPacks[i].id,
         organizationId: this.orgId,
       });
       count++;
@@ -190,13 +209,20 @@ export class DemoDataGenerator {
   }
 
   private async generateTelemetry(): Promise<number> {
-    const assets = this.dbContext.assets.list(this.orgId);
+    // Use raw SQL query to avoid runSync returning empty on Postgres
+    const assetRows = this.dbContext.db.prepare(
+      `SELECT id FROM assets WHERE organization_id = ?`
+    ).all(this.orgId) as Array<{ id: string }>;
+
     let totalRecords = 0;
-    for (const asset of assets) {
+    for (const { id: assetId } of assetRows) {
       const recordCount = 150 + Math.floor(Math.random() * 151);
       const daysSpan    = 30 + Math.floor(Math.random() * 31);
       const hasAnomalies = Math.random() < 0.2;
       const degradMult  = hasAnomalies ? 1.5 + Math.random() * 0.5 : 1.0;
+      let lastTimestamp = '';
+      let lastCycles = 0;
+
       for (let i = 0; i < recordCount; i++) {
         const daysAgo    = daysSpan * (1 - i / recordCount);
         const timestamp  = new Date(Date.now() - daysAgo * 86_400_000).toISOString();
@@ -212,13 +238,16 @@ export class DemoDataGenerator {
             : TEMP_MAX_SAFE + 5 + Math.random() * 10;
         }
         this.dbContext.telemetry.create({
-          assetId: asset.id, timestamp, voltage, current, temperature,
+          assetId, timestamp, voltage, current, temperature,
           stateOfCharge: 20 + Math.random() * 60, cycleCount: cycles,
         });
+        // Track the last (earliest in time = first in loop) record
+        if (i === 0) { lastTimestamp = timestamp; lastCycles = cycles; }
         totalRecords++;
       }
-      const latest = this.dbContext.telemetry.getLatestByAsset(asset.id);
-      if (latest) this.dbContext.assets.updateTelemetryTimestamp(asset.id, latest.timestamp, latest.cycleCount);
+      if (lastTimestamp) {
+        this.dbContext.assets.updateTelemetryTimestamp(assetId, lastTimestamp, lastCycles);
+      }
     }
     logger.info(`Created ${totalRecords} telemetry records`);
     return totalRecords;
