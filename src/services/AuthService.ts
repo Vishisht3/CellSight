@@ -38,19 +38,24 @@ export class AuthService {
       throw Object.assign(new Error('That organization name is reserved.'), { status: 409 });
     }
 
-    // Uniqueness check
-    const existing = this.dbContext.orgs.findByName(input.companyName.trim());
-    if (existing) {
-      throw Object.assign(
-        new Error(`An organization named "${input.companyName}" already exists.`),
-        { status: 409 }
-      );
-    }
+    // Use queryAsync on Postgres to bypass the Atomics spin-loop
+    const { PgDatabase } = await import('../database/pg-adapter');
+    const isPostgres = this.dbContext.db instanceof PgDatabase;
 
-    // Email uniqueness
-    const existingUser = this.dbContext.users.findByEmail(input.email);
-    if (existingUser) {
-      throw Object.assign(new Error('A user with that email already exists.'), { status: 409 });
+    if (isPostgres) {
+      const orgs = await (this.dbContext.db as any).queryAsync(
+        `SELECT id FROM organizations WHERE name = $1`, [input.companyName.trim()]
+      ) as any[];
+      if (orgs.length > 0) throw Object.assign(new Error(`An organization named "${input.companyName}" already exists.`), { status: 409 });
+      const users = await (this.dbContext.db as any).queryAsync(
+        `SELECT id FROM users WHERE email = $1`, [input.email]
+      ) as any[];
+      if (users.length > 0) throw Object.assign(new Error('A user with that email already exists.'), { status: 409 });
+    } else {
+      const existing = this.dbContext.orgs.findByName(input.companyName.trim());
+      if (existing) throw Object.assign(new Error(`An organization named "${input.companyName}" already exists.`), { status: 409 });
+      const existingUser = this.dbContext.users.findByEmail(input.email);
+      if (existingUser) throw Object.assign(new Error('A user with that email already exists.'), { status: 409 });
     }
 
     const org = this.dbContext.orgs.create({
