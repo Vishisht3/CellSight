@@ -212,8 +212,10 @@ export class DemoDataGenerator {
     // Use queryAsync on Postgres to bypass the runSync spin loop
     let assetRows: Array<{ id: string }> = [];
     const { PgDatabase } = await import('../database/pg-adapter');
-    if (this.dbContext.db instanceof PgDatabase) {
-      assetRows = await this.dbContext.db.queryAsync(
+    const isPostgres = this.dbContext.db instanceof PgDatabase;
+
+    if (isPostgres) {
+      assetRows = await (this.dbContext.db as any).queryAsync(
         `SELECT id FROM assets WHERE organization_id = $1`, [this.orgId]
       ) as Array<{ id: string }>;
     } else {
@@ -223,13 +225,20 @@ export class DemoDataGenerator {
     }
 
     let totalRecords = 0;
+    const { v4: uuidv4 } = await import('uuid');
+
     for (const { id: assetId } of assetRows) {
-      const recordCount = 150 + Math.floor(Math.random() * 151);
-      const daysSpan    = 30 + Math.floor(Math.random() * 31);
+      const recordCount  = 150 + Math.floor(Math.random() * 151);
+      const daysSpan     = 30  + Math.floor(Math.random() * 31);
       const hasAnomalies = Math.random() < 0.2;
-      const degradMult  = hasAnomalies ? 1.5 + Math.random() * 0.5 : 1.0;
-      let lastTimestamp = '';
-      let lastCycles = 0;
+      const degradMult   = hasAnomalies ? 1.5 + Math.random() * 0.5 : 1.0;
+
+      // Build all rows for this asset in memory
+      const rows: Array<{
+        id: string; assetId: string; timestamp: string;
+        voltage: number; current: number; temperature: number;
+        stateOfCharge: number; cycleCount: number; createdAt: string;
+      }> = [];
 
       for (let i = 0; i < recordCount; i++) {
         const daysAgo    = daysSpan * (1 - i / recordCount);
@@ -245,18 +254,52 @@ export class DemoDataGenerator {
             ? TEMP_MIN_SAFE - 5 - Math.random() * 5
             : TEMP_MAX_SAFE + 5 + Math.random() * 10;
         }
-        this.dbContext.telemetry.create({
-          assetId, timestamp, voltage, current, temperature,
-          stateOfCharge: 20 + Math.random() * 60, cycleCount: cycles,
+        rows.push({
+          id: uuidv4(), assetId, timestamp, voltage, current, temperature,
+          stateOfCharge: 20 + Math.random() * 60,
+          cycleCount: cycles,
+          createdAt: new Date().toISOString(),
         });
-        // Track the last (earliest in time = first in loop) record
-        if (i === 0) { lastTimestamp = timestamp; lastCycles = cycles; }
-        totalRecords++;
       }
-      if (lastTimestamp) {
-        this.dbContext.assets.updateTelemetryTimestamp(assetId, lastTimestamp, lastCycles);
+
+      if (isPostgres && rows.length > 0) {
+        // Single batch INSERT for the whole asset — vastly faster than one-at-a-time
+        const CHUNK = 100;
+        for (let start = 0; start < rows.length; start += CHUNK) {
+          const chunk = rows.slice(start, start + CHUNK);
+          const values = chunk.map((_, j) => {
+            const base = j * 9;
+            return `($${base+1},$${base+2},$${base+3},$${base+4},$${base+5},$${base+6},$${base+7},$${base+8},$${base+9})`;
+          }).join(',');
+          const params = chunk.flatMap(r => [
+            r.id, r.assetId, r.timestamp, r.voltage, r.current,
+            r.temperature, r.stateOfCharge, r.cycleCount, r.createdAt,
+          ]);
+          await (this.dbContext.db as any).queryAsync(
+            `INSERT INTO telemetry_data (id,asset_id,timestamp,voltage,current,temperature,state_of_charge,cycle_count,created_at) VALUES ${values}`,
+            params
+          );
+        }
+      } else {
+        // SQLite — use the existing sync path
+        for (const r of rows) {
+          this.dbContext.telemetry.create({
+            assetId: r.assetId, timestamp: r.timestamp,
+            voltage: r.voltage, current: r.current,
+            temperature: r.temperature, stateOfCharge: r.stateOfCharge,
+            cycleCount: r.cycleCount,
+          });
+        }
       }
+
+      // Update asset with latest telemetry timestamp
+      const first = rows[0];
+      if (first) {
+        this.dbContext.assets.updateTelemetryTimestamp(assetId, first.timestamp, first.cycleCount);
+      }
+      totalRecords += rows.length;
     }
+
     logger.info(`Created ${totalRecords} telemetry records`);
     return totalRecords;
   }
