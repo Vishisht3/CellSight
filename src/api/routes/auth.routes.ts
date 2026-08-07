@@ -102,7 +102,7 @@ router.get('/me', async (req: Request, res: Response) => {
   try {
     if (!req.user) { res.status(401).json({ error: 'Not authenticated' }); return; }
     const dbContext = await getDatabaseContext();
-    const user = new AuthService(dbContext).getUserById(req.user.userId);
+    const user = await new AuthService(dbContext).getUserByIdAsync(req.user.userId);
     if (!user) { res.status(404).json({ error: 'User not found' }); return; }
     res.json({ user });
   } catch { res.status(500).json({ error: 'Failed to get user info' }); }

@@ -106,7 +106,20 @@ export class AuthService {
   // ── Login ──────────────────────────────────────────────────────────────
 
   async login(email: string, password: string): Promise<AuthTokenPair> {
-    const user = this.dbContext.users.findByEmail(email);
+    // Use queryAsync on Postgres to bypass the Atomics spin-loop
+    let user: User | null = null;
+    const { PgDatabase } = await import('../database/pg-adapter');
+    if (this.dbContext.db instanceof PgDatabase) {
+      const rows = await (this.dbContext.db as any).queryAsync(
+        `SELECT id, email, password_hash as "passwordHash", role, name,
+                organization_id as "organizationId", created_at as "createdAt", updated_at as "updatedAt"
+         FROM users WHERE email = $1`, [email]
+      ) as User[];
+      user = rows[0] ?? null;
+    } else {
+      user = this.dbContext.users.findByEmail(email);
+    }
+
     if (!user) throw new Error('Invalid email or password');
 
     const valid = await bcrypt.compare(password, user.passwordHash);
@@ -135,7 +148,19 @@ export class AuthService {
     }
 
     this.refreshTokenRepo.revokeOne(record.id);
-    const user = this.dbContext.users.findById(record.userId);
+
+    let user: User | null = null;
+    const { PgDatabase } = await import('../database/pg-adapter');
+    if (this.dbContext.db instanceof PgDatabase) {
+      const rows = await (this.dbContext.db as any).queryAsync(
+        `SELECT id, email, password_hash as "passwordHash", role, name,
+                organization_id as "organizationId", created_at as "createdAt", updated_at as "updatedAt"
+         FROM users WHERE id = $1`, [record.userId]
+      ) as User[];
+      user = rows[0] ?? null;
+    } else {
+      user = this.dbContext.users.findById(record.userId);
+    }
     if (!user) throw new Error('User not found');
     return this.issueTokenPair(user, record.family);
   }
@@ -167,7 +192,29 @@ export class AuthService {
   }
 
   getUserById(userId: string): Omit<User, 'passwordHash'> | null {
+    // Use queryAsync on Postgres to bypass the Atomics spin-loop
+    // Note: this is called from a sync context in some places, so we return
+    // the result synchronously where possible and async where needed.
     const user = this.dbContext.users.findById(userId);
+    if (!user) return null;
+    const { passwordHash, ...rest } = user;
+    void passwordHash;
+    return rest;
+  }
+
+  async getUserByIdAsync(userId: string): Promise<Omit<User, 'passwordHash'> | null> {
+    const { PgDatabase } = await import('../database/pg-adapter');
+    let user: User | null = null;
+    if (this.dbContext.db instanceof PgDatabase) {
+      const rows = await (this.dbContext.db as any).queryAsync(
+        `SELECT id, email, password_hash as "passwordHash", role, name,
+                organization_id as "organizationId", created_at as "createdAt", updated_at as "updatedAt"
+         FROM users WHERE id = $1`, [userId]
+      ) as User[];
+      user = rows[0] ?? null;
+    } else {
+      user = this.dbContext.users.findById(userId);
+    }
     if (!user) return null;
     const { passwordHash, ...rest } = user;
     void passwordHash;
