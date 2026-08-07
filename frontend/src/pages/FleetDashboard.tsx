@@ -153,6 +153,17 @@ export default function FleetDashboard() {
           {/* table */}
           {loading ? (
             <LoadingSpinner fullPage label="Loading fleet data…" />
+          ) : assets.length === 0 && statusFilter === 'all' && !typeFilter ? (
+            <EmptyState
+              icon={Truck}
+              title="No assets registered yet"
+              description="Register your first asset to start monitoring battery health."
+              action={
+                <button className="win-btn win-btn-primary" onClick={() => navigate('/register')}>
+                  + Register Asset
+                </button>
+              }
+            />
           ) : assets.length === 0 ? (
             <EmptyState icon={Truck} title="No assets found" description="Try a different filter." />
           ) : (

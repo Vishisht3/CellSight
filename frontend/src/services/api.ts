@@ -149,6 +149,12 @@ export const apmApi = {
     const { data } = await client.post('/apm/telemetry', payload);
     return data as { telemetryId: string };
   },
+  createAsset: async (payload: {
+    name: string; assetType: string; batteryPackId: string;
+  }) => {
+    const { data } = await client.post('/apm/assets', payload);
+    return data.asset as import('../types').Asset;
+  },
 };
 
 // ── Supply Chain ──────────────────────────────────────────────────────────
@@ -173,6 +179,32 @@ export const supplyChainApi = {
   traceAsset: async (assetId: string): Promise<AssetTrace> => {
     const { data } = await client.get(`/supply-chain/trace/${assetId}`);
     return data.trace;
+  },
+  createSupplier: async (payload: {
+    name: string; tier: string; country: string; certificationExpiry?: string;
+  }) => {
+    const { data } = await client.post('/supply-chain/suppliers', payload);
+    return data.supplier as Supplier;
+  },
+  createMaterialLot: async (payload: {
+    lotNumber: string; materialType: string; supplierId: string;
+    quantity: number; country: string; qualityScore?: number;
+    specificationMin?: number; specificationMax?: number;
+  }) => {
+    const { data } = await client.post('/supply-chain/materials', payload);
+    return data.materialLot as MaterialLot;
+  },
+  createCellBatch: async (payload: {
+    batchNumber: string; manufacturerId: string; quantity: number; productionDate?: string;
+  }) => {
+    const { data } = await client.post('/supply-chain/cell-batches', payload);
+    return data.cellBatch;
+  },
+  createBatteryPack: async (payload: {
+    packNumber: string; cellBatchId: string; capacity: number; assemblyDate?: string;
+  }) => {
+    const { data } = await client.post('/supply-chain/battery-packs', payload);
+    return data.batteryPack;
   },
 };
 

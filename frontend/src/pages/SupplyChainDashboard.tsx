@@ -126,6 +126,17 @@ export default function SupplyChainDashboard() {
 
           {loading ? (
             <LoadingSpinner fullPage label="Loading suppliers…" />
+          ) : suppliers.length === 0 && tierFilter === 'all' && !highRisk ? (
+            <EmptyState
+              icon={PackageSearch}
+              title="No suppliers registered yet"
+              description="Register your first supplier to start tracking supply chain risk and material traceability."
+              action={
+                <button className="win-btn win-btn-primary" onClick={() => navigate('/register')}>
+                  + Register Supplier
+                </button>
+              }
+            />
           ) : suppliers.length === 0 ? (
             <EmptyState icon={PackageSearch} title="No suppliers found" description="Adjust your filters." />
           ) : (

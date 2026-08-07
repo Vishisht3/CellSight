@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Truck, PackageSearch, Bell, GitMerge, LogOut,
-  Zap, Map, Wrench,
+  Zap, Map, Wrench, PlusCircle, UserCircle,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -13,12 +13,13 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/fleet',         label: 'Fleet Health',      icon: <Truck size={14} />,        roles: ['fleet_manager'] },
-  { to: '/readiness',     label: 'Replacement Plan',  icon: <Map size={14} />,          roles: ['fleet_manager'] },
-  { to: '/maintenance',   label: 'Work Orders',       icon: <Wrench size={14} />,       roles: ['fleet_manager'] },
-  { to: '/supply-chain',  label: 'Supplier Portal',   icon: <PackageSearch size={14} />,roles: ['supply_chain_manager'] },
-  { to: '/alerts',        label: 'Alerts',            icon: <Bell size={14} /> },
-  { to: '/correlation',   label: 'Field Claims',      icon: <GitMerge size={14} />,     roles: ['fleet_manager','supply_chain_manager'] },
+  { to: '/fleet',        label: 'Fleet Health',     icon: <Truck size={14} />,        roles: ['fleet_manager', 'admin'] },
+  { to: '/readiness',    label: 'Replacement Plan', icon: <Map size={14} />,          roles: ['fleet_manager', 'admin'] },
+  { to: '/maintenance',  label: 'Work Orders',      icon: <Wrench size={14} />,       roles: ['fleet_manager', 'admin'] },
+  { to: '/supply-chain', label: 'Supplier Portal',  icon: <PackageSearch size={14} />,roles: ['supply_chain_manager', 'admin'] },
+  { to: '/alerts',       label: 'Alerts',           icon: <Bell size={14} /> },
+  { to: '/correlation',  label: 'Field Claims',     icon: <GitMerge size={14} />,     roles: ['fleet_manager', 'supply_chain_manager', 'admin'] },
+  { to: '/register',     label: 'Register Data',    icon: <PlusCircle size={14} /> },
 ];
 
 export default function Sidebar() {
@@ -131,6 +132,15 @@ export default function Sidebar() {
                 {user.role?.replace(/_/g, ' ')}
               </div>
             </div>
+            <NavLink
+              to="/profile"
+              title="My Profile"
+              style={{ color: '#7090c0', display: 'flex', padding: 2, flexShrink: 0 }}
+              onMouseOver={e => (e.currentTarget.style.color = '#c0d8f8')}
+              onMouseOut={e => (e.currentTarget.style.color = '#7090c0')}
+            >
+              <UserCircle size={13} />
+            </NavLink>
             <button
               onClick={logout}
               title="Log out"

@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import AppShell from './components/layout/AppShell';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import ProfilePage from './pages/ProfilePage';
+import RegisterDataPage from './pages/RegisterDataPage';
 import FleetDashboard from './pages/FleetDashboard';
 import AssetDetail from './pages/AssetDetail';
 import SupplyChainDashboard from './pages/SupplyChainDashboard';
@@ -94,6 +96,20 @@ function AppRoutes() {
         <Route path="/alerts" element={
           <ProtectedRoute>
             <AlertsPage />
+          </ProtectedRoute>
+        } />
+
+        {/* ── Data registration (all authenticated) ── */}
+        <Route path="/register" element={
+          <ProtectedRoute>
+            <RegisterDataPage />
+          </ProtectedRoute>
+        } />
+
+        {/* ── Profile ── */}
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         } />
 
