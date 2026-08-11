@@ -1,7 +1,8 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Zap, Building2, LogIn } from 'lucide-react';
 import { authApi } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 import type { OrgType } from '../types';
 
 const ORG_TYPE_OPTIONS: { value: OrgType; label: string; landing: string }[] = [
@@ -12,6 +13,14 @@ const ORG_TYPE_OPTIONS: { value: OrgType; label: string; landing: string }[] = [
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // Redirect already-authenticated users away from the signup page
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, authLoading, navigate]);
 
   const [companyName, setCompanyName] = useState('');
   const [orgType,     setOrgType]     = useState<OrgType>('fleet_operator');

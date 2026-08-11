@@ -91,6 +91,9 @@ client.interceptors.response.use(
   }
 );
 
+// Called by the 401 interceptor when a token refresh fails mid-session.
+// Does a hard redirect as a last resort — React state is already stale at
+// this point and the user needs to re-authenticate from scratch.
 function clearSession() {
   setAccessToken(null);
   setUser(null);
@@ -114,21 +117,32 @@ export const authApi = {
     return data as { accessToken: string; user: User; organization: Organization };
   },
 
-  /** Silent refresh using the httpOnly cookie — called on app mount. */
+  /** Silent refresh using the httpOnly cookie — called on app mount.
+   *  Times out after 5 s so a cold Railway start doesn't block the UI. */
   silentRefresh: async (): Promise<{ accessToken: string; user: User }> => {
-    const { data } = await axios.post(
-      `${API_BASE}/auth/refresh`,
-      {},
-      { withCredentials: true }
-    );
-    setAccessToken(data.accessToken);
-    setUser(data.user);
-    return data;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    try {
+      const { data } = await axios.post(
+        `${API_BASE}/auth/refresh`,
+        {},
+        { withCredentials: true, signal: controller.signal }
+      );
+      setAccessToken(data.accessToken);
+      setUser(data.user);
+      return data;
+    } finally {
+      clearTimeout(timer);
+    }
   },
 
   logout: async () => {
     try { await client.post('/auth/logout'); } catch { /* ignore */ }
-    clearSession();
+    // Only clear in-memory tokens here. Navigation is handled by the
+    // React auth context so we avoid a hard reload that would re-trigger
+    // silentRefresh before the logout cookie is invalidated.
+    setAccessToken(null);
+    setUser(null);
   },
 
   me: async (): Promise<User> => {

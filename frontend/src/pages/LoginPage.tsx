@@ -1,11 +1,18 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Zap, LogIn, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function LoginPage() {
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect already-authenticated users away from the login page
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');

@@ -6,6 +6,7 @@ import {
   useEffect,
   ReactNode,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authApi } from '../services/api';
 import type { User, UserRole } from '../types';
 
@@ -26,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // The httpOnly refresh token cookie is invisible to JS and managed by the browser.
   const [user, setUser] = useState<User | null>(() => authApi.getUser());
   const [token, setToken] = useState<string | null>(() => authApi.getAccessToken());
+  const navigate = useNavigate();
 
   // isLoading is true on first mount: we do not know if the httpOnly cookie
   // is present until we attempt a silent refresh.
@@ -69,10 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    // authApi.logout() hits the backend to revoke the refresh cookie, then
+    // clears in-memory tokens. We navigate via React Router so there is no
+    // hard reload and no risk of silentRefresh firing immediately after.
     await authApi.logout();
     setToken(null);
     setUser(null);
-  }, []);
+    navigate('/login', { replace: true });
+  }, [navigate]);
 
   const hasRole = useCallback(
     (...roles: UserRole[]) => {
