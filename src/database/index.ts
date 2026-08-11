@@ -11,6 +11,7 @@ import { MaterialRepository } from './repositories/MaterialRepository';
 import { CellBatchRepository } from './repositories/CellBatchRepository';
 import { AlertRepository } from './repositories/AlertRepository';
 import { SohRepository } from './repositories/SohRepository';
+import { OutboxRepository } from './repositories/OutboxRepository';
 
 export type AnyDatabase = DbDriver;
 
@@ -25,6 +26,7 @@ export interface DatabaseContext {
   cellBatches: CellBatchRepository;
   alerts: AlertRepository;
   soh: SohRepository;
+  outbox: OutboxRepository;
 }
 
 let dbContext: DatabaseContext | null = null;
@@ -53,6 +55,7 @@ export async function getDatabaseContext(): Promise<DatabaseContext> {
     cellBatches: new CellBatchRepository(db),
     alerts:      new AlertRepository(db),
     soh:         new SohRepository(db),
+    outbox:      new OutboxRepository(db),
   };
 
   return dbContext;

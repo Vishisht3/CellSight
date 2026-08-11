@@ -178,6 +178,18 @@ const SCHEMA_SQL = `
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
 
+    CREATE TABLE IF NOT EXISTS outbox_events (
+      id             TEXT PRIMARY KEY,
+      event_type     TEXT NOT NULL,
+      payload        TEXT NOT NULL,
+      organization_id TEXT NOT NULL REFERENCES organizations(id),
+      created_at     TEXT NOT NULL,
+      delivered_at   TEXT,
+      attempts       INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_outbox_undelivered ON outbox_events(delivered_at) WHERE delivered_at IS NULL;
+
     CREATE INDEX IF NOT EXISTS idx_refresh_tokens_family ON refresh_tokens(family);
     CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user   ON refresh_tokens(user_id);
     CREATE INDEX IF NOT EXISTS idx_telemetry_asset       ON telemetry_data(asset_id);
@@ -237,6 +249,19 @@ async function createTablesPg(db: PgDatabase): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_assets_org    ON assets(organization_id);
     CREATE INDEX IF NOT EXISTS idx_suppliers_org ON suppliers(organization_id);
     CREATE INDEX IF NOT EXISTS idx_alerts_org    ON alerts(organization_id);
+
+    CREATE TABLE IF NOT EXISTS outbox_events (
+      id              TEXT PRIMARY KEY,
+      event_type      TEXT NOT NULL,
+      payload         TEXT NOT NULL,
+      organization_id TEXT NOT NULL REFERENCES organizations(id),
+      created_at      TEXT NOT NULL,
+      delivered_at    TEXT,
+      attempts        INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_outbox_undelivered
+      ON outbox_events(delivered_at, created_at);
   `;
   await db.execAsync(MIGRATION_SQL);
 

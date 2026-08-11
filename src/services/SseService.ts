@@ -8,28 +8,25 @@ interface SseClient {
 
 /**
  * Server-Sent Events hub.
- * Route handlers register clients; the AlertService calls broadcast()
- * whenever a new alert is created.
  *
- * Falls back gracefully — if the hosting platform drops the long-lived
- * connection the frontend retries via EventSource's built-in reconnect,
- * and if SSE is completely blocked the frontend falls back to polling.
+ * The OutboxPublisher calls broadcast() with the outbox row ID as eventId.
+ * That ID is written as the SSE `id:` field so browsers automatically
+ * track it in EventSource.lastEventId.  On reconnect, the SSE route
+ * reads Last-Event-ID and replays any missed outbox rows.
  */
 class SseService {
   private clients: Map<string, SseClient> = new Map();
 
-  /** Register a new SSE client and send an initial ping */
   add(clientId: string, userId: string, res: Response): void {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no'); // disable Nginx buffering
+    res.setHeader('X-Accel-Buffering', 'no');
     res.flushHeaders();
 
     this.clients.set(clientId, { userId, res });
     logger.debug('SSE client connected', { clientId, userId, total: this.clients.size });
 
-    // Heartbeat every 25 s to keep the connection alive through proxies
     const heartbeat = setInterval(() => {
       if (!res.writableEnded) {
         res.write(': heartbeat\n\n');
@@ -39,7 +36,6 @@ class SseService {
       }
     }, 25_000);
 
-    // Send initial connected event
     this.send(res, 'connected', { clientId });
 
     res.on('close', () => {
@@ -53,8 +49,12 @@ class SseService {
     logger.debug('SSE client disconnected', { clientId, total: this.clients.size });
   }
 
-  /** Broadcast a typed event to all connected clients (or a specific userId) */
-  broadcast(event: string, data: unknown, toUserId?: string): void {
+  /**
+   * Broadcast to all connected clients.
+   * @param eventId  The outbox row ID — written as the SSE `id:` field so
+   *                 the browser tracks it for Last-Event-ID replay.
+   */
+  broadcast(event: string, data: unknown, toUserId?: string, eventId?: string): void {
     let sent = 0;
     for (const [id, client] of this.clients) {
       if (toUserId && client.userId !== toUserId) continue;
@@ -62,7 +62,7 @@ class SseService {
         this.remove(id);
         continue;
       }
-      this.send(client.res, event, data);
+      this.send(client.res, event, data, eventId);
       sent++;
     }
     if (sent > 0) logger.debug('SSE broadcast', { event, sent });
@@ -72,11 +72,12 @@ class SseService {
     return this.clients.size;
   }
 
-  private send(res: Response, event: string, data: unknown): void {
+  private send(res: Response, event: string, data: unknown, eventId?: string): void {
     try {
-      res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+      const idLine = eventId ? `id: ${eventId}\n` : '';
+      res.write(`${idLine}event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
     } catch {
-      // ignore write errors — client already disconnected
+      // ignore — client already disconnected
     }
   }
 }

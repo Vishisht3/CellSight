@@ -15,6 +15,7 @@ import { SohCalculationService } from './services/apm/SohCalculationService';
 import { PredictiveMaintenanceService } from './services/apm/PredictiveMaintenanceService';
 import { RiskScoringService } from './services/supply-chain/RiskScoringService';
 import { CorrelationService } from './services/correlation/CorrelationService';
+import { OutboxPublisher } from './services/OutboxPublisher';
 
 const app = express();
 
@@ -135,8 +136,13 @@ async function startServer() {
   scheduler.startAll();
   logger.info('⏰ Background tasks started');
 
+  // ── Outbox publisher — delivers SSE events from the outbox_events table ──
+  const outboxPublisher = new OutboxPublisher(dbContext);
+  outboxPublisher.start();
+
   const shutdown = (signal: string) => {
     logger.info(`${signal} received — shutting down`);
+    outboxPublisher.stop();
     scheduler.stopAll();
     server.close(() => {
       logger.info('HTTP server closed');

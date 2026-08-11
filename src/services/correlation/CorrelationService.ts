@@ -2,12 +2,17 @@ import { DatabaseContext } from '../../database';
 import { logger } from '../../utils/logger';
 import { BatchCorrelation, SupplierCorrelation } from '../../models/types';
 import { AlertSeverity, AlertType, AlertSourceAgent, AlertStatus } from '../../config/constants';
+import { AlertService } from '../AlertService';
 
 export class CorrelationService {
+  private alertSvc: AlertService;
+
   constructor(
     private dbContext: DatabaseContext,
     private organizationId: string
-  ) {}
+  ) {
+    this.alertSvc = new AlertService(dbContext, organizationId);
+  }
 
   // ── Z-score helpers ──────────────────────────────────────────────────────
 
@@ -192,7 +197,7 @@ export class CorrelationService {
         );
         if (alreadyFlagged) continue;
 
-        this.dbContext.alerts.create({
+        this.alertSvc.createAlert({
           type: AlertType.FIELD_TO_SOURCE_CORRELATION,
           severity: AlertSeverity.WARNING,
           sourceAgent: AlertSourceAgent.CORRELATION,
@@ -215,7 +220,6 @@ export class CorrelationService {
             deviationPercent: correlation.deviationPercent,
             confidence: correlation.confidence,
           },
-          organizationId: this.organizationId,
         });
 
         insightsGenerated++;
@@ -262,7 +266,7 @@ export class CorrelationService {
         );
         if (alreadyFlagged) continue;
 
-        this.dbContext.alerts.create({
+        this.alertSvc.createAlert({
           type: AlertType.FIELD_TO_SOURCE_CORRELATION,
           severity: AlertSeverity.WARNING,
           sourceAgent: AlertSourceAgent.CORRELATION,
@@ -285,7 +289,6 @@ export class CorrelationService {
             deviationPercent: correlation.deviationPercent,
             confidence: correlation.confidence,
           },
-          organizationId: this.organizationId,
         });
 
         insightsGenerated++;

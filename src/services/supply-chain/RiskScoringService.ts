@@ -2,12 +2,17 @@ import { DatabaseContext } from '../../database';
 import { logger } from '../../utils/logger';
 import { config } from '../../config/environment';
 import { AlertSeverity, AlertType, AlertSourceAgent } from '../../config/constants';
+import { AlertService } from '../AlertService';
 
 export class RiskScoringService {
+  private alertSvc: AlertService;
+
   constructor(
     private dbContext: DatabaseContext,
     private organizationId: string
-  ) {}
+  ) {
+    this.alertSvc = new AlertService(dbContext, organizationId);
+  }
 
   calculateConcentrationRisk(supplierId: string): number {
     try {
@@ -86,19 +91,19 @@ export class RiskScoringService {
       const hasOpen  = (type: string) => existing.some(a => a.type === type && a.status === 'open');
 
       if (supplier.concentrationRisk >= 0.8 && !hasOpen(AlertType.CONCENTRATION_RISK)) {
-        this.dbContext.alerts.create({ type: AlertType.CONCENTRATION_RISK, severity: AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Supplier Concentration Risk: ${supplier.name}`, description: `${supplier.name} accounts for a high share of critical material volume.`, metadata: { concentrationRisk: supplier.concentrationRisk }, organizationId: this.organizationId });
+        this.alertSvc.createAlert({ type: AlertType.CONCENTRATION_RISK, severity: AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Supplier Concentration Risk: ${supplier.name}`, description: `${supplier.name} accounts for a high share of critical material volume.`, metadata: { concentrationRisk: supplier.concentrationRisk } });
         alertsCreated++;
       }
       if (supplier.geopoliticalRisk >= 1 && !hasOpen(AlertType.GEOPOLITICAL_RISK)) {
-        this.dbContext.alerts.create({ type: AlertType.GEOPOLITICAL_RISK, severity: AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Geopolitical Risk: ${supplier.name}`, description: `${supplier.name} is in high-risk region ${supplier.country}.`, metadata: { country: supplier.country }, organizationId: this.organizationId });
+        this.alertSvc.createAlert({ type: AlertType.GEOPOLITICAL_RISK, severity: AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Geopolitical Risk: ${supplier.name}`, description: `${supplier.name} is in high-risk region ${supplier.country}.`, metadata: { country: supplier.country } });
         alertsCreated++;
       }
       if (supplier.qualityRisk >= 0.3 && !hasOpen(AlertType.QUALITY_DEVIATION)) {
-        this.dbContext.alerts.create({ type: AlertType.QUALITY_DEVIATION, severity: AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Quality Deviation: ${supplier.name}`, description: `${supplier.name} has significant proportion of out-of-spec material lots.`, metadata: { qualityRisk: supplier.qualityRisk }, organizationId: this.organizationId });
+        this.alertSvc.createAlert({ type: AlertType.QUALITY_DEVIATION, severity: AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Quality Deviation: ${supplier.name}`, description: `${supplier.name} has significant proportion of out-of-spec material lots.`, metadata: { qualityRisk: supplier.qualityRisk } });
         alertsCreated++;
       }
       if (supplier.complianceRisk >= 0.5 && !hasOpen(AlertType.COMPLIANCE_GAP)) {
-        this.dbContext.alerts.create({ type: AlertType.COMPLIANCE_GAP, severity: supplier.complianceRisk >= 1 ? AlertSeverity.CRITICAL : AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Compliance Gap: ${supplier.name}`, description: `${supplier.name} certification ${supplier.certificationExpiry ? `expires ${supplier.certificationExpiry}` : 'is missing'}.`, metadata: { complianceRisk: supplier.complianceRisk, certificationExpiry: supplier.certificationExpiry }, organizationId: this.organizationId });
+        this.alertSvc.createAlert({ type: AlertType.COMPLIANCE_GAP, severity: supplier.complianceRisk >= 1 ? AlertSeverity.CRITICAL : AlertSeverity.WARNING, sourceAgent: AlertSourceAgent.SUPPLY_CHAIN, supplierId, title: `Compliance Gap: ${supplier.name}`, description: `${supplier.name} certification ${supplier.certificationExpiry ? `expires ${supplier.certificationExpiry}` : 'is missing'}.`, metadata: { complianceRisk: supplier.complianceRisk, certificationExpiry: supplier.certificationExpiry } });
         alertsCreated++;
       }
 

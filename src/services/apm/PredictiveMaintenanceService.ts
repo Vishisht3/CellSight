@@ -5,6 +5,7 @@ import {
   AlertSeverity, AlertType, AlertSourceAgent,
   TEMP_MIN_SAFE, TEMP_MAX_SAFE, OPTIMAL_SOC_MIN, OPTIMAL_SOC_MAX,
 } from '../../config/constants';
+import { AlertService } from '../AlertService';
 
 interface MaintenanceTrigger {
   assetId: string;
@@ -16,10 +17,14 @@ interface MaintenanceTrigger {
 }
 
 export class PredictiveMaintenanceService {
+  private alertSvc: AlertService;
+
   constructor(
     private dbContext: DatabaseContext,
     private organizationId: string
-  ) {}
+  ) {
+    this.alertSvc = new AlertService(dbContext, organizationId);
+  }
 
   checkThermalEvents(assetId: string): MaintenanceTrigger | null {
     try {
@@ -129,12 +134,13 @@ export class PredictiveMaintenanceService {
       for (const trigger of triggers) {
         const existing = this.dbContext.alerts.listByAsset(asset.id, this.organizationId, 10);
         if (!existing.some(a => a.type === trigger.type && a.status === 'open')) {
-          this.dbContext.alerts.create({
+          // Route through AlertService so the outbox event is enqueued atomically
+          this.alertSvc.createAlert({
             type: trigger.type, severity: trigger.severity,
             sourceAgent: AlertSourceAgent.APM, assetId: asset.id,
             title: `${trigger.type.replace(/_/g, ' ').toUpperCase()}: ${asset.name}`,
             description: `${trigger.reason}\n\nRecommended Action: ${trigger.recommendedAction}`,
-            metadata: trigger.metadata, organizationId: this.organizationId,
+            metadata: trigger.metadata,
           });
           alertsCreated++;
         }
