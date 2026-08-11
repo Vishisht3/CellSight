@@ -30,7 +30,10 @@ export class Scheduler {
   }
 
   /**
-   * Start a registered task
+   * Start a registered task.
+   * The first execution is deferred by one interval so the process can
+   * finish binding to its port and pass the Railway healthcheck before
+   * any scheduler work blocks the event loop.
    */
   start(name: string): void {
     const scheduledTask = this.tasks.get(name);
@@ -44,10 +47,7 @@ export class Scheduler {
       return;
     }
 
-    // Execute immediately
-    this.executeTask(scheduledTask);
-
-    // Then schedule recurring execution
+    // Schedule recurring execution — first run happens after one full interval
     scheduledTask.timer = setInterval(() => {
       this.executeTask(scheduledTask);
     }, scheduledTask.intervalMs);

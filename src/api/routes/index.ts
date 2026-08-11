@@ -31,10 +31,10 @@ router.get('/health', async (_req, res) => {
   let dbOk = false;
   try {
     const ctx = await getDatabaseContext();
-    // Use async ping for Postgres to avoid blocking the event loop,
-    // fall back to sync prepare() for SQLite
+    // Use queryAsync for Postgres — execAsync goes through the DDL splitter
+    // which adds unnecessary overhead on the hot health path.
     if (ctx.db instanceof PgDatabase) {
-      await ctx.db.execAsync('SELECT 1');
+      await (ctx.db as any).queryAsync('SELECT 1');
     } else {
       ctx.db.prepare('SELECT 1').get();
     }
