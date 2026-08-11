@@ -3,19 +3,22 @@
  *
  * Outbox pattern for alert creation
  * ──────────────────────────────────
- * createAlert writes TWO rows in a single synchronous operation:
- *   1. alerts        — the alert record (as before)
+ * createAlert writes TWO rows back-to-back on the same DB connection:
+ *   1. alerts        — the alert record
  *   2. outbox_events — a pending delivery receipt
  *
- * Both writes execute back-to-back on the same DB connection.  SQLite
- * serialises all writes, so they land in the same WAL frame; Postgres
- * sees them in the same implicit transaction.  If the process crashes
- * between the two writes the worst case is an alert row with no outbox
- * row — the alert is persisted, no phantom SSE notification fires.
+ * On SQLite both writes land in the same WAL frame.  On Postgres each
+ * pool.query() call auto-commits independently, so they are NOT in the
+ * same transaction — but the ordering guarantee still holds: if the
+ * process crashes after the alert INSERT and before the outbox INSERT,
+ * the alert row exists without an outbox row.  That is the safe failure
+ * mode: the alert is persisted and no phantom SSE notification fires.
+ * The inverse (outbox row without an alert) cannot happen because the
+ * alert INSERT runs first and rethrows on failure.
  *
- * The OutboxPublisher (started in index.ts) polls outbox_events every
- * 2 seconds and delivers undelivered rows to SSE clients.  This fully
- * decouples the DB write from the network push.
+ * The OutboxPublisher polls outbox_events every 2 seconds and delivers
+ * undelivered rows to SSE clients, fully decoupling the DB write from
+ * the network push.
  *
  * Alert acknowledge / resolve also enqueue outbox events so that
  * connected clients receive real-time status updates.

@@ -50,6 +50,34 @@ export class OutboxRepository {
     `).all(limit) as OutboxEvent[];
   }
 
+  /**
+   * Fetch delivered rows for a given org created after a reference event.
+   * Used by the SSE reconnect replay: already-delivered rows are replayed
+   * to the reconnecting client; undelivered rows will be pushed by the
+   * OutboxPublisher shortly and are excluded to avoid duplicate delivery.
+   *
+   * If sinceEventId does not match any row, the inner SELECT returns NULL
+   * and the outer `created_at > NULL` condition is false — no rows are
+   * returned.  This is the correct silent no-op for an unrecognised ID.
+   */
+  listSince(organizationId: string, sinceEventId: string, limit = 200): OutboxEvent[] {
+    return this.db.prepare(`
+      SELECT id, event_type as eventType, payload,
+             organization_id as organizationId,
+             created_at as createdAt,
+             delivered_at as deliveredAt,
+             attempts
+      FROM outbox_events
+      WHERE organization_id = ?
+        AND delivered_at IS NOT NULL
+        AND created_at > (
+              SELECT created_at FROM outbox_events WHERE id = ?
+            )
+      ORDER BY created_at ASC
+      LIMIT ?
+    `).all(organizationId, sinceEventId, limit) as OutboxEvent[];
+  }
+
   /** Mark a row as successfully delivered. */
   markDelivered(id: string): void {
     this.db.prepare(`

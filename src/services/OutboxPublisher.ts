@@ -30,7 +30,7 @@ import { logger } from '../utils/logger';
 
 const POLL_INTERVAL_MS = 2_000;   // check every 2 s
 const BATCH_SIZE       = 50;      // rows per poll cycle
-const MAX_ATTEMPTS     = 5;       // give up after 5 failed delivery attempts
+const MAX_ATTEMPTS     = 5;       // abandon when attempts >= MAX_ATTEMPTS (row has failed MAX_ATTEMPTS times)
 const PURGE_INTERVAL   = 60 * 60 * 1000; // purge delivered rows hourly
 
 export class OutboxPublisher {
