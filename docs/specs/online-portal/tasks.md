@@ -255,3 +255,58 @@ curl -X POST http://localhost:3000/api/auth/login \
 ```
 
 Confirm `organizationId` appears in the returned user object.
+
+---
+
+## Phase 10: Secret scanning
+
+### Task 10.1 — Add gitleaks secret-scan job to CI
+
+File: `.github/workflows/ci.yml`.
+
+Add a `secret-scan` job that runs before `backend-ci` and `frontend-ci`. Make both jobs depend on it via `needs: [secret-scan]`.
+
+On pull requests, use `fetch-depth: 0` and scan only the PR diff using `--log-opts="origin/${{ github.base_ref }}..HEAD"`.
+
+On pushes to main, scan the last commit only.
+
+Add a separate `secret-scan-full-history` job with `workflow_dispatch` trigger for periodic audits.
+
+### Task 10.2 — Add `.gitleaks.toml` configuration
+
+File: `.gitleaks.toml` at repo root.
+
+Set `title = "CellSight secret scan"`.
+
+Add an `[allowlist]` section that allowlists placeholder values in `.env.example` by regex, so the scanner does not flag example values like `change-this-to-a-strong-random-secret`.
+
+### Task 10.3 — Smoke test (do this before merging to main)
+
+Create a throwaway branch:
+
+```bash
+git checkout -b test/secret-scan-smoke
+```
+
+Add a fake secret to a test file:
+
+```bash
+echo 'FAKE_AWS_KEY=AKIAIOSFODNN7EXAMPLE' >> /tmp/fake-secret.txt
+git add /tmp/fake-secret.txt
+git commit -m "test: fake secret for scanner smoke test"
+git push origin test/secret-scan-smoke
+```
+
+Open a pull request from that branch. Confirm the `secret-scan` job fails.
+
+Revert and close the PR before merging.
+
+### Task 10.4 — Full-history audit (run once by hand before merging)
+
+Install gitleaks locally and run:
+
+```bash
+gitleaks detect --source . --log-opts="--all" -v
+```
+
+Review any findings. Fix real secrets (rotate and remove). Add verified false positives to `.gitleaks.toml` allowlist.

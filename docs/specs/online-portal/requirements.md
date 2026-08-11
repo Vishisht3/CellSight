@@ -157,11 +157,30 @@ THE SYSTEM SHALL return HTTP 404.
 WHEN the system issues a JWT access token,  
 THE SYSTEM SHALL embed `{ userId, email, role, organizationId }` as claims.
 
-### REQ-11.5: Demo organization isolation
+---
 
-THE SYSTEM SHALL assign all seeded demo accounts to a reserved organization named `__demo__` with `org_type = 'demo'`.
+## REQ-12: Secret scanning in CI
 
-THE SYSTEM SHALL NOT allow real customer sign-ups to use the organization name `__demo__`.
+### REQ-12.1: PR and push scan
 
-WHEN `DEMO_MODE=true` and the `__demo__` organization does not yet exist,  
-THE SYSTEM SHALL create it during the seed step.
+WHEN a commit or pull request is pushed to any branch,  
+THE SYSTEM SHALL run gitleaks against the changed files before `backend-ci` or `frontend-ci` are allowed to pass.
+
+IF gitleaks detects a pattern that matches a known secret type (API key, private key, password, or token),  
+THEN THE SYSTEM SHALL fail CI and block merge and deploy.
+
+### REQ-12.2: PR diff scope
+
+WHEN the check runs on a pull request,  
+THE SYSTEM SHALL scan only the diff introduced by that PR. The system shall not scan full history on every PR, to keep CI fast.
+
+### REQ-12.3: Full-history audit job
+
+THE SYSTEM SHALL provide a separate, manually-triggered job that scans the full git history. This job exists because diff-only scanning does not detect secrets committed before the check existed.
+
+WHEN a maintainer triggers the full-history scan manually,  
+THE SYSTEM SHALL run gitleaks with `--no-git` against the entire repository history and report any findings.
+
+### REQ-12.4: Allowlist for example values
+
+THE SYSTEM SHALL maintain a `.gitleaks.toml` configuration file that allowlists known-safe placeholder values in `.env.example` so the scanner does not flag its own example file.

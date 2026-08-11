@@ -1,0 +1,50 @@
+title = "CellSight secret scan"
+
+# ── Allowlist ─────────────────────────────────────────────────────────────────
+# These entries prevent the scanner from flagging known-safe placeholder
+# values in .env.example, README.md, and documentation files.
+
+[allowlist]
+  description = "Known-safe placeholder values in example and documentation files"
+
+  # Paths that contain only example or documentation content
+  paths = [
+    ".env.example",
+    ".env.example.local",
+    "README.md",
+    "docs/",
+    "frontend/.env.local",       # Vercel OIDC token — not a real secret
+  ]
+
+  # Specific regex patterns that are placeholder values, not real secrets
+  regexes = [
+    # Generic placeholder patterns used in .env.example
+    "change-this-to-a-strong-random-secret",
+    "change_me",
+    "your-secret-here",
+    "replace-with-real-value",
+    "example\\.com",
+    "localhost",
+
+    # Vercel OIDC token in frontend/.env.local — scoped to project, auto-rotated
+    "VERCEL_OIDC_TOKEN",
+
+    # Railway internal hostnames in docs/specs
+    "railway\\.internal",
+    "railway\\.app",
+
+    # Demo credential values used in documentation
+    "demo123",
+    "fleet@cellsight\\.com",
+    "supply@cellsight\\.com",
+    "maintenance@cellsight\\.com",
+    "admin@cellsight\\.com",
+
+    # Postgres URLs shown in docs — no real credentials
+    "postgresql://postgres:.*@.*railway\\.internal",
+  ]
+
+  # Specific commit SHAs to ignore if they appear in git history scan
+  # Add any pre-existing commits that triggered false positives during the
+  # first full-history audit here.
+  commits = []
