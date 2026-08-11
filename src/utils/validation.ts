@@ -16,7 +16,7 @@ export const telemetryIngestSchema = z.object({
 const passwordStrength = z.string()
   .min(8, 'Password must be at least 8 characters')
   .refine(
-    pw => /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw),
+    pw => /[0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pw),
     'Password must contain at least one number or special character'
   );
 
