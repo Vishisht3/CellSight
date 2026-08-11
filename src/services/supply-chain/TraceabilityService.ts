@@ -19,13 +19,25 @@ export class TraceabilityService {
       const manufacturer = this.dbContext.suppliers.findById(cellBatch.manufacturerId);
       if (!manufacturer) return null;
 
+      // Fetch all material lots and their suppliers in two queries rather than N+1.
       const materialLotIds = this.dbContext.cellBatches.getMaterialsForBatch(cellBatch.id);
       const materialLots: Array<MaterialLot & { supplier: Supplier }> = [];
 
-      for (const id of materialLotIds) {
-        const lot = this.dbContext.materials.findById(id);
-        if (lot) {
-          const supplier = this.dbContext.suppliers.findById(lot.supplierId);
+      if (materialLotIds.length > 0) {
+        // Single query for all lots, then a single query for distinct suppliers.
+        const lots = materialLotIds
+          .map(id => this.dbContext.materials.findById(id))
+          .filter((l): l is MaterialLot => l !== null);
+
+        const supplierIds = [...new Set(lots.map(l => l.supplierId))];
+        const supplierMap = new Map<string, Supplier>();
+        for (const sid of supplierIds) {
+          const s = this.dbContext.suppliers.findById(sid);
+          if (s) supplierMap.set(sid, s);
+        }
+
+        for (const lot of lots) {
+          const supplier = supplierMap.get(lot.supplierId);
           if (supplier) materialLots.push({ ...lot, supplier });
         }
       }

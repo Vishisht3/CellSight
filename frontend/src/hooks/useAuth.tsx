@@ -22,57 +22,53 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const stored = localStorage.getItem('cs_user');
-      return stored ? (JSON.parse(stored) as User) : null;
-    } catch { return null; }
-  });
+  // Access token lives in module memory only — not localStorage.
+  // The httpOnly refresh token cookie is invisible to JS and managed by the browser.
+  const [user, setUser] = useState<User | null>(() => authApi.getUser());
+  const [token, setToken] = useState<string | null>(() => authApi.getAccessToken());
 
-  // Access token is the one we expose to the rest of the app
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem('cs_access_token')
-  );
+  // isLoading is true on first mount: we do not know if the httpOnly cookie
+  // is present until we attempt a silent refresh.
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(!!(token && !user));
-
-  // On mount: if we have a stored token but no user, validate via /auth/me
+  // On mount: attempt a silent token refresh.
+  // If the httpOnly cookie is present and valid, this succeeds and restores the
+  // session without requiring the user to log in again.
+  // If it fails (no cookie, expired, revoked), the user sees the login screen.
   useEffect(() => {
-    if (token && !user) {
-      setIsLoading(true);
-      authApi.me()
-        .then(fetchedUser => {
-          setUser(fetchedUser);
-          localStorage.setItem('cs_user', JSON.stringify(fetchedUser));
-        })
-        .catch(() => {
-          // Token invalid or expired and refresh also failed — clear state
-          localStorage.removeItem('cs_access_token');
-          localStorage.removeItem('cs_refresh_token');
-          localStorage.removeItem('cs_user');
-          setToken(null);
-          setUser(null);
-        })
-        .finally(() => setIsLoading(false));
+    // If we already have a valid in-memory token, just validate it.
+    if (token && user) {
+      setIsLoading(false);
+      return;
     }
+
+    // Try a silent refresh (uses the httpOnly cookie automatically).
+    authApi.silentRefresh()
+      .then(data => {
+        setToken(data.accessToken);
+        setUser(data.user);
+      })
+      .catch(() => {
+        // No valid session — user must log in.
+        setToken(null);
+        setUser(null);
+      })
+      .finally(() => setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // authApi.login persists both tokens to localStorage
       const data = await authApi.login(email, password);
       setToken(data.accessToken);
       setUser(data.user);
-      localStorage.setItem('cs_user', JSON.stringify(data.user));
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   const logout = useCallback(async () => {
-    // authApi.logout calls /auth/logout (revokes refresh token) then clears localStorage
     await authApi.logout();
     setToken(null);
     setUser(null);

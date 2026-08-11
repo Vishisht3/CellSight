@@ -12,15 +12,23 @@ export const telemetryIngestSchema = z.object({
   timestamp: z.string().datetime().optional(),
 });
 
+// Password strength: 8+ chars, at least one digit or special character
+const passwordStrength = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .refine(
+    pw => /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw),
+    'Password must contain at least one number or special character'
+  );
+
 // User validation schemas
 export const userLoginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(1, 'Password is required'),
 });
 
 export const userRegisterSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: passwordStrength,
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
   role: z.nativeEnum(UserRole, { errorMap: () => ({ message: 'Invalid user role' }) }),
 });

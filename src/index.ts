@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { config } from './config/environment';
 import { getDatabaseContext } from './database';
 import apiRoutes from './api/routes';
@@ -46,6 +47,7 @@ app.use(cors({
 // ── Body parsing ──────────────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(cookieParser());
 
 // ── Request logging (with request-ID) ────────────────────────────────────
 app.use(requestLogger);

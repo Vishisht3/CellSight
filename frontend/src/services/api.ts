@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import type {
   Asset,
   FleetSummary,
@@ -22,19 +22,27 @@ import type {
 // In local dev it is empty so the Vite proxy at /api → localhost:3000 is used.
 const API_BASE = ((import.meta as any).env?.VITE_API_URL ?? '') + '/api';
 
-// ── Axios client ──────────────────────────────────────────────────────────
+// ── In-memory access token (not persisted — survives only for session) ─────
+let _accessToken: string | null = null;
+let _user: User | null = null;
 
+function setAccessToken(token: string | null) { _accessToken = token; }
+function getAccessToken(): string | null { return _accessToken; }
+function setUser(user: User | null) { _user = user; }
+function getUser(): User | null { return _user; }
+
+// ── Axios client ──────────────────────────────────────────────────────────
 const client: AxiosInstance = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: false,
+  withCredentials: true, // sends httpOnly refresh token cookie on every request
 });
 
 // Attach access token on every request
-client.interceptors.request.use((config) => {
-  const token = localStorage.getItem('cs_access_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
+client.interceptors.request.use((cfg: InternalAxiosRequestConfig) => {
+  const token = getAccessToken();
+  if (token) cfg.headers.Authorization = `Bearer ${token}`;
+  return cfg;
 });
 
 // On 401 attempt one silent refresh; if that also fails, force re-login
@@ -46,12 +54,6 @@ client.interceptors.response.use(
   async (err: AxiosError) => {
     const original = err.config as any;
     if (err.response?.status !== 401 || original._retry) {
-      return Promise.reject(err);
-    }
-
-    const refreshToken = localStorage.getItem('cs_refresh_token');
-    if (!refreshToken) {
-      _clearSession();
       return Promise.reject(err);
     }
 
@@ -69,10 +71,11 @@ client.interceptors.response.use(
     original._retry = true;
 
     try {
-      const { data } = await axios.post(`${API_BASE}/auth/refresh`, { refreshToken });
-      const { accessToken, refreshToken: newRefresh } = data;
-      localStorage.setItem('cs_access_token',  accessToken);
-      localStorage.setItem('cs_refresh_token', newRefresh);
+      // Refresh endpoint will automatically receive the httpOnly cookie
+      const { data } = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
+      const { accessToken, user } = data;
+      setAccessToken(accessToken);
+      setUser(user);
 
       _refreshQueue.forEach(cb => cb(accessToken));
       _refreshQueue = [];
@@ -80,7 +83,7 @@ client.interceptors.response.use(
       original.headers.Authorization = `Bearer ${accessToken}`;
       return client(original);
     } catch {
-      _clearSession();
+      clearSession();
       return Promise.reject(err);
     } finally {
       _refreshing = false;
@@ -88,10 +91,9 @@ client.interceptors.response.use(
   }
 );
 
-function _clearSession() {
-  localStorage.removeItem('cs_access_token');
-  localStorage.removeItem('cs_refresh_token');
-  localStorage.removeItem('cs_user');
+function clearSession() {
+  setAccessToken(null);
+  setUser(null);
   window.location.href = '/login';
 }
 
@@ -100,27 +102,45 @@ function _clearSession() {
 export const authApi = {
   login: async (email: string, password: string) => {
     const { data } = await client.post('/auth/login', { email, password });
-    localStorage.setItem('cs_access_token',  data.accessToken);
-    localStorage.setItem('cs_refresh_token', data.refreshToken);
-    localStorage.setItem('cs_user', JSON.stringify(data.user));
-    return data as { accessToken: string; refreshToken: string; user: User };
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+    return data as { accessToken: string; user: User };
   },
+
   signup: async (companyName: string, orgType: string, email: string, password: string) => {
     const { data } = await client.post('/auth/signup', { companyName, orgType, email, password });
-    localStorage.setItem('cs_access_token',  data.accessToken);
-    localStorage.setItem('cs_refresh_token', data.refreshToken);
-    localStorage.setItem('cs_user', JSON.stringify(data.user));
-    return data as { accessToken: string; refreshToken: string; user: User; organization: Organization };
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+    return data as { accessToken: string; user: User; organization: Organization };
   },
+
+  /** Silent refresh using the httpOnly cookie — called on app mount. */
+  silentRefresh: async (): Promise<{ accessToken: string; user: User }> => {
+    const { data } = await axios.post(
+      `${API_BASE}/auth/refresh`,
+      {},
+      { withCredentials: true }
+    );
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+    return data;
+  },
+
   logout: async () => {
-    const refreshToken = localStorage.getItem('cs_refresh_token');
-    try { await client.post('/auth/logout', { refreshToken }); } catch { /* ignore */ }
-    _clearSession();
+    try { await client.post('/auth/logout'); } catch { /* ignore */ }
+    clearSession();
   },
+
   me: async (): Promise<User> => {
     const { data } = await client.get<{ user: User }>('/auth/me');
+    setUser(data.user);
     return data.user;
   },
+
+  getAccessToken,
+  getUser,
+  setAccessToken,
+  setUser,
 };
 
 // ── Fleet APM ─────────────────────────────────────────────────────────────
@@ -130,18 +150,22 @@ export const apmApi = {
     const { data } = await client.get<FleetSummary>('/apm/dashboard');
     return data;
   },
+
   getAssets: async (params?: { status?: string; type?: string }) => {
     const { data } = await client.get('/apm/assets', { params });
     return data as { assets: Asset[]; summary: FleetSummary };
   },
+
   getAsset: async (id: string) => {
     const { data } = await client.get(`/apm/assets/${id}`);
     return data as { asset: Asset; sohHistory: SohHistory[]; alerts: Alert[] };
   },
+
   getTelemetry: async (assetId: string, limit = 200): Promise<TelemetryData[]> => {
     const { data } = await client.get(`/apm/assets/${assetId}/telemetry`, { params: { limit } });
     return data.telemetry;
   },
+
   ingestTelemetry: async (payload: {
     assetId: string; voltage: number; current: number;
     temperature: number; stateOfCharge: number; cycleCount: number;
@@ -149,6 +173,7 @@ export const apmApi = {
     const { data } = await client.post('/apm/telemetry', payload);
     return data as { telemetryId: string };
   },
+
   createAsset: async (payload: {
     name: string; assetType: string; batteryPackId: string;
   }) => {
@@ -164,28 +189,34 @@ export const supplyChainApi = {
     const { data } = await client.get<SupplyChainSummary>('/supply-chain/dashboard');
     return data;
   },
+
   getSuppliers: async (params?: { tier?: string; highRiskOnly?: boolean }) => {
     const { data } = await client.get('/supply-chain/suppliers', { params });
     return data as { suppliers: Supplier[]; summary: { totalSuppliers: number; highRiskSuppliers: number; avgRiskScore: number } };
   },
+
   getSupplier: async (id: string) => {
     const { data } = await client.get(`/supply-chain/suppliers/${id}`);
     return data as { supplier: Supplier; materialLots: MaterialLot[]; alerts: Alert[] };
   },
+
   getMaterials: async (params?: { supplierId?: string; materialType?: string }): Promise<MaterialLot[]> => {
     const { data } = await client.get('/supply-chain/materials', { params });
     return data.materials;
   },
+
   traceAsset: async (assetId: string): Promise<AssetTrace> => {
     const { data } = await client.get(`/supply-chain/trace/${assetId}`);
     return data.trace;
   },
+
   createSupplier: async (payload: {
     name: string; tier: string; country: string; certificationExpiry?: string;
   }) => {
     const { data } = await client.post('/supply-chain/suppliers', payload);
     return data.supplier as Supplier;
   },
+
   createMaterialLot: async (payload: {
     lotNumber: string; materialType: string; supplierId: string;
     quantity: number; country: string; qualityScore?: number;
@@ -194,12 +225,14 @@ export const supplyChainApi = {
     const { data } = await client.post('/supply-chain/materials', payload);
     return data.materialLot as MaterialLot;
   },
+
   createCellBatch: async (payload: {
     batchNumber: string; manufacturerId: string; quantity: number; productionDate?: string;
   }) => {
     const { data } = await client.post('/supply-chain/cell-batches', payload);
     return data.cellBatch;
   },
+
   createBatteryPack: async (payload: {
     packNumber: string; cellBatchId: string; capacity: number; assemblyDate?: string;
   }) => {
@@ -218,8 +251,10 @@ export const alertsApi = {
     const { data } = await client.get('/alerts', { params });
     return data as { alerts: Alert[]; counts: AlertCounts };
   },
+
   acknowledge: async (id: string): Promise<void> => { await client.put(`/alerts/${id}/acknowledge`); },
   resolve:     async (id: string): Promise<void> => { await client.put(`/alerts/${id}/resolve`); },
+
   getStatsByAgent: async () => {
     const { data } = await client.get('/alerts/stats/by-agent');
     return data.stats as Record<string, { open: number; total: number }>;
