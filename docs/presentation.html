@@ -37,9 +37,8 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
 .caption{font-size:13px;color:#1a1a1a;margin-top:10px;margin-bottom:16px;font-family:'Georgia',serif;padding-left:4px}
 .caption b{font-weight:700}
 
-/* Mockup wrapper — arrow SVG sits on top */
-.ann{position:relative;display:block;max-width:560px;margin:0 auto 4px}
-.ann svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+/* Mockup wrapper */
+.ann{display:block;max-width:560px;margin:0 auto 4px}
 
 /* App mockup chrome */
 .mockup{border:1px solid #999;border-radius:2px;overflow:hidden;box-shadow:2px 3px 8px rgba(0,0,0,.25);font-family:'Inter',sans-serif;font-size:11px}
@@ -171,15 +170,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         <div style="font-size:9px;color:#6a6a6a;text-align:center">New to CellSight? <span style="color:#316ac5">Create your company account</span></div>
       </div>
     </div>
-    <!-- Arrow pointing to Admin Login button -->
-    <svg viewBox="0 0 400 230" preserveAspectRatio="none">
-      <defs>
-        <marker id="arr1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#cc0000"/>
-        </marker>
-      </defs>
-      <line x1="310" y1="195" x2="310" y2="178" stroke="#cc0000" stroke-width="3" marker-end="url(#arr1)"/>
-    </svg>
   </div>
   <p class="caption">▲ Click <b>Admin Login</b> to automatically pre-fill the demo Fleet Manager credentials and sign in instantly.</p>
 
@@ -229,13 +219,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 260" preserveAspectRatio="none">
-      <defs><marker id="arr2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <!-- Arrow to critical row -->
-      <line x1="520" y1="195" x2="470" y2="195" stroke="#cc0000" stroke-width="3" marker-end="url(#arr2)"/>
-      <!-- Arrow to SoH column -->
-      <line x1="300" y1="18" x2="300" y2="148" stroke="#cc0000" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arr2)"/>
-    </svg>
   </div>
   <p class="caption">▲ The <b>State of Health bar</b> (SoH column) is computed by an OLS linear regression model trained on 7 telemetry features. Green ≥ 85%, amber 80–85%, red &lt; 80%.</p>
   <p class="caption">▲ <b>Forklift-FL05</b> is highlighted red with an RUL of <b>7 days</b> — the APM agent has already raised a CRITICAL alert and added it to the maintenance queue.</p>
@@ -292,13 +275,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 310" preserveAspectRatio="none">
-      <defs><marker id="arr3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <!-- Arrow to red dot on chart -->
-      <line x1="180" y1="260" x2="230" y2="240" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr3)"/>
-      <!-- Arrow to supply chain trace link -->
-      <line x1="450" y1="52" x2="420" y2="52" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr3)"/>
-    </svg>
   </div>
   <p class="caption">▲ The red dot on the SoH trend marks the current value — it has crossed the critical 80% threshold (lower dashed line). The amber dashed line marks the 85% warning threshold.</p>
   <p class="caption">▲ <b>"View supply chain trace »"</b> — click this to see exactly which raw material lots, cell batch, and manufacturer are linked to this specific asset.</p>
@@ -401,13 +377,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 220" preserveAspectRatio="none">
-      <defs><marker id="arr4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <!-- Arrow to 4-bar column -->
-      <line x1="330" y1="18" x2="330" y2="100" stroke="#cc0000" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#arr4)"/>
-      <!-- Arrow to expired cert -->
-      <line x1="520" y1="110" x2="502" y2="110" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr4)"/>
-    </svg>
   </div>
   <p class="caption">▲ Each supplier has <b>four risk bars</b> computed independently. CobaltMines has a fully red Geopolitical bar (Congo, CD) and a fully red Compliance bar (certification expired). Two independent risk signals.</p>
   <p class="caption">▲ The <b>Compliance column</b> shows "⚠ EXPIRED" for CobaltMines — the system has already raised a CRITICAL alert automatically.</p>
@@ -456,10 +425,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 230" preserveAspectRatio="none">
-      <defs><marker id="arr5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <line x1="460" y1="175" x2="426" y2="165" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr5)"/>
-    </svg>
   </div>
   <p class="caption">▲ <b>Cobalt lot CO-CD-0008</b> is highlighted red — quality score 74.3 is below the specification minimum. This lot came from CobaltMines Ltd (CD), the same supplier with an expired certification. The supply chain manager can see both risk signals in one view.</p>
   <div class="callout">
@@ -504,13 +469,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 280" preserveAspectRatio="none">
-      <defs><marker id="arr6" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <!-- Arrow to red bars -->
-      <line x1="80" y1="12" x2="60" y2="78" stroke="#cc0000" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#arr6)"/>
-      <!-- Arrow to z-score column -->
-      <line x1="520" y1="234" x2="488" y2="234" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr6)"/>
-    </svg>
   </div>
   <p class="caption">▲ <b>Red bars</b> are statistical outliers (z &gt; 2.0). Their assets are degrading significantly faster than the fleet population — not just faster in absolute terms, but faster than expected given normal variation.</p>
   <p class="caption">▲ The <b>Z-Score column</b> shows the exact significance. CobaltMines z = 2.84 means its assets degrade faster than 99.8% of the fleet population — a highly significant signal.</p>
@@ -564,13 +522,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 210" preserveAspectRatio="none">
-      <defs><marker id="arr7" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <!-- Arrow to left border colour -->
-      <line x1="12" y1="12" x2="12" y2="108" stroke="#cc0000" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#arr7)"/>
-      <!-- Arrow to agent badge -->
-      <line x1="420" y1="12" x2="370" y2="120" stroke="#cc0000" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr7)"/>
-    </svg>
   </div>
   <p class="caption">▲ The <b>left border colour</b> gives instant severity — red for CRITICAL, amber for WARNING. No need to read the badge first.</p>
   <p class="caption">▲ The <b>Agent badge</b> shows which of the three AI agents raised the alert — Fleet APM (blue), Supply Chain (purple), or Correlation (orange).</p>
@@ -609,10 +560,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 230" preserveAspectRatio="none">
-      <defs><marker id="arr8" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <line x1="520" y1="190" x2="490" y2="200" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr8)"/>
-    </svg>
   </div>
   <p class="caption">▲ <b>Loader-LD1</b> is flagged "Not Suitable" — no commercial EV equivalent exists at its required power rating. Honest gap identification prevents over-optimistic electrification planning.</p>
   <p class="step">10.2 &nbsp; Click any asset row to expand the full <b>Procurement Panel</b> — recommended EV model, OEM, list price, delivery lead time, annual fuel saving, CO₂ reduction, and payback period.</p>
@@ -648,11 +595,6 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
         </div>
       </div>
     </div>
-    <svg viewBox="0 0 560 260" preserveAspectRatio="none">
-      <defs><marker id="arr9" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#cc0000"/></marker></defs>
-      <!-- Arrow to charge icon column -->
-      <line x1="520" y1="192" x2="492" y2="192" stroke="#cc0000" stroke-width="2.5" marker-end="url(#arr9)"/>
-    </svg>
   </div>
   <p class="caption">▲ The <b>⚡ column</b> flags jobs that require an EV charging slot in addition to a workshop bay. The Day shift is fully booked — the Forklift battery swap must be assigned to the Afternoon shift which has 5 free charge slots.</p>
   <div class="callout">
