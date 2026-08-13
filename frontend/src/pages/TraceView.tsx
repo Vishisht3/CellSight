@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, Layers, Box, Factory, AlertCircle } from 'lucide-react';
 import { supplyChainApi } from '../services/api';
 import type { AssetTrace } from '../types';
 import Navbar from '../components/layout/Navbar';
+import Breadcrumb from '../components/ui/Breadcrumb';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import PageContainer from '../components/ui/PageContainer';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorBanner from '../components/ui/ErrorBanner';
@@ -37,6 +39,7 @@ function TraceRow({ icon, tier, title, meta, last }: {
 }
 
 export default function TraceView() {
+  useDocumentMeta({ title: 'Pack Trace', description: 'Trace any battery pack back through its full supply chain: manufacturer, cell batch, and raw material lots.' });
   const { assetId } = useParams<{ assetId: string }>();
   const navigate    = useNavigate();
   const [trace,   setTrace]   = useState<AssetTrace | null>(null);
@@ -55,18 +58,19 @@ export default function TraceView() {
     <>
       <Navbar
         title="Supply Chain Trace"
-        subtitle="Full upstream chain: raw material → cell batch → battery pack → deployed asset"
+        subtitle="Full upstream chain: raw material â†’ cell batch â†’ battery pack â†’ deployed asset"
         actions={
           <button onClick={() => navigate(-1)} className="win-btn" style={{ fontSize:11 }}>
             <ArrowLeft size={11}/> Back
           </button>
         }
       />
+      <Breadcrumb items={[{ label: 'Supplier Portal', href: '/supply-chain' }, { label: 'Trace' }, { label: assetId ?? 'Asset' }]} />
       <PageContainer>
         {error && <ErrorBanner message={error} />}
 
         {loading ? (
-          <LoadingSpinner fullPage size="lg" label="Loading trace…" />
+          <LoadingSpinner fullPage size="lg" label="Loading traceâ€¦" />
         ) : !trace ? (
           <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#721c24', padding:16 }}>
             <AlertCircle size={14}/> No trace data found for this asset.
@@ -113,7 +117,7 @@ export default function TraceView() {
                       tier="Cell Manufacturer"
                       title={trace.manufacturer.name}
                       meta={[
-                        `Country: ${trace.manufacturer.country}  ·  ${tierLabel[trace.manufacturer.tier]}`,
+                        `Country: ${trace.manufacturer.country}  Â·  ${tierLabel[trace.manufacturer.tier]}`,
                         `Composite risk score: ${trace.manufacturer.riskScore.toFixed(0)} / 100`,
                       ]}
                       last
@@ -153,7 +157,7 @@ export default function TraceView() {
                               <td style={{ fontFamily:'Courier New,monospace', fontSize:10 }}>{lot.lotNumber}</td>
                               <td>{lot.supplier.name} ({lot.supplier.country})</td>
                               <td style={{ color: outOfSpec ? '#c00000' : '#155724', fontWeight:'bold' }}>
-                                {lot.qualityScore != null ? `${outOfSpec?'⚠ ':'✓ '}${lot.qualityScore.toFixed(1)}` : '—'}
+                                {lot.qualityScore != null ? `${outOfSpec?'âš  ':'âœ“ '}${lot.qualityScore.toFixed(1)}` : 'â€”'}
                               </td>
                             </tr>
                           );

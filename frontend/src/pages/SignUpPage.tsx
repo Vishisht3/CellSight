@@ -1,9 +1,10 @@
-import { useState, FormEvent, useEffect } from 'react';
+﻿import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Zap, Building2, LogIn } from 'lucide-react';
 import { authApi } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import type { OrgType } from '../types';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const ORG_TYPE_OPTIONS: { value: OrgType; label: string; landing: string }[] = [
   { value: 'fleet_operator',  label: 'Fleet Operator',    landing: '/fleet'         },
@@ -13,6 +14,7 @@ const ORG_TYPE_OPTIONS: { value: OrgType; label: string; landing: string }[] = [
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  useDocumentMeta({ title: 'Create Your Account', description: 'Create your CellSight company account and start monitoring your EV fleet battery health today.' });
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // Redirect already-authenticated users away from the signup page
@@ -92,7 +94,7 @@ export default function SignUpPage() {
             <Zap size={13} color="#fff" />
           </div>
           <span style={{ color: '#fff', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-            CellSight — Create Your Account
+            CellSight â€” Create Your Account
           </span>
         </div>
 
@@ -132,7 +134,7 @@ export default function SignUpPage() {
               padding: '5px 10px', marginBottom: 12, fontSize: 12, color: '#721c24',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <span style={{ fontWeight: 'bold' }}>⚠</span> {error}
+              <span style={{ fontWeight: 'bold' }}>âš </span> {error}
             </div>
           )}
 
@@ -260,7 +262,7 @@ export default function SignUpPage() {
                   className="win-btn win-btn-primary"
                 >
                   <LogIn size={12} />
-                  {isLoading ? 'Creating account…' : 'Create Account'}
+                  {isLoading ? 'Creating accountâ€¦' : 'Create Account'}
                 </button>
               </div>
             </form>

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Truck, Activity, AlertTriangle, Clock, CheckCircle, TrendingDown } from 'lucide-react';
 import { apmApi } from '../services/api';
 import type { Asset, FleetSummary } from '../types';
@@ -11,6 +11,7 @@ import SohGauge from '../components/ui/SohGauge';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorBanner from '../components/ui/ErrorBanner';
 import EmptyState from '../components/ui/EmptyState';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { formatRul, formatDateTime, assetTypeLabel } from '../utils/format';
 
 type StatusFilter = 'all' | 'healthy' | 'watch' | 'critical' | 'data_stale';
@@ -24,6 +25,8 @@ export default function FleetDashboard() {
   const [statusFilter,setStatusFilter]= useState<StatusFilter>('all');
   const [typeFilter,  setTypeFilter]  = useState('');
   const [refreshing,  setRefreshing]  = useState(false);
+
+  useDocumentMeta({ title: 'Fleet Health Dashboard', description: 'Monitor real-time battery health, SoH trends, and predictive maintenance alerts across your entire industrial EV fleet.' });
 
   const load = useCallback(async () => {
     try {
@@ -56,7 +59,7 @@ export default function FleetDashboard() {
   return (
     <>
       <Navbar
-        title="Fleet APM — Battery Health Monitor"
+        title="Fleet APM â€” Battery Health Monitor"
         subtitle="Real-time state-of-health and predictive maintenance across all deployed assets"
         alertCount={summary?.openAlerts}
         onRefresh={() => { setRefreshing(true); load(); }}
@@ -75,7 +78,7 @@ export default function FleetDashboard() {
             <StatCard label="Data Stale"     value={summary.staleAssets}    icon={<Clock size={16}/>} />
             <StatCard
               label="Fleet Avg SoH"
-              value={summary.avgSoh != null ? `${Number(summary.avgSoh).toFixed(1)}%` : '—'}
+              value={summary.avgSoh != null ? `${Number(summary.avgSoh).toFixed(1)}%` : 'â€”'}
               icon={<TrendingDown size={16}/>}
               variant={Number(summary.avgSoh) >= 85 ? 'success' : Number(summary.avgSoh) >= 80 ? 'warning' : 'danger'}
               subValue="State of Health"
@@ -152,7 +155,7 @@ export default function FleetDashboard() {
 
           {/* table */}
           {loading ? (
-            <LoadingSpinner fullPage label="Loading fleet data…" />
+            <LoadingSpinner fullPage label="Loading fleet dataâ€¦" />
           ) : assets.length === 0 && statusFilter === 'all' && !typeFilter ? (
             <EmptyState
               icon={Truck}
@@ -178,6 +181,7 @@ export default function FleetDashboard() {
                     <th>Est. RUL</th>
                     <th>Cycles</th>
                     <th>Last Telemetry</th>
+                  <th>Trace</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -200,7 +204,10 @@ export default function FleetDashboard() {
                         {asset.totalCycles.toLocaleString()}
                       </td>
                       <td style={{ fontSize: 11, color: '#6a6a6a' }}>
-                        {asset.lastTelemetryAt ? formatDateTime(asset.lastTelemetryAt) : '—'}
+                        {asset.lastTelemetryAt ? formatDateTime(asset.lastTelemetryAt) : 'â€”'}
+                      </td>
+                      <td onClick={e => e.stopPropagation()}>
+                        <Link to={'/supply-chain/trace/' + asset.id} style={{ fontSize: 10, color: '#316ac5' }}>Trace</Link>
                       </td>
                     </tr>
                   ))}

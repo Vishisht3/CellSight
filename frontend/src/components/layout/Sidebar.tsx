@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+﻿import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Truck, PackageSearch, Bell, GitMerge, LogOut,
   Zap, Map, Wrench, PlusCircle, UserCircle,
@@ -40,7 +40,7 @@ export default function Sidebar() {
         boxShadow: '2px 0 6px rgba(0,0,0,0.5)',
       }}
     >
-      {/* ── Branding ── */}
+      {/* â”€â”€ Branding â”€â”€ */}
       <div
         style={{
           background: 'linear-gradient(135deg, #1e5cbf 0%, #0a246a 60%, #051030 100%)',
@@ -75,7 +75,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* ── Navigation ── */}
+      {/* â”€â”€ Navigation â”€â”€ */}
       <nav className="flex-1 overflow-y-auto py-2">
         <div style={{ padding: '4px 8px 2px', fontSize: 9, color: '#7090c0', letterSpacing: 1, fontWeight: 'bold', textTransform: 'uppercase' }}>
           Navigation
@@ -109,7 +109,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* ── User footer ── */}
+      {/* â”€â”€ User footer â”€â”€ */}
       <div style={{ borderTop: '1px solid #2a4a8a', padding: '8px 10px' }}>
         {isAuthenticated && user ? (
           <div className="flex items-center gap-2">
@@ -160,6 +160,13 @@ export default function Sidebar() {
             Sign In
           </button>
         )}
+      </div>
+      <div style={{ borderTop: '1px solid #1a2a4a', padding: '5px 10px' }}>
+        <NavLink to="/privacy" style={{ color: '#7090c0', fontSize: 9, textDecoration: 'none', display: 'block', textAlign: 'center' }}
+          onMouseOver={e => (e.currentTarget.style.color = '#c0d8f8')}
+          onMouseOut={e => (e.currentTarget.style.color = '#7090c0')}>
+          Privacy Policy
+        </NavLink>
       </div>
     </aside>
   );

@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Bell, CheckCircle, XCircle, Filter } from 'lucide-react';
 import { alertsApi } from '../services/api';
 import type { Alert, AlertCounts, AlertStatus, AlertSourceAgent } from '../types';
@@ -38,6 +40,8 @@ export default function AlertsPage() {
   const [agentFilter,setAgentFilter]= useState('');
   const [actionId,   setActionId]   = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  useDocumentMeta({ title: 'Alerts', description: 'Monitor and manage battery health, supplier quality, and field correlation alerts for your industrial EV fleet.' });
 
   const load = useCallback(async () => {
     try {
@@ -134,7 +138,7 @@ export default function AlertsPage() {
           </div>
 
           {loading ? (
-            <LoadingSpinner fullPage label="Loading alerts…" />
+            <LoadingSpinner fullPage label="Loading alertsâ€¦" />
           ) : alerts.length === 0 ? (
             <EmptyState icon={Bell} title="No alerts found" description="Adjust filters or check back later." />
           ) : (
@@ -159,7 +163,9 @@ export default function AlertsPage() {
                       <td style={{ padding:0, width:4, background:sevColor }}></td>
                       <td style={{ maxWidth:320 }}>
                         <div style={{ fontWeight:'bold', color:'#0a246a' }}>{alert.title}</div>
-                        <div style={{ fontSize:10, color:'#6a6a6a', marginTop:1 }}>{alert.description.slice(0,100)}{alert.description.length>100?'…':''}</div>
+                        <div style={{ fontSize:10, color:'#6a6a6a', marginTop:1 }}>{alert.description.slice(0,100)}{alert.description.length>100?'...':''}</div>
+                        {alert.assetId && (<Link to={'/fleet/' + alert.assetId} style={{ fontSize:10, color:'#316ac5', display:'block', marginTop:2 }}>View asset &rarr;</Link>)}
+                        {alert.supplierId && (<Link to="/supply-chain" style={{ fontSize:10, color:'#316ac5', display:'block', marginTop:2 }}>View supplier &rarr;</Link>)}
                       </td>
                       <td>{alertTypeLabel[alert.type]}</td>
                       <td>

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { GitMerge, TrendingUp, Zap } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -23,6 +24,7 @@ function barColor(pct: number) {
 }
 
 export default function CorrelationPage() {
+  useDocumentMeta({ title: 'Field Claims & Correlation' });
   const [batchCorr,   setBatchCorr]   = useState<BatchCorrelation[]>([]);
   const [supplierCorr,setSupplierCorr]= useState<SupplierCorrelation[]>([]);
   const [loading,     setLoading]     = useState(true);
@@ -48,7 +50,7 @@ export default function CorrelationPage() {
     setRunning(true);
     try {
       const r = await correlationApi.runAnalysis();
-      setInsight(`Analysis complete — ${r.insightsGenerated} new insight${r.insightsGenerated !== 1 ? 's' : ''} generated across ${r.batchesAnalyzed} batches and ${r.suppliersAnalyzed} suppliers.`);
+      setInsight(`Analysis complete â€” ${r.insightsGenerated} new insight${r.insightsGenerated !== 1 ? 's' : ''} generated across ${r.batchesAnalyzed} batches and ${r.suppliersAnalyzed} suppliers.`);
       await load();
     } catch { setError('Analysis failed.'); }
     finally { setRunning(false); }
@@ -75,7 +77,7 @@ export default function CorrelationPage() {
           <button onClick={runAnalysis} disabled={running}
             className="win-btn win-btn-primary" style={{ fontSize: 11 }}>
             <Zap size={11} />
-            {running ? 'Running analysis…' : 'Run Correlation Analysis'}
+            {running ? 'Running analysisâ€¦' : 'Run Correlation Analysis'}
           </button>
         }
       />
@@ -98,7 +100,7 @@ export default function CorrelationPage() {
             subValue={tab === 'batches' ? 'cell batches' : 'suppliers'} />
           <StatCard label="Flagged (>20% faster)" value={flagged}       icon={<TrendingUp size={16}/>}
             variant={flagged > 0 ? 'danger' : 'success'} />
-          <StatCard label="On Watch (10–20%)"      value={watch}         icon={<TrendingUp size={16}/>}
+          <StatCard label="On Watch (10â€“20%)"      value={watch}         icon={<TrendingUp size={16}/>}
             variant={watch > 0 ? 'warning' : 'success'} />
         </div>
 
@@ -106,7 +108,7 @@ export default function CorrelationPage() {
         {!loading && chartData.length > 0 && (
           <div className="win-panel" style={{ overflow: 'hidden' }}>
             <div className="win-section-header">
-              Degradation Deviation vs Fleet Average — Top 10 {tab === 'batches' ? 'Batches' : 'Suppliers'}
+              Degradation Deviation vs Fleet Average â€” Top 10 {tab === 'batches' ? 'Batches' : 'Suppliers'}
             </div>
             <div style={{ padding: 12 }}>
               <ResponsiveContainer width="100%" height={220}>
@@ -165,7 +167,7 @@ export default function CorrelationPage() {
           </div>
 
           {loading ? (
-            <LoadingSpinner fullPage label="Calculating correlations…" />
+            <LoadingSpinner fullPage label="Calculating correlationsâ€¦" />
           ) : rows.length === 0 ? (
             <EmptyState icon={GitMerge} title="No correlation data"
               description="Run the analysis above, or seed more demo data." />

@@ -1,11 +1,13 @@
-import { useState, FormEvent, useEffect } from 'react';
+﻿import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Zap, LogIn, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 export default function LoginPage() {
   const { login, isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  useDocumentMeta({ title: 'Sign In', description: 'Sign in to CellSight to monitor your EV fleet battery health and supply chain risk in real time.' });
 
   // Redirect already-authenticated users away from the login page
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function LoginPage() {
             <Zap size={13} color="#fff" />
           </div>
           <span style={{ color: '#fff', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-            CellSight — Battery Intelligence Portal
+            CellSight â€” Battery Intelligence Portal
           </span>
         </div>
 
@@ -113,7 +115,7 @@ export default function LoginPage() {
               padding: '5px 10px', marginBottom: 12, fontSize: 12, color: '#721c24',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <span style={{ fontWeight: 'bold' }}>⚠</span> {error}
+              <span style={{ fontWeight: 'bold' }}>âš </span> {error}
             </div>
           )}
 
@@ -124,7 +126,7 @@ export default function LoginPage() {
               padding: '5px 10px', marginBottom: 12, fontSize: 11, color: '#0a246a',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <Building2 size={12} /> Signing in as administrator — credentials pre-filled
+              <Building2 size={12} /> Signing in as administrator â€” credentials pre-filled
             </div>
           )}
 
@@ -205,7 +207,7 @@ export default function LoginPage() {
                   className="win-btn win-btn-primary"
                 >
                   <LogIn size={12} />
-                  {isLoading ? 'Signing in…' : 'Sign In'}
+                  {isLoading ? 'Signing inâ€¦' : 'Sign In'}
                 </button>
                 {!adminMode && (
                   <button

@@ -1,0 +1,17 @@
+﻿User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+Allow: /privacy
+Allow: /enquiry/thank-you
+Disallow: /fleet
+Disallow: /supply-chain
+Disallow: /alerts
+Disallow: /correlation
+Disallow: /register
+Disallow: /profile
+Disallow: /readiness
+Disallow: /maintenance
+Disallow: /api/
+
+Sitemap: https://cell-sight.vercel.app/sitemap.xml

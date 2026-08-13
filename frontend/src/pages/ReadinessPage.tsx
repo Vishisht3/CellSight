@@ -1,10 +1,11 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Map, CheckCircle, AlertTriangle, TrendingUp, Zap, ChevronRight } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import PageContainer from '../components/ui/PageContainer';
 import StatCard from '../components/ui/StatCard';
 
-// ── Synthetic readiness data (no backend needed – procurement intelligence) ──
+// â”€â”€ Synthetic readiness data (no backend needed â€“ procurement intelligence) â”€â”€
 
 interface VehicleReadiness {
   id: string;
@@ -36,7 +37,7 @@ const VEHICLES: VehicleReadiness[] = [
   { id:'v7', name:'Forklift-FL03', type:'Forklift', currentFuel:'LPG', annualKm:13000, avgPayloadT:4, dailyDwellHours:10, readinessScore:94, readinessTier:'Ready', recommendedEV:'Crown FC 5200 Series', oem:'Crown Equipment', listPriceK:52, deliveryLeadWeeks:10, estAnnualSavingsK:10, co2ReductionT:8, blockers:[], confidence:0.95 },
   { id:'v8', name:'Excavator-EX1', type:'Construction', currentFuel:'Diesel', annualKm:8000, avgPayloadT:0, dailyDwellHours:6, readinessScore:44, readinessTier:'Needs Review', recommendedEV:'Volvo EC230 Electric', oem:'Volvo CE', listPriceK:520, deliveryLeadWeeks:40, estAnnualSavingsK:18, co2ReductionT:22, blockers:['Limited OEM range availability','Site grid capacity unknown','Heavy-duty duty-cycle analysis required'], confidence:0.55 },
   { id:'v9', name:'Excavator-EX2', type:'Construction', currentFuel:'Diesel', annualKm:7500, avgPayloadT:0, dailyDwellHours:5, readinessScore:42, readinessTier:'Needs Review', recommendedEV:'Volvo EC230 Electric', oem:'Volvo CE', listPriceK:520, deliveryLeadWeeks:40, estAnnualSavingsK:16, co2ReductionT:20, blockers:['Limited OEM range availability','Site grid capacity unknown'], confidence:0.52 },
-  { id:'v10', name:'Loader-LD1', type:'Construction', currentFuel:'Diesel', annualKm:15000, avgPayloadT:0, dailyDwellHours:5, readinessScore:36, readinessTier:'Not Suitable', recommendedEV:'N/A — No commercial option', oem:'—', listPriceK:0, deliveryLeadWeeks:0, estAnnualSavingsK:0, co2ReductionT:12, blockers:['No commercially available EV equivalent at required power rating','Grid reinforcement cost prohibitive at current energy prices'], confidence:0.38 },
+  { id:'v10', name:'Loader-LD1', type:'Construction', currentFuel:'Diesel', annualKm:15000, avgPayloadT:0, dailyDwellHours:5, readinessScore:36, readinessTier:'Not Suitable', recommendedEV:'N/A â€” No commercial option', oem:'â€”', listPriceK:0, deliveryLeadWeeks:0, estAnnualSavingsK:0, co2ReductionT:12, blockers:['No commercially available EV equivalent at required power rating','Grid reinforcement cost prohibitive at current energy prices'], confidence:0.38 },
 ];
 
 const TIER_COLOR: Record<VehicleReadiness['readinessTier'], string> = {
@@ -81,6 +82,7 @@ function ScoreBar({ score }: { score: number }) {
 }
 
 export default function ReadinessPage() {
+  useDocumentMeta({ title: 'EV Replacement Planner' });
   const [selected, setSelected] = useState<VehicleReadiness | null>(null);
   const [tierFilter, setTierFilter] = useState<string>('all');
 
@@ -110,8 +112,8 @@ export default function ReadinessPage() {
           <StatCard label="Near Ready"        value={nearReady}       icon={<TrendingUp size={16}/>}  variant="warning" />
           <StatCard label="Needs Review"      value={needsReview}     icon={<AlertTriangle size={16}/>} variant="danger" />
           <StatCard label="Not Suitable"      value={notSuitable}     icon={<Map size={16}/>} />
-          <StatCard label="Est. Annual Saving" value={`£${totalSavings}k`} icon={<Zap size={16}/>} variant="success" subValue="all assets combined" />
-          <StatCard label="CO₂ Reduction"     value={`${totalCO2}t`} icon={<TrendingUp size={16}/>}  variant="info"    subValue="tonnes / year" />
+          <StatCard label="Est. Annual Saving" value={`Â£${totalSavings}k`} icon={<Zap size={16}/>} variant="success" subValue="all assets combined" />
+          <StatCard label="COâ‚‚ Reduction"     value={`${totalCO2}t`} icon={<TrendingUp size={16}/>}  variant="info"    subValue="tonnes / year" />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: selected ? '1fr 340px' : '1fr', gap: 10 }}>
@@ -138,7 +140,7 @@ export default function ReadinessPage() {
                 );
               })}
               <span style={{ marginLeft: 'auto', fontSize: 10, color: '#6a6a6a' }}>
-                Click a row to view procurement recommendation →
+                Click a row to view procurement recommendation â†’
               </span>
             </div>
 
@@ -155,7 +157,7 @@ export default function ReadinessPage() {
                     <th>List Price</th>
                     <th>Lead Time</th>
                     <th>Annual Saving</th>
-                    <th>CO₂ Saved</th>
+                    <th>COâ‚‚ Saved</th>
                     <th>Confidence</th>
                   </tr>
                 </thead>
@@ -181,16 +183,16 @@ export default function ReadinessPage() {
                       <td style={{ fontSize: 10 }}>{v.recommendedEV}</td>
                       <td>{v.oem}</td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right' }}>
-                        {v.listPriceK > 0 ? `£${v.listPriceK.toLocaleString()}k` : '—'}
+                        {v.listPriceK > 0 ? `Â£${v.listPriceK.toLocaleString()}k` : 'â€”'}
                       </td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right' }}>
-                        {v.deliveryLeadWeeks > 0 ? `${v.deliveryLeadWeeks}w` : '—'}
+                        {v.deliveryLeadWeeks > 0 ? `${v.deliveryLeadWeeks}w` : 'â€”'}
                       </td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right', color: '#155724', fontWeight: 'bold' }}>
-                        {v.estAnnualSavingsK > 0 ? `£${v.estAnnualSavingsK}k` : '—'}
+                        {v.estAnnualSavingsK > 0 ? `Â£${v.estAnnualSavingsK}k` : 'â€”'}
                       </td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right', color: '#004085' }}>
-                        {v.co2ReductionT > 0 ? `${v.co2ReductionT}t` : '—'}
+                        {v.co2ReductionT > 0 ? `${v.co2ReductionT}t` : 'â€”'}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -217,7 +219,7 @@ export default function ReadinessPage() {
               {/* Procurement card */}
               <div className="win-panel" style={{ overflow: 'hidden' }}>
                 <div className="win-section-header">
-                  Procurement Recommendation — {selected.name}
+                  Procurement Recommendation â€” {selected.name}
                 </div>
                 <div style={{ padding: '10px 12px' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
@@ -225,7 +227,7 @@ export default function ReadinessPage() {
                       {[
                         ['Recommended EV', selected.recommendedEV],
                         ['OEM',           selected.oem],
-                        ['List Price',    selected.listPriceK > 0 ? `£${selected.listPriceK.toLocaleString()}k` : 'N/A'],
+                        ['List Price',    selected.listPriceK > 0 ? `Â£${selected.listPriceK.toLocaleString()}k` : 'N/A'],
                         ['Delivery Lead', selected.deliveryLeadWeeks > 0 ? `${selected.deliveryLeadWeeks} weeks` : 'N/A'],
                         ['Readiness Score', `${selected.readinessScore} / 100`],
                         ['Confidence',    `${(selected.confidence*100).toFixed(0)}%`],
@@ -247,8 +249,8 @@ export default function ReadinessPage() {
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
                     <tbody>
                       {[
-                        ['Annual Fuel/Energy Saving', selected.estAnnualSavingsK > 0 ? `£${selected.estAnnualSavingsK}k / year` : 'N/A'],
-                        ['CO₂ Reduction',             selected.co2ReductionT > 0 ? `${selected.co2ReductionT} t / year` : 'N/A'],
+                        ['Annual Fuel/Energy Saving', selected.estAnnualSavingsK > 0 ? `Â£${selected.estAnnualSavingsK}k / year` : 'N/A'],
+                        ['COâ‚‚ Reduction',             selected.co2ReductionT > 0 ? `${selected.co2ReductionT} t / year` : 'N/A'],
                         ['Simple Payback',             selected.listPriceK > 0 && selected.estAnnualSavingsK > 0
                           ? `~${(selected.listPriceK / selected.estAnnualSavingsK).toFixed(1)} years` : 'N/A'],
                         ['Annual km',                  selected.annualKm.toLocaleString()],
@@ -269,7 +271,7 @@ export default function ReadinessPage() {
               {selected.blockers.length > 0 && (
                 <div className="win-panel" style={{ overflow: 'hidden' }}>
                   <div className="win-section-header" style={{ color: '#721c24', background: 'linear-gradient(to right,#f8d7da,#fce8e8 60%,#fddada 100%)' }}>
-                    ⚠ Transition Blockers ({selected.blockers.length})
+                    âš  Transition Blockers ({selected.blockers.length})
                   </div>
                   <ul style={{ margin: 0, padding: '8px 12px 8px 28px', fontSize: 11 }}>
                     {selected.blockers.map((b, i) => <li key={i} style={{ color: '#721c24', marginBottom: 3 }}>{b}</li>)}

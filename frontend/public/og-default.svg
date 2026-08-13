@@ -1,0 +1,15 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a246a"/>
+  <rect width="1200" height="630" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a246a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#316ac5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="540" y="215" width="60" height="60" rx="8" fill="#316ac5" stroke="#7fb3e0" stroke-width="2"/>
+  <text x="570" y="257" text-anchor="middle" fill="white" font-size="36" font-family="Arial,sans-serif" font-weight="bold">&#9889;</text>
+  <text x="600" y="315" text-anchor="middle" fill="white" font-size="56" font-family="Arial,sans-serif" font-weight="bold">CellSight</text>
+  <text x="600" y="370" text-anchor="middle" fill="#a0c8f0" font-size="24" font-family="Arial,sans-serif">Battery Intelligence Platform</text>
+  <text x="600" y="415" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="18" font-family="Arial,sans-serif">Fleet Health · Supply Chain Risk · Field Correlation</text>
+</svg>

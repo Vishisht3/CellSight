@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { PackageSearch, ShieldAlert, ShieldCheck, Globe, AlertTriangle } from 'lucide-react';
 import { supplyChainApi } from '../services/api';
 import type { Supplier, SupplyChainSummary } from '../types';
@@ -24,6 +25,7 @@ export default function SupplyChainDashboard() {
   const [tierFilter,  setTierFilter]  = useState<TierFilter>('all');
   const [highRisk,    setHighRisk]    = useState(false);
   const [refreshing,  setRefreshing]  = useState(false);
+  useDocumentMeta({ title: 'Supplier Portal', description: 'Monitor supplier risk scores, material traceability, and compliance across your EV battery supply chain.' });
 
   const load = useCallback(async () => {
     try {
@@ -43,9 +45,9 @@ export default function SupplyChainDashboard() {
 
   const TIER_TABS: { value: TierFilter; label: string }[] = [
     { value: 'all',    label: 'All Tiers' },
-    { value: 'tier_1', label: 'Tier 1 — Direct' },
-    { value: 'tier_2', label: 'Tier 2 — Cell Mfg' },
-    { value: 'tier_3', label: 'Tier 3 — Raw Material' },
+    { value: 'tier_1', label: 'Tier 1 â€” Direct' },
+    { value: 'tier_2', label: 'Tier 2 â€” Cell Mfg' },
+    { value: 'tier_3', label: 'Tier 3 â€” Raw Material' },
   ];
 
   return (
@@ -66,7 +68,7 @@ export default function SupplyChainDashboard() {
             <StatCard label="High Risk Suppliers" value={summary.highRiskSuppliers} icon={<ShieldAlert size={16}/>}
               variant={summary.highRiskSuppliers > 0 ? 'danger' : 'success'} />
             <StatCard label="Avg Risk Score"
-              value={summary.avgRiskScore != null ? Number(summary.avgRiskScore).toFixed(0) : '—'}
+              value={summary.avgRiskScore != null ? Number(summary.avgRiskScore).toFixed(0) : 'â€”'}
               icon={<AlertTriangle size={16}/>}
               variant={Number(summary.avgRiskScore) >= 60 ? 'danger' : Number(summary.avgRiskScore) >= 35 ? 'warning' : 'success'}
               subValue="out of 100" />
@@ -76,11 +78,15 @@ export default function SupplyChainDashboard() {
           </div>
         )}
 
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 4 }}>
+          <Link to="/correlation" style={{ fontSize: 12, color: '#316ac5' }}>View Field Correlations →</Link>
+        </div>
+
         {/* Traceability coverage */}
         {summary?.traceabilityStats && (
           <div className="win-panel" style={{ padding: 10 }}>
             <div style={{ fontWeight: 'bold', fontSize: 11, color: '#0a246a', marginBottom: 6 }}>
-              Traceability Coverage —&nbsp;
+              Traceability Coverage â€”&nbsp;
               <span style={{ fontWeight: 'normal', color: '#4a4a4a' }}>
                 {summary.traceabilityStats.assetsWithFullTrace} of {summary.traceabilityStats.totalAssets} assets fully traced to raw materials
               </span>
@@ -125,7 +131,7 @@ export default function SupplyChainDashboard() {
           </div>
 
           {loading ? (
-            <LoadingSpinner fullPage label="Loading suppliers…" />
+            <LoadingSpinner fullPage label="Loading suppliersâ€¦" />
           ) : suppliers.length === 0 && tierFilter === 'all' && !highRisk ? (
             <EmptyState
               icon={PackageSearch}
@@ -179,7 +185,7 @@ export default function SupplyChainDashboard() {
                             color: new Date(s.certificationExpiry) < new Date() ? '#c00000' : '#1a1a1a',
                             fontWeight: new Date(s.certificationExpiry) < new Date() ? 'bold' : 'normal',
                           }}>
-                            {new Date(s.certificationExpiry) < new Date() ? '⚠ EXPIRED — ' : ''}
+                            {new Date(s.certificationExpiry) < new Date() ? 'âš  EXPIRED â€” ' : ''}
                             {new Date(s.certificationExpiry).toLocaleDateString()}
                           </span>
                         ) : (

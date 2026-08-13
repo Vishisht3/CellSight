@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+﻿import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import AppShell from './components/layout/AppShell';
 import LoginPage from './pages/LoginPage';
@@ -13,10 +13,13 @@ import AlertsPage from './pages/AlertsPage';
 import CorrelationPage from './pages/CorrelationPage';
 import ReadinessPage from './pages/ReadinessPage';
 import MaintenancePage from './pages/MaintenancePage';
+import LandingPage from './pages/LandingPage';
+import NotFoundPage from './pages/NotFoundPage';
+import ThankYouPage from './pages/ThankYouPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import LoadingSpinner from './components/ui/LoadingSpinner';
+import { useAnalytics } from './hooks/useAnalytics';
 import type { UserRole } from './types';
-
-// ── Route guards ──────────────────────────────────────────────────────────────
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -25,7 +28,7 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, hasRole } = useAuth();
-  if (isLoading) return <LoadingSpinner fullPage size="lg" label="Loading…" />;
+  if (isLoading) return <LoadingSpinner fullPage size="lg" label="Loading..." />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (allowedRoles && !hasRole(...allowedRoles)) return <Navigate to="/" replace />;
   return <>{children}</>;
@@ -33,28 +36,29 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
 
 function RootRedirect() {
   const { user, isAuthenticated, isLoading } = useAuth();
-  if (isLoading) return <LoadingSpinner fullPage size="lg" label="Loading…" />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (isLoading) return <LoadingSpinner fullPage size="lg" label="Loading..." />;
+  if (!isAuthenticated) return <LandingPage />;
   if (user?.role === 'supply_chain_manager') return <Navigate to="/supply-chain" replace />;
   return <Navigate to="/fleet" replace />;
 }
 
-// ── Routes ────────────────────────────────────────────────────────────────────
-
 function AppRoutes() {
+  useAnalytics();
   return (
     <Routes>
-      {/* Public */}
+      {/* Public pages */}
       <Route path="/login"  element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/enquiry/thank-you" element={<ThankYouPage />} />
 
-      {/* Root redirect */}
+      {/* Root -- landing for guests, dashboard redirect for authenticated */}
       <Route path="/" element={<RootRedirect />} />
 
       {/* Shell wraps all authenticated pages */}
       <Route element={<AppShell />}>
 
-        {/* ── Fleet operations ── */}
+        {/* Fleet operations */}
         <Route path="/fleet" element={
           <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <FleetDashboard />
@@ -66,21 +70,21 @@ function AppRoutes() {
           </ProtectedRoute>
         } />
 
-        {/* ── EV readiness / procurement ── */}
+        {/* EV readiness */}
         <Route path="/readiness" element={
           <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <ReadinessPage />
           </ProtectedRoute>
         } />
 
-        {/* ── Maintenance ops ── */}
+        {/* Maintenance ops */}
         <Route path="/maintenance" element={
           <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
             <MaintenancePage />
           </ProtectedRoute>
         } />
 
-        {/* ── Supplier quality and traceability ── */}
+        {/* Supply chain */}
         <Route path="/supply-chain" element={
           <ProtectedRoute allowedRoles={['supply_chain_manager', 'admin']}>
             <SupplyChainDashboard />
@@ -92,28 +96,28 @@ function AppRoutes() {
           </ProtectedRoute>
         } />
 
-        {/* ── Alerts (all authenticated) ── */}
+        {/* Alerts */}
         <Route path="/alerts" element={
           <ProtectedRoute>
             <AlertsPage />
           </ProtectedRoute>
         } />
 
-        {/* ── Data registration (all authenticated) ── */}
+        {/* Data registration */}
         <Route path="/register" element={
           <ProtectedRoute>
             <RegisterDataPage />
           </ProtectedRoute>
         } />
 
-        {/* ── Profile ── */}
+        {/* Profile */}
         <Route path="/profile" element={
           <ProtectedRoute>
             <ProfilePage />
           </ProtectedRoute>
         } />
 
-        {/* ── Field-to-source investigations ── */}
+        {/* Correlation */}
         <Route path="/correlation" element={
           <ProtectedRoute allowedRoles={['supply_chain_manager', 'fleet_manager', 'admin']}>
             <CorrelationPage />
@@ -121,8 +125,8 @@ function AppRoutes() {
         } />
       </Route>
 
-      {/* Catch-all */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* 404 */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

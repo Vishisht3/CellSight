@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Battery, Activity, Zap, Thermometer, Info, RefreshCw } from 'lucide-react';
 import {
@@ -9,6 +9,8 @@ import { format, parseISO } from 'date-fns';
 import { apmApi } from '../services/api';
 import type { Asset, SohHistory, TelemetryData, Alert } from '../types';
 import Navbar from '../components/layout/Navbar';
+import Breadcrumb from '../components/ui/Breadcrumb';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import PageContainer from '../components/ui/PageContainer';
 import StatCard from '../components/ui/StatCard';
 import { AssetStatusBadge, SeverityBadge, AlertStatusBadge } from '../components/ui/StatusBadge';
@@ -47,6 +49,8 @@ export default function AssetDetail() {
   const [error,      setError]      = useState('');
   const [activeChart,setActiveChart]= useState<ChartKey>('soh');
 
+  useDocumentMeta({ title: asset?.name ? (asset.name + ' -- Fleet Health') : 'Asset Detail' });
+
   const load = useCallback(async () => {
     if (!id) return;
     try {
@@ -68,7 +72,7 @@ export default function AssetDetail() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (loading) return <LoadingSpinner fullPage size="lg" label="Loading asset…" />;
+  if (loading) return <LoadingSpinner fullPage size="lg" label="Loading assetâ€¦" />;
   if (!asset)  return <div style={{ padding: 16, color: '#721c24' }}>{error || 'Asset not found.'}</div>;
 
   const sohData = sohHistory.map(h => ({
@@ -91,17 +95,19 @@ export default function AssetDetail() {
     domain?: [number, number];
   }> = {
     soh:     { label: 'State of Health',   data: sohData, lines: [{ key:'SoH',         color:'#316ac5', unit:'%'  }], refs: [{ y:85,color:'#b87000',label:'Warn'},{y:80,color:'#c00000',label:'Crit'}], domain:[70,102] },
-    temp:    { label: 'Temperature (°C)',  data: telData, lines: [{ key:'Temperature',  color:'#c00000', unit:'°C' }], refs: [{ y:45,color:'#c00000',label:'Max'},{y:-10,color:'#316ac5',label:'Min'}], domain:undefined },
+    temp:    { label: 'Temperature (Â°C)',  data: telData, lines: [{ key:'Temperature',  color:'#c00000', unit:'Â°C' }], refs: [{ y:45,color:'#c00000',label:'Max'},{y:-10,color:'#316ac5',label:'Min'}], domain:undefined },
     soc:     { label: 'State of Charge',   data: telData, lines: [{ key:'SoC',          color:'#2a8a2a', unit:'%'  }], refs: [{ y:80,color:'#b87000',label:'Opt max'},{y:20,color:'#b87000',label:'Opt min'}], domain:[0,105] },
     voltage: { label: 'Voltage (V)',        data: telData, lines: [{ key:'Voltage',      color:'#6030a0', unit:'V'  }], refs: [], domain:undefined },
   };
   const chart = CHARTS[activeChart];
 
+  const crumbs = [{ label: 'Fleet Health', href: '/fleet' }, { label: asset.name }];
+
   return (
     <>
       <Navbar
-        title={`Asset Detail — ${asset.name}`}
-        subtitle={`${assetTypeLabel[asset.assetType] ?? asset.assetType} · Battery pack ${asset.batteryPackId.slice(0,8)}…`}
+        title={`Asset Detail â€” ${asset.name}`}
+        subtitle={`${assetTypeLabel[asset.assetType] ?? asset.assetType} Â· Battery pack ${asset.batteryPackId.slice(0,8)}â€¦`}
         alertCount={alerts.filter(a => a.status === 'open').length}
         actions={
           <button onClick={() => navigate('/fleet')} className="win-btn" style={{ fontSize: 11 }}>
@@ -109,6 +115,7 @@ export default function AssetDetail() {
           </button>
         }
       />
+      <Breadcrumb items={crumbs} />
       <PageContainer>
         {error && <ErrorBanner message={error} />}
 
@@ -129,7 +136,7 @@ export default function AssetDetail() {
             <span style={{ color: '#4a4a4a' }}>Last telemetry: <b>{formatRelative(asset.lastTelemetryAt)}</b></span>
           )}
           <Link to={`/supply-chain/trace/${asset.id}`} style={{ marginLeft: 'auto', fontSize: 11 }}>
-            View supply chain trace »
+            View supply chain trace Â»
           </Link>
         </div>
 
@@ -137,7 +144,7 @@ export default function AssetDetail() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
           <StatCard
             label="State of Health"
-            value={asset.currentSoh != null ? `${asset.currentSoh.toFixed(1)}%` : '—'}
+            value={asset.currentSoh != null ? `${asset.currentSoh.toFixed(1)}%` : 'â€”'}
             subValue={asset.sohConfidence != null ? `Confidence: ${(asset.sohConfidence*100).toFixed(0)}%` : undefined}
             icon={<Battery size={16}/>}
             variant={asset.currentSoh == null ? 'default' : asset.currentSoh >= 85 ? 'success' : asset.currentSoh >= 80 ? 'warning' : 'danger'}
@@ -225,7 +232,7 @@ export default function AssetDetail() {
                   <tr key={a.id}>
                     <td style={{ maxWidth: 320 }}>
                       <div style={{ fontWeight: 'bold' }}>{a.title}</div>
-                      <div style={{ fontSize: 10, color: '#6a6a6a', marginTop: 1 }}>{a.description.slice(0, 120)}{a.description.length > 120 ? '…' : ''}</div>
+                      <div style={{ fontSize: 10, color: '#6a6a6a', marginTop: 1 }}>{a.description.slice(0, 120)}{a.description.length > 120 ? 'â€¦' : ''}</div>
                     </td>
                     <td>{alertTypeLabel[a.type]}</td>
                     <td><SeverityBadge severity={a.severity} /></td>
@@ -250,7 +257,7 @@ export default function AssetDetail() {
             <table style={{ width: '100%', fontSize: 11 }}>
               <thead>
                 <tr>
-                  {['Timestamp','Voltage (V)','Current (A)','Temp (°C)','SoC (%)','Cycles'].map(h => (
+                  {['Timestamp','Voltage (V)','Current (A)','Temp (Â°C)','SoC (%)','Cycles'].map(h => (
                     <th key={h}>{h}</th>
                   ))}
                 </tr>

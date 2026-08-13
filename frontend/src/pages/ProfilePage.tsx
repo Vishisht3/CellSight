@@ -1,7 +1,9 @@
-import { useState, FormEvent } from 'react';
+﻿import { useState, FormEvent } from 'react';
 import { User, Building2, Lock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Navbar from '../components/layout/Navbar';
+import Breadcrumb from '../components/ui/Breadcrumb';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import PageContainer from '../components/ui/PageContainer';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -30,6 +32,7 @@ function Section({ title, icon, children }: { title: string; icon: React.ReactNo
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  useDocumentMeta({ title: 'My Profile', description: 'Manage your CellSight account settings and security preferences.' });
 
   const [name,        setName]        = useState(user?.name ?? '');
   const [currentPw,   setCurrentPw]   = useState('');
@@ -46,7 +49,7 @@ export default function ProfilePage() {
     setPwLoading(true);
     try {
       // Re-login to verify current password, then update via a future PATCH /auth/me endpoint.
-      // For now surface a success message — the endpoint will be wired when added to the backend.
+      // For now surface a success message â€” the endpoint will be wired when added to the backend.
       await new Promise(r => setTimeout(r, 600));
       setPwMsg({ ok: true, text: 'Password updated successfully.' });
       setCurrentPw(''); setNewPw(''); setConfirmPw('');
@@ -65,6 +68,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Breadcrumb items={[{ label: 'My Profile' }]} />
       <Navbar title="My Profile" subtitle="Account details and security settings" />
       <PageContainer>
         <div style={{ maxWidth: 560 }}>
@@ -104,13 +108,13 @@ export default function ProfilePage() {
               <tbody>
                 <Field label="Organization ID:">
                   <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#4a4a4a' }}>
-                    {(user as any)?.organizationId ?? '—'}
+                    {(user as any)?.organizationId ?? 'â€”'}
                   </span>
                 </Field>
               </tbody>
             </table>
             <div style={{ marginTop: 8, fontSize: 11, color: '#6a6a6a' }}>
-              ℹ️ To update your organization name or type, contact your administrator.
+              â„¹ï¸ To update your organization name or type, contact your administrator.
             </div>
           </Section>
 
@@ -166,7 +170,7 @@ export default function ProfilePage() {
               </table>
               <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
                 <button type="submit" disabled={pwLoading} className="win-btn win-btn-primary">
-                  {pwLoading ? 'Updating…' : 'Update Password'}
+                  {pwLoading ? 'Updatingâ€¦' : 'Update Password'}
                 </button>
               </div>
             </form>

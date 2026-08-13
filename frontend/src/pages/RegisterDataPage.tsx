@@ -1,11 +1,12 @@
-import { useState, FormEvent, useEffect } from 'react';
+﻿import { useState, FormEvent, useEffect } from 'react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { PackageSearch, Layers, Box, Battery, Truck, CheckCircle, AlertCircle } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import PageContainer from '../components/ui/PageContainer';
 import { supplyChainApi, apmApi } from '../services/api';
 import type { Supplier } from '../types';
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -46,11 +47,11 @@ const inputStyle: React.CSSProperties = { width: '100%', boxSizing: 'border-box'
 const selectStyle: React.CSSProperties = { width: '100%', boxSizing: 'border-box', padding: '2px 4px' };
 
 const COUNTRIES = ['US','GB','DE','FR','JP','KR','CN','CA','AU','SE','NO','IN','BR','MX','CD','ZA','NG'];
-const TIERS = [{ v: 'tier_1', l: 'Tier 1 — Battery Pack Assembler' }, { v: 'tier_2', l: 'Tier 2 — Cell Manufacturer' }, { v: 'tier_3', l: 'Tier 3 — Raw Material Supplier' }];
+const TIERS = [{ v: 'tier_1', l: 'Tier 1 â€” Battery Pack Assembler' }, { v: 'tier_2', l: 'Tier 2 â€” Cell Manufacturer' }, { v: 'tier_3', l: 'Tier 3 â€” Raw Material Supplier' }];
 const MATERIAL_TYPES = ['lithium','cobalt','nickel','graphite','manganese'];
 const ASSET_TYPES = [{ v: 'freight_truck', l: 'Freight Truck' }, { v: 'mining_vehicle', l: 'Mining Vehicle' }, { v: 'forklift', l: 'Forklift' }, { v: 'construction_equipment', l: 'Construction Equipment' }];
 
-// ── Tabs ──────────────────────────────────────────────────────────────────
+// â”€â”€ Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type Tab = 'supplier' | 'material' | 'batch' | 'pack' | 'asset';
 
@@ -62,7 +63,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode; role: 'fleet' | 'su
   { id: 'asset',    label: 'Asset',          icon: <Truck size={12} />,         role: 'fleet'  },
 ];
 
-// ── Individual forms ──────────────────────────────────────────────────────
+// â”€â”€ Individual forms â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function AddSupplierForm() {
   const [name, setName]       = useState('');
@@ -103,7 +104,7 @@ function AddSupplierForm() {
         </Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registering…' : 'Register Supplier'}</button>
+        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Supplier'}</button>
       </div>
     </form>
   );
@@ -148,7 +149,7 @@ function AddMaterialLotForm() {
       <MsgBanner msg={msg} />
       {suppliers.length === 0 && (
         <div style={{ fontSize: 11, color: '#b87000', marginBottom: 10, padding: '5px 8px', background: '#fff8e6', border: '1px solid #e0c060', borderRadius: 2 }}>
-          ⚠ No Tier 3 suppliers found. Register a Tier 3 supplier first.
+          âš  No Tier 3 suppliers found. Register a Tier 3 supplier first.
         </div>
       )}
       <FormWrap>
@@ -169,10 +170,10 @@ function AddMaterialLotForm() {
             {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </Field>
-        <Field label="Quality score (0–100)"><input type="number" min="0" max="100" style={inputStyle} value={qualScore} onChange={e => setQualScore(e.target.value)} placeholder="Optional" /></Field>
+        <Field label="Quality score (0â€“100)"><input type="number" min="0" max="100" style={inputStyle} value={qualScore} onChange={e => setQualScore(e.target.value)} placeholder="Optional" /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registering…' : 'Register Material Lot'}</button>
+        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Material Lot'}</button>
       </div>
     </form>
   );
@@ -214,7 +215,7 @@ function AddCellBatchForm() {
       <MsgBanner msg={msg} />
       {suppliers.length === 0 && (
         <div style={{ fontSize: 11, color: '#b87000', marginBottom: 10, padding: '5px 8px', background: '#fff8e6', border: '1px solid #e0c060', borderRadius: 2 }}>
-          ⚠ No Tier 2 suppliers found. Register a cell manufacturer (Tier 2) supplier first.
+          âš  No Tier 2 suppliers found. Register a cell manufacturer (Tier 2) supplier first.
         </div>
       )}
       <FormWrap>
@@ -228,7 +229,7 @@ function AddCellBatchForm() {
         <Field label="Production date"><input type="date" style={inputStyle} value={prodDate} onChange={e => setProdDate(e.target.value)} /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registering…' : 'Register Cell Batch'}</button>
+        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Cell Batch'}</button>
       </div>
     </form>
   );
@@ -243,13 +244,13 @@ function AddBatteryPackForm() {
   const [msg, setMsg]         = useState<Msg | null>(null);
 
   useEffect(() => {
-    // Fetch cell batches via materials endpoint workaround — use suppliers list
+    // Fetch cell batches via materials endpoint workaround â€” use suppliers list
     // to populate. For now fetch from supply chain dashboard stats.
     fetch('/api/supply-chain/suppliers', { headers: { Authorization: `Bearer ${localStorage.getItem('cs_access_token')}` } })
       .then(r => r.json())
       .then(() => {
         // Cell batches don't have a direct list endpoint on the frontend yet
-        // — we'll add a note for the user
+        // â€” we'll add a note for the user
       })
       .catch(() => {});
   }, []);
@@ -272,7 +273,7 @@ function AddBatteryPackForm() {
     <form onSubmit={submit}>
       <MsgBanner msg={msg} />
       <div style={{ fontSize: 11, color: '#6a6a6a', marginBottom: 10, padding: '5px 8px', background: '#e8f0fb', border: '1px solid #b0c8e8', borderRadius: 2 }}>
-        ℹ You will need the Cell Batch ID from a previously registered batch. Find it in the Supplier Portal → cell batches list.
+        â„¹ You will need the Cell Batch ID from a previously registered batch. Find it in the Supplier Portal â†’ cell batches list.
       </div>
       <FormWrap>
         <Field label="Pack number" required><input style={inputStyle} required value={packNum} onChange={e => setPackNum(e.target.value)} placeholder="e.g. PACK-CELL-LGES-0001-01" /></Field>
@@ -281,7 +282,7 @@ function AddBatteryPackForm() {
         <Field label="Assembly date"><input type="date" style={inputStyle} value={assemblyDate} onChange={e => setAssemblyDate(e.target.value)} /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registering…' : 'Register Battery Pack'}</button>
+        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Battery Pack'}</button>
       </div>
     </form>
   );
@@ -309,7 +310,7 @@ function AddAssetForm() {
     <form onSubmit={submit}>
       <MsgBanner msg={msg} />
       <div style={{ fontSize: 11, color: '#6a6a6a', marginBottom: 10, padding: '5px 8px', background: '#e8f0fb', border: '1px solid #b0c8e8', borderRadius: 2 }}>
-        ℹ You will need a Battery Pack ID. Register a battery pack first, then paste its ID here.
+        â„¹ You will need a Battery Pack ID. Register a battery pack first, then paste its ID here.
       </div>
       <FormWrap>
         <Field label="Asset name" required><input style={inputStyle} required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. FreightLiner-001" /></Field>
@@ -321,15 +322,16 @@ function AddAssetForm() {
         <Field label="Battery pack ID" required><input style={inputStyle} required value={packId} onChange={e => setPackId(e.target.value)} placeholder="Paste the battery pack UUID" /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registering…' : 'Register Asset'}</button>
+        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Asset'}</button>
       </div>
     </form>
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function RegisterDataPage() {
+  useDocumentMeta({ title: 'Register Data' });
   const [activeTab, setActiveTab] = useState<Tab>('supplier');
 
   const formMap: Record<Tab, React.ReactNode> = {
@@ -354,7 +356,7 @@ export default function RegisterDataPage() {
       <PageContainer>
         <div style={{ maxWidth: 620 }}>
           <div style={{ fontSize: 12, color: '#4a4a4a', marginBottom: 14, padding: '8px 10px', background: '#e8f0fb', border: '1px solid #b0c8e8', borderRadius: 2 }}>
-            <strong>Getting started:</strong> Register data in this order — <strong>Supplier → Material Lot → Cell Batch → Battery Pack → Asset</strong>.
+            <strong>Getting started:</strong> Register data in this order â€” <strong>Supplier â†’ Material Lot â†’ Cell Batch â†’ Battery Pack â†’ Asset</strong>.
             Each step depends on the previous one.
           </div>
 
