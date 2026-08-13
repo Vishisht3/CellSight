@@ -3,890 +3,687 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CellSight — Battery Intelligence Platform</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<title>CellSight — Platform Guide</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{font-family:'Inter',sans-serif;color:#1c2833;background:#d6dce4}
-body{padding:36px 0 100px}
-
-.slide{width:960px;margin:0 auto 8px;background:#fff;overflow:hidden;box-shadow:0 1px 16px rgba(0,0,0,.1);page-break-inside:avoid;display:flex;flex-direction:column}
-
-/* ─ Cover ───────────────────────── */
-.cover{background:linear-gradient(148deg,#07101e 0%,#0b1e3a 42%,#0e3060 75%,#155a8a 100%);flex-direction:column;display:flex;min-height:540px}
-.cover-main{flex:1;padding:54px 64px 36px;display:flex;flex-direction:column;justify-content:center}
-.c-logo{display:flex;align-items:center;gap:13px;margin-bottom:46px}
-.c-icon{width:44px;height:44px;background:linear-gradient(135deg,#1f618d,#154360);border:1.5px solid rgba(93,173,226,.4);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.c-name{font-size:9px;font-weight:700;letter-spacing:4px;color:rgba(255,255,255,.4);text-transform:uppercase}
-.cover h1{font-size:50px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.12;margin-bottom:18px}
-.cover h1 span{color:#5dade2}
-.cover .sub{font-size:16px;color:rgba(255,255,255,.52);max-width:560px;line-height:1.7;margin-bottom:36px;font-weight:300}
-.c-pills{display:flex;flex-wrap:wrap;gap:8px}
-.c-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);color:rgba(255,255,255,.65);border-radius:4px;padding:5px 14px;font-size:10px;font-weight:500;letter-spacing:.3px}
-.cover-stats{display:flex;border-top:1px solid rgba(255,255,255,.07)}
-.cst{flex:1;padding:22px 26px;border-right:1px solid rgba(255,255,255,.07)}
-.cst:last-child{border-right:none}
-.cst .n{font-size:30px;font-weight:800;color:#fff;line-height:1}
-.cst .l{font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:1px;margin-top:6px;font-weight:500}
-.c-foot{background:rgba(0,0,0,.22);padding:14px 64px;display:flex;justify-content:space-between;align-items:center}
-.c-foot span{color:rgba(255,255,255,.35);font-size:10px}
-
-/* ─ Section divider ──────────────── */
-.div-slide{background:linear-gradient(135deg,#0b1e3a 0%,#1a5276 100%);min-height:160px;display:flex;align-items:center;padding:48px 64px}
-.div-n{font-size:80px;font-weight:900;color:rgba(255,255,255,.05);line-height:1;margin-right:40px;flex-shrink:0;font-variant-numeric:tabular-nums}
-.div-txt h2{font-size:30px;font-weight:700;color:#fff;letter-spacing:-.3px;line-height:1.2}
-.div-txt p{font-size:13px;color:rgba(255,255,255,.45);margin-top:8px;font-weight:300;line-height:1.5}
-
-/* ─ Slide header ─────────────────── */
-.shdr{padding:26px 48px 20px;border-bottom:2px solid #0b1e3a}
-.shdr .eye{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:#1f618d;margin-bottom:7px}
-.shdr h2{font-size:23px;font-weight:700;color:#0b1e3a;letter-spacing:-.25px;line-height:1.25}
-.shdr .desc{font-size:12px;color:#7f8c8d;margin-top:6px;line-height:1.5;font-weight:400}
-
-/* ─ Body ─────────────────────────── */
-.sbody{padding:26px 48px 30px;flex:1}
-.sbody.tight{padding:18px 48px 22px}
-
-/* ─ Footer ───────────────────────── */
-.sftr{background:#f2f4f5;border-top:1px solid #e2e6ea;padding:10px 48px;display:flex;justify-content:space-between;align-items:center}
-.sftr .brand{font-size:10px;font-weight:700;color:#0b1e3a;letter-spacing:.5px}
-.sftr .right{font-size:10px;color:#aab7b8}
-
-/* ─ KPI cards ────────────────────── */
-.kgrid{display:grid;gap:12px;margin-bottom:20px}
-.kgrid.c4{grid-template-columns:repeat(4,1fr)}.kgrid.c3{grid-template-columns:repeat(3,1fr)}.kgrid.c5{grid-template-columns:repeat(5,1fr)}.kgrid.c2{grid-template-columns:repeat(2,1fr)}
-.kcard{background:#fff;border:1px solid #e2e6ea;border-radius:6px;padding:18px 20px;border-top:3px solid #1f618d}
-.kcard.g{border-top-color:#1a7a42}.kcard.r{border-top-color:#a93226}.kcard.a{border-top-color:#b7770d}.kcard.pu{border-top-color:#6c3483}
-.kcard .kl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7f8c8d;margin-bottom:8px}
-.kcard .kn{font-size:26px;font-weight:800;color:#0b1e3a;line-height:1;font-variant-numeric:tabular-nums}
-.kcard .ks{font-size:11px;color:#7f8c8d;margin-top:6px;line-height:1.45}
-
-/* ─ Insight boxes ────────────────── */
-.igrid{display:grid;gap:14px}
-.igrid.c3{grid-template-columns:repeat(3,1fr)}.igrid.c2{grid-template-columns:repeat(2,1fr)}
-.ibox{background:#f4f6f7;border-left:4px solid #1f618d;border-radius:0 6px 6px 0;padding:16px 18px}
-.ibox.g{border-left-color:#1a7a42;background:#f0faf4}
-.ibox.r{border-left-color:#a93226;background:#fdf2f2}
-.ibox.a{border-left-color:#b7770d;background:#fefce7}
-.ibox.pu{border-left-color:#6c3483;background:#f9f5ff}
-.ibox h4{font-size:12px;font-weight:700;color:#0b1e3a;margin-bottom:5px}
-.ibox p{font-size:12px;color:#5d6d7e;margin:0;line-height:1.6}
-
-/* ─ Layout grids ─────────────────── */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
-.two.wide{grid-template-columns:3fr 2fr}.two.xwide{grid-template-columns:2fr 1fr}
-.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
-
-/* ─ Table ────────────────────────── */
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl thead tr{background:#0b1e3a}
-.tbl thead th{color:#fff;padding:9px 12px;text-align:left;font-weight:600;letter-spacing:.3px;font-size:11px}
-.tbl tbody tr:nth-child(odd){background:#fff}
-.tbl tbody tr:nth-child(even){background:#f8f9fa}
-.tbl td{padding:8px 12px;color:#2c3e50;border-bottom:1px solid #ecf0f1}
-.tbl td b{color:#0b1e3a}
-
-/* ─ Bar chart ────────────────────── */
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.bar-label{width:130px;flex-shrink:0;color:#5d6d7e;font-size:11px;text-align:right}
-.bar-track{flex:1;height:22px;background:#eaecee;border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding:0 10px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
-.bar-val{font-size:11px;font-weight:700;color:#0b1e3a;width:52px;flex-shrink:0}
-
-/* ─ Process flow ─────────────────── */
-.flow{display:flex;align-items:stretch;gap:0}
-.fstep{flex:1;background:#f4f6f7;border:1px solid #e2e6ea;border-radius:6px;padding:16px;text-align:center;margin:0 4px}
-.fstep .fi{font-size:22px;margin-bottom:8px}
-.fstep h4{font-size:12px;font-weight:700;color:#0b1e3a;margin-bottom:4px}
-.fstep p{font-size:10px;color:#7f8c8d;margin:0;line-height:1.5}
-.farr{color:#1f618d;font-size:18px;align-self:center;flex-shrink:0}
-
-/* ─ Tags ─────────────────────────── */
-.tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.2px}
-.tag.b{background:#eaf4fb;color:#1a5276;border:1px solid #aed6f1}
-.tag.g{background:#e9f7ef;color:#1a7a42;border:1px solid #a9dfbf}
-.tag.r{background:#fdedec;color:#a93226;border:1px solid #f1948a}
-.tag.a{background:#fef9e7;color:#9a7d0a;border:1px solid #f9e79f}
-.tag.gr{background:#f2f4f5;color:#5d6d7e;border:1px solid #d5d8dc}
-.tag.pu{background:#f5eef8;color:#6c3483;border:1px solid #d7bde2}
-
-/* ─ Formula / code ───────────────── */
-.fml{background:#0b1e3a;color:#d6eaf8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:16px 20px;border-radius:6px;line-height:2.1;border-left:4px solid #1f618d}
-.fml .c{color:#5dade2}.fml .v{color:#82e0aa}.fml .h{color:#f0b27a}
-
-/* ─ App mockup ───────────────────── */
-.mockup{border:1px solid #d5d8dc;border-radius:6px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07)}
-.m-bar{background:linear-gradient(to right,#07101e,#155a8a 55%,#1f618d);padding:7px 14px;color:#fff;font-size:10px;font-weight:500;display:flex;align-items:center;gap:6px}
-.m-bar .dots{display:flex;gap:5px;margin-left:auto}
-.m-bar .dot{width:9px;height:9px;border-radius:50%}
-.m-body{background:#f2f4f5;padding:10px}
-.m-kpi{display:flex;gap:7px;margin-bottom:8px}
-.mk{flex:1;background:#fff;border:1px solid #e2e6ea;border-radius:4px;padding:7px 9px}
-.mk .kl{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#7f8c8d;margin-bottom:3px}
-.mk .kn{font-size:15px;font-weight:800;color:#0b1e3a;line-height:1}
-.mt{width:100%;border-collapse:collapse;font-size:10px;background:#fff}
-.mt thead th{background:#0b1e3a;color:#fff;padding:4px 8px;text-align:left;font-weight:600;font-size:9px}
-.mt tbody tr:nth-child(even) td{background:#f8f9fa}
-.mt td{padding:4px 8px;border-bottom:1px solid #ecf0f1;color:#2c3e50}
-.sbar{display:flex;align-items:center;gap:4px}
-.sbar-t{flex:1;height:7px;background:#eaecee;border-radius:2px;overflow:hidden}
-.sbar-f{height:100%;border-radius:2px}
-
-/* ─ Nav ──────────────────────────── */
-.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,16,30,.97);border-top:1px solid rgba(255,255,255,.07);padding:9px 0;display:flex;align-items:center;justify-content:center;gap:5px;z-index:9999;flex-wrap:wrap}
-.nav a{color:#5dade2;font-size:10px;text-decoration:none;padding:3px 11px;border:1px solid rgba(93,173,226,.22);border-radius:3px;font-weight:500}
-.nav a:hover{background:rgba(93,173,226,.09)}
-.nav .sep{color:rgba(255,255,255,.12);font-size:13px}
-
-p{font-size:13px;color:#2c3e50;line-height:1.75;margin-bottom:14px}
-p:last-child{margin-bottom:0}
-h3{font-size:14px;font-weight:700;color:#0b1e3a;margin-bottom:9px}
-h4{font-size:12px;font-weight:600;color:#1a5276;margin-bottom:5px}
-
-@media print{body{background:#fff!important;padding:0}.nav{display:none!important}.slide{box-shadow:none!important;margin:0!important;page-break-after:always}@page{size:A4 landscape;margin:0}}
+body{background:#2b2b2b;font-family:Georgia,'Times New Roman',serif;font-size:14px;color:#1a1a1a;padding:24px 0 80px;line-height:1.5}
+.card{width:640px;margin:0 auto 5px;background:#d4d0c8;padding:28px 36px 32px}
+.card.cover{background:#3c3c3c;color:#fff;text-align:center;padding:52px 36px}
+.card.toc{background:#3a3a3a;color:#d0d0d0}
+.cover-logo{width:70px;height:70px;border-radius:50%;border:2px solid #999;margin:0 auto 10px;background:#4a4a4a;display:flex;align-items:center;justify-content:center;font-size:30px}
+.cover-title{font-size:20px;font-weight:normal;line-height:1.8;color:#fff;margin-top:10px}
+.cover-sub{color:#aaa;font-size:13px;margin-top:16px;line-height:2}
+.toc h2{font-size:14px;font-weight:bold;color:#ccc;margin-bottom:12px}
+.toc ol{padding-left:22px;color:#aaa;font-size:13px;line-height:2.2}
+.toc ol li a{color:#6db3f2;text-decoration:none}
+.sec{text-align:center;font-size:15px;font-weight:bold;text-decoration:underline;color:#000;margin-bottom:20px}
+.step{font-size:13px;color:#1a1a1a;margin-bottom:16px}
+.step b{font-weight:bold}.step i{font-style:italic}.step a{color:#1a4f8a}
+.note{font-size:11px;font-style:italic;color:#c8691a;margin:6px 0 14px;text-align:center}
+.ss{display:block;margin:0 auto 6px;max-width:520px;width:100%;border:1px solid #999;box-shadow:2px 2px 6px rgba(0,0,0,.35);background:#fff;font-family:Tahoma,Arial,sans-serif;font-size:10px}
+.ss-bar{background:linear-gradient(to right,#0a246a,#316ac5 60%,#6fa8dc);padding:4px 8px;color:#fff;font-size:10px;font-weight:bold;display:flex;align-items:center;gap:6px}
+.ss-body{background:#d4d0c8;padding:8px}
+.tbl{width:100%;border-collapse:collapse;font-family:Tahoma,Arial,sans-serif;font-size:10px;margin-bottom:6px}
+.tbl th{background:linear-gradient(to bottom,#e8f0fb,#c8d8ef);border:1px solid #7f9db9;padding:3px 6px;text-align:left;font-weight:bold;color:#0a246a}
+.tbl td{border:1px solid #c0cfe0;padding:2px 6px}
+.tbl tr:nth-child(even) td{background:#edf3fb}
+.br{background:#f8d7da;border:1px solid #e07070;color:#721c24;padding:1px 5px;font-size:8px;font-weight:bold}
+.bg{background:#d4edda;border:1px solid #82c891;color:#155724;padding:1px 5px;font-size:8px;font-weight:bold}
+.by{background:#fff3cd;border:1px solid #f0ad4e;color:#856404;padding:1px 5px;font-size:8px;font-weight:bold}
+.bb{background:#cce5ff;border:1px solid #7fb3e0;color:#004085;padding:1px 5px;font-size:8px;font-weight:bold}
+.kpi{display:flex;gap:5px;margin-bottom:7px}
+.kpi-b{flex:1;background:#f0f4f8;border:1px solid #7f9db9;padding:5px 7px}
+.kpi-b .kn{font-size:17px;font-weight:bold;color:#0a246a;line-height:1}
+.kpi-b .kl{font-size:8px;font-weight:bold;text-transform:uppercase;color:#4a6a9a;margin-bottom:2px}
+.bw{display:flex;align-items:center;gap:4px}
+.bt{flex:1;height:8px;background:linear-gradient(to bottom,#d0d0d0,#f0f0f0);border:1px solid #aaa;overflow:hidden}
+.callout{background:#1e1e1e;color:#e0e0e0;font-family:Georgia,serif;font-size:12px;padding:12px 16px;margin-top:10px;border-left:3px solid #555;line-height:1.75}
+.callout b{color:#f0c040}
+.code{background:#1a1a1a;color:#d4d4d4;font-family:'Courier New',monospace;font-size:10px;padding:10px 14px;line-height:1.9;margin:6px 0;border:1px solid #444}
+.code .c{color:#6a9955}.code .s{color:#ce9178}
+.rr{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.rl{font-size:8px;color:#4a4a4a;width:70px;flex-shrink:0}
+.rt{flex:1;height:7px;background:#e0e0e0;overflow:hidden;border:1px solid #ccc}
+.rf{height:100%}
+.navbar{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:2px solid #555;padding:8px 0;display:flex;align-items:center;justify-content:center;gap:7px;z-index:9999;flex-wrap:wrap}
+.navbar a{color:#6db3f2;font-size:11px;font-family:Tahoma,Arial,sans-serif;text-decoration:none;padding:2px 9px;border:1px solid #444}
+.navbar a:hover{background:#2a2a2a}
+@media print{body{background:#2b2b2b!important;padding:0}.navbar{display:none}.card{page-break-inside:avoid;margin:0 auto 5px}@page{size:A4 portrait;margin:0}}
 </style>
 </head>
 <body>
-
-<!-- SLIDE 1 — COVER -->
-<div class="slide" id="s1">
-<div class="cover">
-  <div class="cover-main">
-    <div class="c-logo"><div class="c-icon">&#9889;</div><span class="c-name">CellSight</span></div>
-    <h1>Battery Intelligence<br/><span>Platform</span></h1>
-    <p class="sub">An AI-powered platform bridging industrial EV fleet operations with quality-critical battery supply chains — delivering predictive health management, multi-tier supplier risk intelligence, and field-to-source degradation correlation.</p>
-    <div class="c-pills">
-      <span class="c-pill">APM Agent</span>
-      <span class="c-pill">Supply Chain Risk</span>
-      <span class="c-pill">Field-to-Source Correlation</span>
-      <span class="c-pill">EV Readiness</span>
-      <span class="c-pill">Predictive Maintenance</span>
-    </div>
-  </div>
-  <div class="cover-stats">
-    <div class="cst"><div class="n">5</div><div class="l">AI Agents</div></div>
-    <div class="cst"><div class="n">9</div><div class="l">Alert Types</div></div>
-    <div class="cst"><div class="n">50+</div><div class="l">Fleet Assets</div></div>
-    <div class="cst"><div class="n">10k+</div><div class="l">Telemetry Records</div></div>
-    <div class="cst"><div class="n">3</div><div class="l">Supplier Tiers</div></div>
-    <div class="cst"><div class="n">0</div><div class="l">TypeScript Errors</div></div>
-  </div>
-  <div class="c-foot">
-    <span>cell-sight.vercel.app &nbsp;·&nbsp; fleet@cellsight.com &nbsp;·&nbsp; demo123</span>
-    <span>CellSight v1.0 &nbsp;·&nbsp; 2026</span>
-  </div>
-</div>
+<div class="card cover" id="s1">
+  <div class="cover-logo">&#9889;</div>
+  <div class="cover-title">CellSight<br/>Battery Intelligence Platform<br/>Platform Guide &amp; Feature Walkthrough</div>
+  <div class="cover-sub">React 18 + TypeScript &nbsp;&middot;&nbsp; Node.js + Express &nbsp;&middot;&nbsp; PostgreSQL<br/>OLS Regression &nbsp;&middot;&nbsp; Z-Score Outlier Detection &nbsp;&middot;&nbsp; Outbox Pattern<br/><br/><a href="https://cell-sight.vercel.app" style="color:#6db3f2">cell-sight.vercel.app</a></div>
 </div>
 
-<!-- SLIDE 2 — THE PROBLEM -->
-<div class="slide" id="s2">
-<div class="shdr"><div class="eye">Market Context</div><h2>The Industrial EV Transition Has a Critical Intelligence Gap</h2></div>
-<div class="sbody">
-  <div class="two" style="margin-bottom:22px">
-    <div>
-      <h3 style="margin-bottom:14px">Two Disconnected Worlds</h3>
-      <div class="ibox r" style="margin-bottom:12px">
-        <h4>Fleet Operators — No Battery APM Tooling</h4>
-        <p>Industrial machinery has decades of Asset Performance Management tooling. EV batteries have none. Fleet managers have no visibility into real-time degradation rates, thermal risk, or optimal replacement timing — resulting in unplanned downtime and accelerated battery wear from suboptimal charging.</p>
-      </div>
-      <div class="ibox r">
-        <h4>EV Manufacturers — Supply Chain Opacity</h4>
-        <p>Battery materials traverse 3+ supplier tiers with no unified risk view. Concentration, geopolitical, quality, and compliance risks remain siloed. When field packs degrade ahead of schedule, there is no mechanism to trace the failure back to the originating cell batch or raw material supplier.</p>
-      </div>
+<div class="card toc" id="s2">
+  <h2>Contents:</h2>
+  <ol>
+    <li><a href="#s3">The Problem &amp; What CellSight Solves</a></li>
+    <li><a href="#s4">Login &amp; Role-Based Access Control</a></li>
+    <li><a href="#s5">Fleet APM &mdash; Battery Health Dashboard</a></li>
+    <li><a href="#s6">Asset Detail &mdash; SoH Trend &amp; Predictive Alerts</a></li>
+    <li><a href="#s7">How the AI Works &mdash; OLS Regression &amp; RUL Prediction</a></li>
+    <li><a href="#s8">Supply Chain Risk &mdash; 4-Dimension Scoring Engine</a></li>
+    <li><a href="#s9">Supply Chain Trace &mdash; Full Material Provenance</a></li>
+    <li><a href="#s10">Field-to-Source Correlation &mdash; Z-Score Outlier Detection</a></li>
+    <li><a href="#s11">Unified Alert Feed &amp; Outbox Pattern</a></li>
+    <li><a href="#s12">EV Readiness &amp; Procurement Intelligence</a></li>
+    <li><a href="#s13">Predictive Maintenance Operations</a></li>
+    <li><a href="#s14">System Architecture &amp; Tech Stack</a></li>
+    <li><a href="#s15">Public Landing Page &mdash; Marketing Layer</a></li>
+    <li><a href="#s16">SEO, Metadata &amp; Privacy Policy</a></li>
+  </ol>
+</div>
+
+<!-- s3 PROBLEM -->
+<div class="card" id="s3">
+  <div class="sec">The Problem &amp; What CellSight Solves</div>
+  <p class="step">1.1 &nbsp; <b>Industrial EV fleets have no Battery APM.</b> Industrial machinery has decades of Asset Performance Management tooling. EV batteries have none. Fleet managers cannot see real-time degradation rates, thermal risk, or replacement timing &mdash; leading to unplanned downtime and accelerated wear from suboptimal charging.</p>
+  <p class="step">1.2 &nbsp; <b>EV manufacturers have no supply chain visibility.</b> Battery materials pass through 3+ supplier tiers with no unified risk view. When field packs degrade faster than expected, there is no mechanism to trace back to the originating cell batch or raw material supplier.</p>
+  <p class="step">1.3 &nbsp; <b>The gap nobody fills.</b> Field performance data sits with fleet operators. Supply chain data sits with manufacturers. The correlation that would improve <i>both</i> sides is never made. <b>CellSight makes that connection automatically.</b></p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;font-family:Tahoma,Arial,sans-serif;font-size:10px">
+    <div style="background:#d4edda;border:1px solid #82c891;padding:10px 12px">
+      <div style="font-weight:bold;color:#155724;margin-bottom:5px">&#129302; APM Agent</div>
+      <div style="line-height:1.75">OLS regression SoH<br/>RUL prediction<br/>Thermal detection<br/>Charge pattern analysis<br/>Maintenance queue</div>
     </div>
-    <div>
-      <h3 style="margin-bottom:14px">The Gap Nobody Fills</h3>
-      <div style="background:#eaf4fb;border:1.5px solid #1f618d;border-radius:6px;padding:20px 22px;margin-bottom:16px">
-        <p style="font-size:13px;color:#0b1e3a;line-height:1.7;margin:0">Field performance data sits with <strong>fleet operators</strong>. Supply chain data sits with <strong>manufacturers</strong>. The correlation that would improve both sides — linking real-world battery degradation to the specific cell batch and material supplier that caused it — <strong>is never made.</strong></p>
-      </div>
-      <div class="three">
-        <div class="ibox g">
-          <h4>APM Agent</h4>
-          <p>OLS regression SoH &middot; RUL prediction &middot; Thermal detection &middot; Charge optimisation</p>
-        </div>
-        <div class="ibox pu">
-          <h4>Supply Chain Agent</h4>
-          <p>4-dimension risk scoring &middot; 3-tier traceability &middot; Compliance monitoring</p>
-        </div>
-        <div class="ibox g" style="border-left-color:#0b1e3a;background:#eaf4fb">
-          <h4>Correlation Agent</h4>
-          <p>Z-score outlier detection &middot; Links field degradation to supplier origin &middot; Shared visibility</p>
-        </div>
-      </div>
+    <div style="background:#e2d9f3;border:1px solid #9f86c0;padding:10px 12px">
+      <div style="font-weight:bold;color:#4b2d80;margin-bottom:5px">&#129302; Supply Chain Agent</div>
+      <div style="line-height:1.75">4-dimension risk scoring<br/>3-tier traceability<br/>Certification compliance<br/>Full chain in &lt;3 seconds</div>
+    </div>
+    <div style="background:#d4edda;border:2px solid #388e3c;padding:10px 12px">
+      <div style="font-weight:bold;color:#155724;margin-bottom:5px">&#128279; Correlation Agent</div>
+      <div style="line-height:1.75">Z-score outlier detection<br/>z &gt; 2.0 threshold<br/>Links batch to supplier<br/><b>Cross-role alert</b></div>
     </div>
   </div>
 </div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">2 / 16</span></div>
+
+<!-- s4 LOGIN -->
+<div class="card" id="s4">
+  <div class="sec">Login &amp; Role-Based Access Control</div>
+  <p class="step">2.1 &nbsp; Navigate to <a href="https://cell-sight.vercel.app"><b>cell-sight.vercel.app</b></a>. Click <b>Admin Login</b> to auto-fill the demo credentials and sign in instantly, or enter your own credentials.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:14px">
+    <div class="ss" style="max-width:350px">
+      <div class="ss-bar">&#9889; CellSight &mdash; Battery Intelligence Portal</div>
+      <div style="background:#f0f4f8;padding:14px 16px;font-family:Tahoma,Arial,sans-serif">
+        <div style="background:linear-gradient(to right,#dce6f5,#b8cfe8);border:1px solid #7f9db9;padding:7px 10px;margin-bottom:11px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">&#9889;</span>
+          <div><div style="font-size:12px;font-weight:bold;color:#0a246a">CellSight</div><div style="font-size:8px;color:#4a6a9a">EV Battery Intelligence Platform v1.0</div></div>
+        </div>
+        <fieldset style="border:1px solid #7f9db9;padding:8px 10px;margin-bottom:9px">
+          <legend style="font-size:9px;font-weight:bold;color:#0a246a;padding:0 3px">Sign In</legend>
+          <table style="width:100%;border-collapse:collapse">
+            <tr><td style="font-size:9px;padding:3px 5px 3px 0;border:none;background:transparent">Email:</td><td style="border:none;background:transparent;padding:2px 0"><div style="background:#fff;border:1px solid #7f9db9;padding:2px 5px;font-size:9px;color:#475569">fleet@cellsight.com</div></td></tr>
+            <tr><td style="font-size:9px;padding:3px 5px 3px 0;border:none;background:transparent">Password:</td><td style="border:none;background:transparent;padding:2px 0"><div style="background:#fff;border:1px solid #7f9db9;padding:2px 5px;font-size:9px;color:#475569">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</div></td></tr>
+          </table>
+          <div style="margin-top:8px;display:flex;justify-content:flex-end;gap:5px">
+            <div style="background:linear-gradient(to bottom,#4a7fd4,#2255b4);color:#fff;font-size:9px;font-weight:bold;padding:3px 10px;border:1px solid #1a3f8f">Sign In</div>
+            <div style="background:linear-gradient(to bottom,#f4f2ec,#dbd8cc);color:#1a1a1a;font-size:9px;font-weight:bold;padding:3px 10px;border:1px solid #7f9db9">&#127970; Admin Login</div>
+          </div>
+        </fieldset>
+        <div style="font-size:8px;color:#6a6a6a;text-align:center">New to CellSight? <span style="color:#316ac5">Create your company account</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="step">2.2 &nbsp; Three demo roles are pre-seeded. Each role sees only its relevant modules:</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <table class="tbl" style="max-width:500px">
+      <thead><tr><th>Role</th><th>Email</th><th>Password</th><th>Access</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:bold">Fleet Manager</td><td style="font-family:monospace;font-size:9px">fleet@cellsight.com</td><td style="font-family:monospace;font-size:9px">demo123</td><td>Fleet APM, Readiness, Maintenance, Alerts</td></tr>
+        <tr><td style="font-weight:bold">Supply Chain</td><td style="font-family:monospace;font-size:9px">supply@cellsight.com</td><td style="font-family:monospace;font-size:9px">demo123</td><td>Supply Chain, Trace, Correlation, Alerts</td></tr>
+        <tr><td style="font-weight:bold">Maintenance</td><td style="font-family:monospace;font-size:9px">maintenance@cellsight.com</td><td style="font-family:monospace;font-size:9px">demo123</td><td>Maintenance Ops, Alerts</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><b>Security design:</b> Access tokens expire every 15 minutes (JWT, in-memory only). Refresh token in httpOnly cookie &mdash; invisible to JavaScript. Five failed attempts trigger a 15-minute lockout. Passwords hashed with bcryptjs cost factor 12.</div>
 </div>
 
-<!-- SLIDE 3 — PLATFORM ACCESS -->
-<div class="slide" id="s3">
-<div class="shdr"><div class="eye">Platform Access</div><h2>Role-Based Access Control &amp; Secure Authentication</h2><div class="desc">JWT access tokens (15 min) · httpOnly refresh cookie (7 days) · bcryptjs password hashing · Account lockout after 5 failed attempts · Silent token refresh with request queuing</div></div>
-<div class="sbody tight">
-  <div class="two wide">
-    <div>
-      <h3 style="margin-bottom:12px">Demo Login Interface</h3>
-      <div class="mockup" style="max-width:380px">
-        <div class="m-bar">&#9889; CellSight — Battery Intelligence Portal<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-        <div style="background:#eef2f5;padding:18px 20px">
-          <div style="background:linear-gradient(to right,#d6eaf8,#eaf4fb);border:1px solid #aed6f1;border-radius:4px;padding:9px 12px;margin-bottom:14px;display:flex;align-items:center;gap:10px"><span style="font-size:18px">&#9889;</span><div><div style="font-size:13px;font-weight:700;color:#0b1e3a">CellSight</div><div style="font-size:9px;color:#5d6d7e">EV Battery Intelligence Platform v1.0</div></div></div>
-          <fieldset style="border:1px solid #aab7b8;border-radius:4px;padding:10px 12px;margin-bottom:10px">
-            <legend style="font-size:10px;font-weight:600;color:#0b1e3a;padding:0 5px">Sign In</legend>
-            <table style="width:100%;border-collapse:collapse">
-              <tr><td style="font-size:10px;padding:4px 8px 4px 0;border:none;background:transparent;color:#2c3e50;white-space:nowrap">Email address:</td><td style="border:none;background:transparent;padding:3px 0"><div style="background:#fff;border:1px solid #aab7b8;border-radius:3px;padding:3px 8px;font-size:10px;color:#5d6d7e">fleet@cellsight.com</div></td></tr>
-              <tr><td style="font-size:10px;padding:4px 8px 4px 0;border:none;background:transparent;color:#2c3e50;white-space:nowrap">Password:</td><td style="border:none;background:transparent;padding:3px 0"><div style="background:#fff;border:1px solid #aab7b8;border-radius:3px;padding:3px 8px;font-size:10px;color:#5d6d7e">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</div></td></tr>
-            </table>
-            <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:7px">
-              <div style="background:linear-gradient(135deg,#1f618d,#154360);color:#fff;font-size:10px;font-weight:600;padding:5px 16px;border-radius:3px">Sign In</div>
-              <div style="background:#f2f4f5;border:1px solid #aab7b8;color:#0b1e3a;font-size:10px;font-weight:500;padding:5px 13px;border-radius:3px">Admin Login</div>
+<!-- s5 FLEET APM -->
+<div class="card" id="s5">
+  <div class="sec">Fleet APM &mdash; Battery Health Dashboard</div>
+  <p class="step">3.1 &nbsp; After signing in as Fleet Manager you land on the <b>Fleet APM Dashboard</b>. It shows real-time State of Health for all 50 assets, colour-coded: green &#8805; 85%, amber 80&ndash;85%, red &lt; 80%.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; CellSight &mdash; Fleet APM &mdash; Battery Health Monitor</div>
+      <div class="ss-body">
+        <div class="kpi">
+          <div class="kpi-b"><div class="kl">Total Assets</div><div class="kn">50</div></div>
+          <div class="kpi-b" style="background:#d4edda;border-color:#82c891"><div class="kl">Healthy</div><div class="kn" style="color:#155724">35</div></div>
+          <div class="kpi-b" style="background:#fff3cd;border-color:#f0ad4e"><div class="kl">Watch</div><div class="kn" style="color:#856404">10</div></div>
+          <div class="kpi-b" style="background:#f8d7da;border-color:#e07070"><div class="kl">Critical</div><div class="kn" style="color:#721c24">3</div></div>
+          <div class="kpi-b" style="background:#d4edda;border-color:#82c891"><div class="kl">Fleet Avg SoH</div><div class="kn" style="color:#155724;font-size:14px">91.4%</div></div>
+        </div>
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+          <table class="tbl">
+            <thead><tr><th>Asset Name</th><th>Type</th><th>Status</th><th style="min-width:110px">State of Health</th><th>Est. RUL</th><th>Cycles</th><th>Trace</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:bold;color:#0a246a">FreightLiner-001</td><td>Freight Truck</td><td><span class="bg">Healthy</span></td><td><div class="bw"><div class="bt"><div style="width:94%;height:100%;background:#2a8a2a"></div></div><span style="font-size:8px;font-weight:bold;color:#155724">94.1%</span></div></td><td style="font-family:monospace;font-size:9px">~15mo</td><td style="font-family:monospace;font-size:9px">125</td><td style="font-size:9px;color:#316ac5">Trace</td></tr>
+              <tr><td style="font-weight:bold;color:#0a246a">Haul-Truck-A1</td><td>Mining Vehicle</td><td><span class="by">Watch</span></td><td><div class="bw"><div class="bt"><div style="width:83%;height:100%;background:#b87000"></div></div><span style="font-size:8px;font-weight:bold;color:#856404">83.2%</span></div></td><td style="font-family:monospace;font-size:9px">~4mo</td><td style="font-family:monospace;font-size:9px">312</td><td style="font-size:9px;color:#316ac5">Trace</td></tr>
+              <tr style="background:#fce8e8"><td style="font-weight:bold;color:#721c24">Forklift-FL05</td><td>Forklift</td><td><span class="br">Critical</span></td><td><div class="bw"><div class="bt"><div style="width:76%;height:100%;background:#c00000"></div></div><span style="font-size:8px;font-weight:bold;color:#721c24">76.4%</span></div></td><td style="font-family:monospace;font-size:9px;color:#c00000;font-weight:bold">7 days</td><td style="font-family:monospace;font-size:9px">521</td><td style="font-size:9px;color:#316ac5">Trace</td></tr>
+              <tr><td style="font-weight:bold;color:#0a246a">FreightLiner-003</td><td>Freight Truck</td><td><span class="bg">Healthy</span></td><td><div class="bw"><div class="bt"><div style="width:97%;height:100%;background:#2a8a2a"></div></div><span style="font-size:8px;font-weight:bold;color:#155724">97.0%</span></div></td><td style="font-family:monospace;font-size:9px">~2yr</td><td style="font-family:monospace;font-size:9px">44</td><td style="font-size:9px;color:#316ac5">Trace</td></tr>
+            </tbody>
+          </table>
+          <div style="background:linear-gradient(to bottom,#d0d8e8,#b8c8de);border-top:1px solid #7f9db9;padding:2px 8px;font-size:9px;color:#4a4a4a">50 assets displayed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="step">3.2 &nbsp; <b>Forklift-FL05</b> shows 7 days of Remaining Useful Life &mdash; the APM agent has already raised a CRITICAL alert and queued it for immediate battery replacement. Click any row to open the full Asset Detail view.</p>
+  <p class="step">3.3 &nbsp; The <b>Trace</b> column links directly to that asset's full supply chain provenance &mdash; raw material origin through to deployed vehicle.</p>
+</div>
+
+<!-- s6 ASSET DETAIL -->
+<div class="card" id="s6">
+  <div class="sec">Asset Detail &mdash; SoH Trend &amp; Predictive Alerts</div>
+  <p class="step">4.1 &nbsp; Click any asset row to open its <b>Asset Detail</b> view &mdash; full SoH history chart, active AI-generated maintenance alerts, and a direct link to the supply chain trace.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; Asset Detail &mdash; Forklift-FL05 &mdash; Forklift</div>
+      <div class="ss-body">
+        <div style="background:linear-gradient(to right,#f8d7da,#fce8ea);border:1px solid #e07070;padding:3px 8px;margin-bottom:5px;display:flex;align-items:center;gap:8px;font-size:9px">
+          <span class="br">Critical</span>
+          <span>Last telemetry: <b>2 hours ago</b></span>
+          <span>Confidence: <b style="color:#721c24">88%</b></span>
+          <a style="margin-left:auto;color:#316ac5">View supply chain trace &raquo;</a>
+        </div>
+        <div class="kpi" style="margin-bottom:5px">
+          <div class="kpi-b" style="background:#f8d7da;border-color:#e07070"><div class="kl">State of Health</div><div class="kn" style="color:#721c24">76.4%</div></div>
+          <div class="kpi-b" style="background:#f8d7da;border-color:#e07070"><div class="kl">Remaining Life</div><div class="kn" style="color:#721c24">7 days</div></div>
+          <div class="kpi-b"><div class="kl">Total Cycles</div><div class="kn">521</div></div>
+          <div class="kpi-b" style="background:#fff3cd;border-color:#f0ad4e"><div class="kl">Open Alerts</div><div class="kn" style="color:#856404">3</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+            <div style="background:linear-gradient(to right,#dce6f5,#b8cfe8);border-bottom:1px solid #7f9db9;padding:3px 8px;font-size:8px;font-weight:bold;color:#0a246a">SoH Trend &mdash; Jun to Aug 2026</div>
+            <div style="padding:5px 6px;background:#fff">
+              <svg viewBox="0 0 225 70" style="width:100%;height:58px">
+                <line x1="18" y1="28" x2="215" y2="28" stroke="#f0ad4e" stroke-width="0.8" stroke-dasharray="3,2"/>
+                <line x1="18" y1="48" x2="215" y2="48" stroke="#e07070" stroke-width="0.8" stroke-dasharray="3,2"/>
+                <text x="14" y="31" text-anchor="end" font-size="6" fill="#9ca3af">85%</text>
+                <text x="14" y="51" text-anchor="end" font-size="6" fill="#9ca3af">80%</text>
+                <text x="216" y="31" font-size="6" fill="#b87000">W</text>
+                <text x="216" y="51" font-size="6" fill="#c00000">C</text>
+                <polyline points="22,8 50,11 80,15 110,21 140,29 165,40 193,53 213,61" fill="none" stroke="#316ac5" stroke-width="1.8"/>
+                <circle cx="213" cy="61" r="3" fill="#c00000"/>
+                <text x="22" y="69" font-size="5.5" fill="#9ca3af">Jun 1</text>
+                <text x="182" y="69" font-size="5.5" fill="#9ca3af">Aug 7</text>
+              </svg>
             </div>
-          </fieldset>
-          <div style="font-size:9px;color:#7f8c8d;text-align:center">New to CellSight? <span style="color:#1f618d;font-weight:600">Create your company account</span></div>
+          </div>
+          <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+            <div style="background:linear-gradient(to right,#dce6f5,#b8cfe8);border-bottom:1px solid #7f9db9;padding:3px 8px;font-size:8px;font-weight:bold;color:#0a246a">Active Maintenance Alerts</div>
+            <table class="tbl" style="font-size:9px">
+              <tbody>
+                <tr><td style="font-weight:bold">RUL THRESHOLD: 7 days remaining</td><td><span class="br">CRITICAL</span></td></tr>
+                <tr><td style="font-weight:bold">SOH DEGRADATION: 76.4% &lt; 80%</td><td><span class="br">CRITICAL</span></td></tr>
+                <tr><td style="font-weight:bold">CHARGE PATTERN: avg SoC 12%</td><td><span class="bb">INFO</span></td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-    <div>
-      <h3 style="margin-bottom:12px">Three Access Roles</h3>
-      <table class="tbl" style="margin-bottom:18px">
-        <thead><tr><th>Role</th><th>Access</th><th>Demo Credential</th></tr></thead>
-        <tbody>
-          <tr><td><b>Fleet Manager</b></td><td>APM Dashboard, EV Readiness, Maintenance, Alerts</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">fleet@cellsight.com</td></tr>
-          <tr><td><b>Supply Chain Manager</b></td><td>Supplier Portal, Trace View, Correlation, Alerts</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">supply@cellsight.com</td></tr>
-          <tr><td><b>Maintenance Planner</b></td><td>Maintenance Operations, Alerts</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">maintenance@cellsight.com</td></tr>
-        </tbody>
-      </table>
-      <div class="ibox" style="margin-bottom:10px">
-        <h4>Security Architecture</h4>
-        <p>Access tokens are short-lived (15 min) and stored in memory only — never in localStorage. Refresh tokens are stored in httpOnly cookies, invisible to JavaScript, preventing XSS-based theft. A new company account and administrator are created together in a single registration step.</p>
-      </div>
-      <div style="font-size:11px;color:#7f8c8d;margin-top:8px">All demo accounts share password: <strong style="font-family:'JetBrains Mono',monospace;color:#0b1e3a">demo123</strong></div>
+  </div>
+  <p class="step">4.2 &nbsp; The red dot marks the current SoH &mdash; below the critical 80% line. All three alerts were <b>raised automatically</b> by the APM agent scheduler running every 5 minutes. No human intervention required.</p>
+  <p class="step">4.3 &nbsp; The charge pattern INFO alert flags that average minimum SoC is 12%, below the recommended 20% floor. Operating in this range accelerates degradation.</p>
+</div>
+
+<!-- s7 AI MODEL -->
+<div class="card" id="s7">
+  <div class="sec">How the AI Works &mdash; OLS Regression &amp; RUL Prediction</div>
+  <p class="step">5.1 &nbsp; The <b>State of Health</b> on every asset is computed by a bespoke <b>Ordinary Least Squares linear regression</b> implemented entirely in TypeScript &mdash; no external ML libraries.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div style="background:#fff;border:1px solid #aaa;padding:10px 12px;box-shadow:1px 1px 4px rgba(0,0,0,.2)">
+      <div style="font-size:10px;font-weight:bold;color:#0a246a;margin-bottom:5px;border-bottom:1px solid #c8d8ef;padding-bottom:3px">Feature Vector &mdash; 7 dimensions</div>
+      <div class="code">1 (bias term)
+totalCycles
+avgVoltage
+avgTemperature
+avgStateOfCharge
+voltageStdDev
+tempStdDev</div>
+      <div style="font-size:9px;color:#4a4a4a;margin-top:5px;line-height:1.6">100-point sliding window, 50-point stride. Falls back to physics formula if &lt;10 training samples.</div>
     </div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">3 / 16</span></div>
-</div>
-
-<!-- SLIDE 4 — FLEET APM DASHBOARD -->
-<div class="slide" id="s4">
-<div class="shdr"><div class="eye">Fleet Operations</div><h2>Fleet APM — Real-Time Battery Health Dashboard</h2><div class="desc">State-of-Health monitoring across all deployed assets · Colour-coded status tiers · Remaining Useful Life forecasting · Direct supply chain trace links per asset</div></div>
-<div class="sbody tight">
-  <div class="mockup" style="margin-bottom:16px">
-    <div class="m-bar">&#9889; CellSight — Fleet APM — Battery Health Monitor<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-    <div class="m-body">
-      <div class="m-kpi">
-        <div class="mk"><div class="kl">Total Assets</div><div class="kn">50</div></div>
-        <div class="mk" style="background:#f0faf4;border-color:#a9dfbf"><div class="kl">Healthy</div><div class="kn" style="color:#1a7a42">35</div></div>
-        <div class="mk" style="background:#fefce7;border-color:#f9e79f"><div class="kl">Watch</div><div class="kn" style="color:#9a7d0a">10</div></div>
-        <div class="mk" style="background:#fdf2f2;border-color:#f1948a"><div class="kl">Critical</div><div class="kn" style="color:#a93226">3</div></div>
-        <div class="mk"><div class="kl">Stale</div><div class="kn" style="color:#5d6d7e">2</div></div>
-        <div class="mk" style="background:#f0faf4;border-color:#a9dfbf"><div class="kl">Fleet Avg SoH</div><div class="kn" style="color:#1a7a42">91.4%</div></div>
-      </div>
-      <table class="mt">
-        <thead><tr><th>Asset</th><th>Type</th><th>Status</th><th style="min-width:120px">State of Health</th><th>Est. RUL</th><th>Cycles</th><th>Last Reading</th><th>Trace</th></tr></thead>
-        <tbody>
-          <tr><td><b>FreightLiner-001</b></td><td>Freight Truck</td><td><span class="tag g">Healthy</span></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:94%;background:#1a7a42"></div></div><span style="font-size:8px;font-weight:700;color:#1a7a42">94.1%</span></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">~15 mo</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">125</td><td style="font-size:9px;color:#7f8c8d">Aug 7 18:14</td><td style="font-size:9px;color:#1f618d;font-weight:600">Trace</td></tr>
-          <tr><td><b>Haul-Truck-A1</b></td><td>Mining Vehicle</td><td><span class="tag a">Watch</span></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:83%;background:#b7770d"></div></div><span style="font-size:8px;font-weight:700;color:#9a7d0a">83.2%</span></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">~4 mo</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">312</td><td style="font-size:9px;color:#7f8c8d">Aug 7 17:58</td><td style="font-size:9px;color:#1f618d;font-weight:600">Trace</td></tr>
-          <tr style="background:#fdf2f2"><td><b style="color:#a93226">Forklift-FL05</b></td><td>Forklift</td><td><span class="tag r">Critical</span></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:76%;background:#a93226"></div></div><span style="font-size:8px;font-weight:700;color:#a93226">76.4%</span></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a93226;font-weight:700">7 days</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">521</td><td style="font-size:9px;color:#7f8c8d">Aug 7 16:45</td><td style="font-size:9px;color:#1f618d;font-weight:600">Trace</td></tr>
-          <tr><td><b>FreightLiner-003</b></td><td>Freight Truck</td><td><span class="tag g">Healthy</span></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:97%;background:#1a7a42"></div></div><span style="font-size:8px;font-weight:700;color:#1a7a42">97.0%</span></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">~2 yr</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">44</td><td style="font-size:9px;color:#7f8c8d">Aug 7 18:20</td><td style="font-size:9px;color:#1f618d;font-weight:600">Trace</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="igrid c3">
-    <div class="ibox"><h4>Colour-Coded Status Tiers</h4><p>Green &#8805; 85% (Healthy) &middot; Amber 80&#8211;85% (Watch) &middot; Red &lt;80% (Critical). Forklift-FL05 at 76.4% has already triggered a CRITICAL alert and a predictive maintenance job.</p></div>
-    <div class="ibox"><h4>Remaining Useful Life Column</h4><p>Linear extrapolation from SoH history: RUL = (currentSoH &#8722; 80%) &#247; degradationRate/day. The 7-day figure for Forklift-FL05 drives an immediate replacement recommendation.</p></div>
-    <div class="ibox"><h4>Direct Supply Chain Trace</h4><p>Each asset row carries a Trace link. A fleet manager can navigate directly from a degraded asset to its full material provenance — batch, manufacturer, raw material lots — in a single click.</p></div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">4 / 16</span></div>
-</div>
-
-<!-- SLIDE 5 — AI MODEL -->
-<div class="slide" id="s5">
-<div class="shdr"><div class="eye">Artificial Intelligence</div><h2>State-of-Health Model — OLS Regression Implemented From Scratch</h2><div class="desc">No external ML libraries &middot; 7-feature vector &middot; Gauss-Jordan normal equations &middot; 80/20 train/test split with RMSE validation &middot; Physics-based fallback</div></div>
-<div class="sbody tight">
-  <div class="two" style="margin-bottom:18px">
-    <div>
-      <h3 style="margin-bottom:10px">Model Architecture</h3>
-      <div class="fml" style="margin-bottom:14px">
-<span class="c">// Feature vector (per 100-point telemetry window)</span>
-x = [<span class="v">1</span>, totalCycles, avgVoltage,
-     avgTemp, avgSoC, voltStdDev, tempStdDev]
-
-<span class="c">// Normal equation — Gauss-Jordan inversion</span>
+    <div style="background:#fff;border:1px solid #aaa;padding:10px 12px;box-shadow:1px 1px 4px rgba(0,0,0,.2)">
+      <div style="font-size:10px;font-weight:bold;color:#0a246a;margin-bottom:5px;border-bottom:1px solid #c8d8ef;padding-bottom:3px">Training &amp; RUL Prediction</div>
+      <div class="code"><span class="c">// Normal equation:</span>
 &#946; = (X&#7488;X)&#8315;&#185; X&#7488;y
+<span class="c">// Gauss-Jordan inversion</span>
+<span class="c">// 80/20 train/test + RMSE</span>
 
-<span class="c">// Fallback physics formula</span>
-SoH = 100 &#8722; (cycles &#215; 0.05)
-      &#8722; voltageFade &#8722; tempStress</div>
-      <p style="font-size:12px">The model trains on startup across all assets, using the physics formula as the ground-truth label for sliding 100-point windows. An 80/20 train/test split is applied and RMSE is logged. If fewer than 10 samples are available or the matrix is singular, the physics fallback activates automatically.</p>
+<span class="c">// Remaining Useful Life:</span>
+RUL = (SoH &minus; 80%) &divide; deg/day
+<span class="c">// From SoH history slope</span></div>
     </div>
-    <div>
-      <h3 style="margin-bottom:10px">RUL Prediction</h3>
-      <div class="fml" style="margin-bottom:14px">
-RUL(days) = (currentSoH &#8722; 80%)
-             &#247; degradationRate/day
+  </div>
+  <p class="step">5.2 &nbsp; The <b>Predictive Maintenance engine</b> runs four automated checks per asset every 5 minutes:</p>
+  <table class="tbl" style="margin-bottom:12px">
+    <thead><tr><th>Check</th><th>Algorithm</th><th>WARNING when</th><th>CRITICAL when</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:bold">Thermal Event</td><td>Last 10 readings vs limits</td><td>Temp &gt; 45&deg;C or &lt; &minus;10&deg;C</td><td>Temp &gt; 55&deg;C or &lt; &minus;20&deg;C</td></tr>
+      <tr><td style="font-weight:bold">SoH Degradation</td><td>currentSoH vs thresholds</td><td>SoH &lt; 85%</td><td>SoH &lt; 80%</td></tr>
+      <tr><td style="font-weight:bold">RUL Threshold</td><td>Linear extrapolation</td><td>RUL &le; 30 days</td><td>RUL &le; 7 days</td></tr>
+      <tr><td style="font-weight:bold">Charge Pattern</td><td>Last 100 SoC readings</td><td>Avg SoC min &lt; 20% or max &gt; 80%</td><td>N/A &mdash; INFO only</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><b>Why no external ML library?</b> The entire OLS pipeline &mdash; feature extraction, X&#7488;X matrix multiplication, Gauss-Jordan inversion, train/test split, RMSE &mdash; is ~150 lines of pure TypeScript. This avoids native binary dependencies, keeps the Railway Docker image small, and makes the model fully inspectable without a Python environment.</div>
+</div>
 
-confidence = min(1.0, readings / 200)</div>
-      <p style="font-size:12px">Degradation rate is derived from the slope of the SoH history record set. Confidence scales linearly with telemetry volume, reaching maximum at 200 readings (typically 2&#8211;5 days of operation).</p>
-      <div class="kgrid c2" style="margin-top:14px">
-        <div class="kcard a"><div class="kl">Warning threshold</div><div class="kn">85%</div><div class="ks">SoH &lt; 85% triggers WARNING alert</div></div>
-        <div class="kcard r"><div class="kl">Critical threshold</div><div class="kn">80%</div><div class="ks">SoH &lt; 80% triggers CRITICAL alert</div></div>
+<!-- s8 SUPPLY CHAIN RISK -->
+<div class="card" id="s8">
+  <div class="sec">Supply Chain Risk &mdash; 4-Dimension Scoring Engine</div>
+  <p class="step">6.1 &nbsp; Sign in as <b>Supply Chain Manager</b> and navigate to <b>Supply Chain</b>. Each supplier receives a composite 0&ndash;100 risk score from four independently computed dimensions, updated every 5 minutes.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; CellSight &mdash; Supply Chain Risk &amp; Traceability</div>
+      <div class="ss-body">
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+          <table class="tbl">
+            <thead><tr><th>Supplier</th><th>Tier</th><th>Country</th><th>Score</th><th style="min-width:150px">4-Dimension Breakdown</th><th>Certification</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:bold;color:#0a246a">CobaltMines Ltd</td><td>Tier 3</td><td>CD</td><td><span class="br">HIGH (78)</span></td>
+                <td>
+                  <div class="rr"><span class="rl">Concentration</span><div class="rt"><div class="rf" style="width:55%;background:#b87000"></div></div></div>
+                  <div class="rr"><span class="rl">Geopolitical</span><div class="rt"><div class="rf" style="width:100%;background:#c00000"></div></div></div>
+                  <div class="rr"><span class="rl">Quality</span><div class="rt"><div class="rf" style="width:40%;background:#b87000"></div></div></div>
+                  <div class="rr"><span class="rl">Compliance</span><div class="rt"><div class="rf" style="width:100%;background:#c00000"></div></div></div>
+                </td><td style="color:#c00000;font-weight:bold;font-size:9px">EXPIRED</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold;color:#0a246a">Graphite Supplies</td><td>Tier 3</td><td>CN</td><td><span class="br">HIGH (65)</span></td>
+                <td>
+                  <div class="rr"><span class="rl">Concentration</span><div class="rt"><div class="rf" style="width:70%;background:#c00000"></div></div></div>
+                  <div class="rr"><span class="rl">Geopolitical</span><div class="rt"><div class="rf" style="width:100%;background:#c00000"></div></div></div>
+                  <div class="rr"><span class="rl">Quality</span><div class="rt"><div class="rf" style="width:20%;background:#2a8a2a"></div></div></div>
+                  <div class="rr"><span class="rl">Compliance</span><div class="rt"><div class="rf" style="width:30%;background:#b87000"></div></div></div>
+                </td><td style="color:#b87000;font-weight:bold;font-size:9px">Expiring soon</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold;color:#0a246a">LithiumCorp</td><td>Tier 3</td><td>US</td><td><span class="bg">LOW (12)</span></td>
+                <td>
+                  <div class="rr"><span class="rl">Concentration</span><div class="rt"><div class="rf" style="width:15%;background:#2a8a2a"></div></div></div>
+                  <div class="rr"><span class="rl">Geopolitical</span><div class="rt"><div class="rf" style="width:0%;background:#2a8a2a"></div></div></div>
+                  <div class="rr"><span class="rl">Quality</span><div class="rt"><div class="rf" style="width:10%;background:#2a8a2a"></div></div></div>
+                  <div class="rr"><span class="rl">Compliance</span><div class="rt"><div class="rf" style="width:5%;background:#2a8a2a"></div></div></div>
+                </td><td style="font-size:9px">2028-01-20</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="background:linear-gradient(to bottom,#d0d8e8,#b8c8de);border-top:1px solid #7f9db9;padding:2px 8px;font-size:9px;color:#4a4a4a">12 suppliers displayed</div>
+        </div>
       </div>
     </div>
   </div>
-  <h3 style="margin-bottom:10px">Four Automated Maintenance Checks — Scheduled Every 5 Minutes Per Asset</h3>
+  <p class="step">6.2 &nbsp; Each dimension is computed by the <b>RiskScoringService</b> using a specific formula:</p>
   <table class="tbl">
-    <thead><tr><th>Check</th><th>Method</th><th>WARNING</th><th>CRITICAL</th></tr></thead>
+    <thead><tr><th>Dimension</th><th>Formula</th><th>Alert raised when</th></tr></thead>
     <tbody>
-      <tr><td><b>Thermal Event</b></td><td>Last 10 telemetry readings vs safe limits</td><td>Temperature &gt; 45&#176;C or &lt; &#8722;10&#176;C</td><td>Temperature &gt; 55&#176;C or &lt; &#8722;20&#176;C</td></tr>
-      <tr><td><b>SoH Degradation</b></td><td>currentSoH vs configured thresholds</td><td>SoH &lt; 85%</td><td>SoH &lt; 80%</td></tr>
-      <tr><td><b>RUL Threshold</b></td><td>Linear extrapolation from SoH history</td><td>RUL &#8804; 30 days</td><td>RUL &#8804; 7 days</td></tr>
-      <tr><td><b>Charge Pattern</b></td><td>Last 100 SoC readings &#8212; average min/max</td><td>Avg SoC min &lt; 20% or max &gt; 80%</td><td>N/A (INFO severity)</td></tr>
+      <tr><td style="font-weight:bold">Concentration</td><td style="font-family:monospace;font-size:9px">min(1, share / 0.35)</td><td>Score &ge; 0.8 &mdash; single-source dependency</td></tr>
+      <tr><td style="font-weight:bold">Geopolitical</td><td style="font-family:monospace;font-size:9px">1 if country &isin; {CN,RU,VE} else 0</td><td>Score &ge; 1.0 &mdash; high-risk region</td></tr>
+      <tr><td style="font-weight:bold">Quality</td><td style="font-family:monospace;font-size:9px">out-of-spec lots &divide; total lots (&plusmn;15%)</td><td>Score &ge; 0.3 &mdash; material deviation</td></tr>
+      <tr><td style="font-weight:bold">Compliance</td><td style="font-family:monospace;font-size:9px">1 &minus; daysToExpiry/90; 1.0 if expired</td><td>&ge; 0.5 WARNING &middot; = 1.0 CRITICAL</td></tr>
     </tbody>
   </table>
 </div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">5 / 16</span></div>
-</div>
 
-<!-- SLIDE 6 — SUPPLY CHAIN RISK -->
-<div class="slide" id="s6">
-<div class="shdr"><div class="eye">Supply Chain Intelligence</div><h2>Supplier Risk Scoring — Four Independent Dimensions</h2><div class="desc">Composite 0&#8211;100 risk score per supplier &middot; Automated alert generation &middot; Certification expiry monitoring &middot; Scheduled re-evaluation every 5 minutes</div></div>
-<div class="sbody tight">
-  <div class="mockup" style="margin-bottom:16px">
-    <div class="m-bar">&#9889; CellSight — Supply Chain Risk &amp; Traceability<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-    <div class="m-body">
-      <table class="mt">
-        <thead><tr><th>Supplier</th><th>Tier</th><th>Country</th><th>Risk Score</th><th style="min-width:190px">4-Dimension Breakdown</th><th>Certification Status</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><b>CobaltMines Ltd</b></td><td>Tier 3</td><td>CD</td><td><span class="tag r">HIGH &nbsp;78</span></td>
-            <td>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Concentration</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:55%;height:100%;background:#b7770d"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Geopolitical</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:100%;height:100%;background:#a93226"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Quality</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:40%;height:100%;background:#b7770d"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Compliance</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:100%;height:100%;background:#a93226"></div></div></div>
-            </td>
-            <td style="font-size:9px;color:#a93226;font-weight:700">EXPIRED — 2026-05-12</td>
-          </tr>
-          <tr>
-            <td><b>Graphite Supplies</b></td><td>Tier 3</td><td>CN</td><td><span class="tag r">HIGH &nbsp;65</span></td>
-            <td>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Concentration</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:70%;height:100%;background:#a93226"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Geopolitical</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:100%;height:100%;background:#a93226"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Quality</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:20%;height:100%;background:#1a7a42"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Compliance</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:30%;height:100%;background:#b7770d"></div></div></div>
-            </td>
-            <td style="font-size:9px;color:#b7770d;font-weight:600">Expiring 2026-09-01</td>
-          </tr>
-          <tr>
-            <td><b>LithiumCorp</b></td><td>Tier 3</td><td>US</td><td><span class="tag g">LOW &nbsp;&nbsp;12</span></td>
-            <td>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Concentration</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:15%;height:100%;background:#1a7a42"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Geopolitical</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:0%;height:100%;background:#1a7a42"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Quality</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:10%;height:100%;background:#1a7a42"></div></div></div>
-              <div style="display:flex;align-items:center;gap:3px"><span style="font-size:7px;width:72px;flex-shrink:0;color:#7f8c8d">Compliance</span><div style="flex:1;height:5px;background:#eaecee;border-radius:1px;overflow:hidden"><div style="width:5%;height:100%;background:#1a7a42"></div></div></div>
-            </td>
-            <td style="font-size:9px">Valid &mdash; 2028-01-20</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <h3 style="margin-bottom:10px">Scoring Methodology (RiskScoringService)</h3>
-  <table class="tbl">
-    <thead><tr><th>Dimension</th><th>Formula</th><th>Alert generated when</th></tr></thead>
-    <tbody>
-      <tr><td><b>Concentration</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">min(1, supplierVolumeShare &#247; 0.35)</td><td>Score &#8805; 0.8 — single-source dependency risk</td></tr>
-      <tr><td><b>Geopolitical</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">1 if country &#8712; {CN, RU, VE} else 0</td><td>Score &#8805; 1.0 — elevated country risk</td></tr>
-      <tr><td><b>Quality</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">out-of-spec lots &#247; total lots (&#177;15% tolerance)</td><td>Score &#8805; 0.3 — material quality deviation</td></tr>
-      <tr><td><b>Compliance</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">1 &#8722; daysToExpiry/90 ramp;&nbsp; 1.0 if expired</td><td>&#8805; 0.5 WARNING &nbsp;&#183;&nbsp; 1.0 CRITICAL</td></tr>
-    </tbody>
-  </table>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">6 / 16</span></div>
-</div>
-
-<!-- SLIDE 7 — TRACE VIEW -->
-<div class="slide" id="s7">
-<div class="shdr"><div class="eye">Material Traceability</div><h2>Full Upstream Supply Chain Trace — Four Tiers in Under 3 Seconds</h2><div class="desc">Asset &#8594; Battery Pack &#8594; Cell Batch &#8594; Manufacturer &#8594; Raw Material Lots &middot; Quality flags on individual lots &middot; Accessible to both Fleet Manager and Supply Chain Manager roles</div></div>
-<div class="sbody tight">
-  <div class="mockup" style="margin-bottom:16px">
-    <div class="m-bar">&#9889; CellSight &#8212; Supply Chain Trace &#8212; FreightLiner-001<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-    <div class="m-body" style="display:grid;grid-template-columns:1fr 200px;gap:10px">
-      <div style="background:#fff;border:1px solid #e2e6ea;border-radius:4px;padding:10px 14px">
-        <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7f8c8d;border-bottom:1px solid #e2e6ea;padding-bottom:4px;margin-bottom:10px">Upstream Chain — FreightLiner-001</div>
-        <div style="display:flex;gap:10px;margin-bottom:8px"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:30px;height:30px;background:#eaf4fb;border:1px solid #aed6f1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px">&#128230;</div><div style="width:1px;height:10px;border-left:2px dashed #aed6f1"></div></div><div><div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#7f8c8d">Deployed Asset</div><div style="font-size:11px;font-weight:700;color:#0b1e3a">FreightLiner-001</div><div style="font-size:9px;color:#5d6d7e">Freight Truck &middot; SoH 94.1%</div></div></div>
-        <div style="display:flex;gap:10px;margin-bottom:8px"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:30px;height:30px;background:#eaf4fb;border:1px solid #aed6f1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px">&#128267;</div><div style="width:1px;height:10px;border-left:2px dashed #aed6f1"></div></div><div><div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#7f8c8d">Battery Pack</div><div style="font-size:11px;font-weight:700;color:#0b1e3a">PACK-GCM-001-1</div><div style="font-size:9px;color:#5d6d7e">185 kWh &middot; Assembled May 2026</div></div></div>
-        <div style="display:flex;gap:10px;margin-bottom:8px"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:30px;height:30px;background:#eaf4fb;border:1px solid #aed6f1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px">&#11041;</div><div style="width:1px;height:10px;border-left:2px dashed #aed6f1"></div></div><div><div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#7f8c8d">Cell Batch</div><div style="font-size:11px;font-weight:700;color:#0b1e3a">BATCH-GCM-001</div><div style="font-size:9px;color:#5d6d7e">6,200 cells &middot; Production April 2026</div></div></div>
-        <div style="display:flex;gap:10px"><div style="width:30px;height:30px;background:#eaf4fb;border:1px solid #aed6f1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">&#127981;</div><div><div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#7f8c8d">Cell Manufacturer</div><div style="font-size:11px;font-weight:700;color:#0b1e3a">GlobalCells Manufacturing</div><div style="font-size:9px;color:#5d6d7e">Republic of Korea &middot; Tier 2 &middot; Risk Score 38/100</div></div></div>
-      </div>
-      <div>
-        <div style="background:#fff;border:1px solid #e2e6ea;border-radius:4px;overflow:hidden">
-          <div style="background:#f2f4f5;border-bottom:1px solid #e2e6ea;padding:4px 8px;font-size:8px;font-weight:700;color:#0b1e3a">Raw Material Lots</div>
-          <table class="mt" style="font-size:9px">
+<!-- s9 TRACE VIEW -->
+<div class="card" id="s9">
+  <div class="sec">Supply Chain Trace &mdash; Full Material Provenance</div>
+  <p class="step">7.1 &nbsp; Click <b>&ldquo;View supply chain trace &raquo;&rdquo;</b> on any asset to resolve the full 4-tier upstream chain &mdash; from deployed vehicle back to individual raw material lots &mdash; in under 3 seconds.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; Supply Chain Trace &mdash; FreightLiner-001</div>
+      <div class="ss-body" style="display:grid;grid-template-columns:1fr 190px;gap:7px">
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;padding:8px 10px">
+          <div style="font-size:7px;font-weight:bold;text-transform:uppercase;color:#4a6a9a;border-bottom:1px solid #c0cfe0;padding-bottom:3px;margin-bottom:7px">Full Upstream Supply Chain</div>
+          <div style="display:flex;gap:7px;margin-bottom:6px"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:26px;height:26px;background:linear-gradient(to bottom,#dce6f5,#b8cfe8);border:1px solid #7f9db9;display:flex;align-items:center;justify-content:center;font-size:12px">&#128230;</div><div style="width:1px;height:10px;border-left:2px dashed #7f9db9"></div></div><div><div style="font-size:7px;font-weight:bold;text-transform:uppercase;color:#4a6a9a">Deployed Asset</div><div style="font-size:9px;font-weight:bold;color:#0a246a">FreightLiner-001</div><div style="font-size:8px;color:#4a4a4a">Freight Truck &middot; SoH 94.1%</div></div></div>
+          <div style="display:flex;gap:7px;margin-bottom:6px"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:26px;height:26px;background:linear-gradient(to bottom,#dce6f5,#b8cfe8);border:1px solid #7f9db9;display:flex;align-items:center;justify-content:center;font-size:12px">&#128267;</div><div style="width:1px;height:10px;border-left:2px dashed #7f9db9"></div></div><div><div style="font-size:7px;font-weight:bold;text-transform:uppercase;color:#4a6a9a">Battery Pack</div><div style="font-size:9px;font-weight:bold;color:#0a246a">PACK-GCM-001-1</div><div style="font-size:8px;color:#4a4a4a">185 kWh &middot; Assembled May 2026</div></div></div>
+          <div style="display:flex;gap:7px;margin-bottom:6px"><div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:26px;height:26px;background:linear-gradient(to bottom,#dce6f5,#b8cfe8);border:1px solid #7f9db9;display:flex;align-items:center;justify-content:center;font-size:12px">&#11041;</div><div style="width:1px;height:10px;border-left:2px dashed #7f9db9"></div></div><div><div style="font-size:7px;font-weight:bold;text-transform:uppercase;color:#4a6a9a">Cell Batch</div><div style="font-size:9px;font-weight:bold;color:#0a246a">BATCH-GCM-001</div><div style="font-size:8px;color:#4a4a4a">6,200 cells &middot; Apr 2026</div></div></div>
+          <div style="display:flex;gap:7px"><div style="width:26px;height:26px;background:linear-gradient(to bottom,#dce6f5,#b8cfe8);border:1px solid #7f9db9;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">&#127981;</div><div><div style="font-size:7px;font-weight:bold;text-transform:uppercase;color:#4a6a9a">Cell Manufacturer</div><div style="font-size:9px;font-weight:bold;color:#0a246a">GlobalCells Manufacturing</div><div style="font-size:8px;color:#4a4a4a">Korea &middot; Tier 2 &middot; Risk 38/100</div></div></div>
+        </div>
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden;align-self:start">
+          <div style="background:linear-gradient(to right,#dce6f5,#b8cfe8);border-bottom:1px solid #7f9db9;padding:3px 7px;font-size:8px;font-weight:bold;color:#0a246a">Raw Material Lots</div>
+          <table class="tbl" style="font-size:8px">
             <tbody>
-              <tr><td><b>Lithium</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:7px">LI-US-0012</td><td style="color:#1a7a42;font-weight:700">&#10003; 92.1</td></tr>
-              <tr style="background:#fdf2f2"><td><b style="color:#a93226">Cobalt</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:7px">CO-CD-0008</td><td style="color:#a93226;font-weight:700">&#9888; 74.3</td></tr>
-              <tr><td><b>Nickel</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:7px">NI-CA-0021</td><td style="color:#1a7a42;font-weight:700">&#10003; 89.6</td></tr>
-              <tr><td><b>Graphite</b></td><td style="font-family:'JetBrains Mono',monospace;font-size:7px">GR-CN-0004</td><td style="color:#9a7d0a;font-weight:700">&#126; 86.0</td></tr>
+              <tr><td style="font-weight:bold">Lithium</td><td style="font-family:monospace;font-size:7px">LI-US-0012</td><td style="color:#155724;font-weight:bold">&#10003; 92.1</td></tr>
+              <tr style="background:#fce8e8"><td style="font-weight:bold;color:#c00000">Cobalt</td><td style="font-family:monospace;font-size:7px">CO-CD-0008</td><td style="color:#c00000;font-weight:bold">&#9888; 74.3</td></tr>
+              <tr><td style="font-weight:bold">Nickel</td><td style="font-family:monospace;font-size:7px">NI-CA-0021</td><td style="color:#155724;font-weight:bold">&#10003; 89.6</td></tr>
+              <tr><td style="font-weight:bold">Graphite</td><td style="font-family:monospace;font-size:7px">GR-CN-0004</td><td style="color:#856404;font-weight:bold">~ 86.0</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
-  <div class="igrid c2">
-    <div class="ibox r"><h4>Cobalt Lot CO-CD-0008 — Quality Flag</h4><p>Quality score 74.3 falls below the specification minimum &#215; 0.85 tolerance. This lot originates from CobaltMines Ltd (Congo, CD) — the same supplier whose compliance certification expired in May 2026. Two independent risk signals converge on a single material lot, visible to both roles in one view.</p></div>
-    <div class="ibox"><h4>TraceabilityService — Architecture</h4><p>A single API call walks: asset &#8594; batteryPack &#8594; cellBatch &#8594; manufacturer &#8594; materialLots &#8594; suppliers. The complete 4-tier resolution completes in under 3 seconds and is the only page in the platform with deliberate dual-role visibility — both fleet and supply chain managers can access it by design.</p></div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">7 / 16</span></div>
+  <p class="step">7.2 &nbsp; <b>Cobalt lot CO-CD-0008</b> is flagged red &mdash; quality score 74.3 is below the specification minimum &times; 0.85 tolerance. This lot came from CobaltMines Ltd, the same supplier with an expired certification. Two independent risk signals visible in one view.</p>
+  <div class="callout"><b>Chain traversal:</b> TraceabilityService walks: asset &rarr; batteryPack &rarr; cellBatch &rarr; manufacturer &rarr; materialLots &rarr; suppliers. Full 4-tier resolution in under 3 seconds. Both fleet_manager and supply_chain_manager roles can access this view &mdash; the only dual-role page in the platform by design.</div>
 </div>
 
-<!-- SLIDE 8 — CORRELATION -->
-<div class="slide" id="s8">
-<div class="shdr"><div class="eye">Core Differentiator</div><h2>Field-to-Source Correlation Engine</h2><div class="desc">Z-score statistical outlier detection &middot; Self-calibrating threshold (z &gt; 2.0 &#8776; 95th percentile) &middot; Alert delivered simultaneously to fleet and supply chain managers &middot; No manual analysis required</div></div>
-<div class="sbody tight">
-  <div class="two wide" style="margin-bottom:16px">
-    <div>
-      <div class="mockup">
-        <div class="m-bar">&#9889; Field-to-Source Correlation Engine<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-        <div class="m-body">
-          <div style="background:#eaf4fb;border:1px solid #aed6f1;border-radius:3px;padding:5px 10px;font-size:9px;color:#0b1e3a;font-weight:600;margin-bottom:8px">Analysis complete &mdash; 2 statistical outliers (z &gt; 2.0) identified across 12 suppliers.</div>
-          <div style="background:#fff;border:1px solid #e2e6ea;border-radius:3px;padding:8px;margin-bottom:8px">
-            <div style="font-size:8px;font-weight:700;color:#0b1e3a;margin-bottom:6px">Degradation Deviation vs Fleet Average</div>
-            <svg viewBox="0 0 520 90" style="width:100%;height:72px;overflow:visible">
-              <line x1="38" y1="6" x2="38" y2="70" stroke="#e2e6ea" stroke-width="1"/>
-              <line x1="38" y1="58" x2="514" y2="58" stroke="#aab7b8" stroke-width="1"/>
-              <line x1="38" y1="27" x2="514" y2="27" stroke="#a93226" stroke-width="0.8" stroke-dasharray="3,2"/>
-              <text x="512" y="25" font-size="6" fill="#a93226" text-anchor="end" font-weight="700">z = 2.0 threshold</text>
-              <rect x="44"  y="15" width="32" height="43" fill="#a93226" rx="2"/><text x="60"  y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">CobaltMines</text>
-              <rect x="86"  y="23" width="32" height="35" fill="#a93226" rx="2"/><text x="102" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">Graphite Sup.</text>
-              <rect x="128" y="38" width="32" height="20" fill="#b7770d" rx="2"/><text x="144" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">EnergyCells</text>
-              <rect x="170" y="48" width="32" height="10" fill="#b7770d" rx="2"/><text x="186" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">BatteryTech</text>
-              <rect x="212" y="54" width="32" height="4"  fill="#1f618d" rx="2"/><text x="228" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">GlobalCells</text>
-              <rect x="254" y="58" width="32" height="4"  fill="#1a7a42" rx="2"/><text x="270" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">LithiumCorp</text>
-              <rect x="296" y="58" width="32" height="7"  fill="#1a7a42" rx="2"/><text x="312" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">NickelSource</text>
-              <rect x="338" y="58" width="32" height="10" fill="#1a7a42" rx="2"/><text x="354" y="86" text-anchor="middle" font-size="5.5" fill="#2c3e50">RareEarth</text>
-            </svg>
-          </div>
-          <table class="mt">
-            <thead><tr><th>Supplier</th><th>Avg Deg/day</th><th>Fleet Avg</th><th>Deviation</th><th>Z-Score</th></tr></thead>
+<!-- s10 CORRELATION -->
+<div class="card" id="s10">
+  <div class="sec">Field-to-Source Correlation &mdash; Z-Score Outlier Detection</div>
+  <p class="step">8.1 &nbsp; Navigate to <b>Correlation</b> and click <b>&ldquo;Run Analysis&rdquo;</b>. The agent computes each supplier&rsquo;s average battery degradation rate across all linked assets, then uses z-score statistics to identify outliers automatically.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; CellSight &mdash; Field-to-Source Correlation Engine</div>
+      <div class="ss-body">
+        <div style="background:#cce5ff;border:1px solid #7fb3e0;padding:4px 8px;font-size:9px;color:#004085;font-weight:bold;margin-bottom:6px">&#9889; Analysis complete &mdash; 2 statistical outliers (z &gt; 2.0) detected across 12 suppliers and 25 batches.</div>
+        <div style="background:#fff;border:1px solid #c0cfe0;padding:5px;margin-bottom:6px">
+          <div style="font-size:8px;font-weight:bold;color:#0a246a;margin-bottom:3px">Degradation Deviation vs Fleet Average &mdash; All Suppliers</div>
+          <svg viewBox="0 0 500 88" style="width:100%;height:70px;overflow:visible">
+            <line x1="36" y1="6" x2="36" y2="70" stroke="#d0d8e8" stroke-width="1"/>
+            <line x1="36" y1="58" x2="494" y2="58" stroke="#7f9db9" stroke-width="1"/>
+            <line x1="36" y1="28" x2="494" y2="28" stroke="#c00000" stroke-width="0.8" stroke-dasharray="3,2"/>
+            <text x="494" y="26" font-size="6" fill="#c00000" text-anchor="end">z = 2.0 threshold</text>
+            <rect x="42"  y="16" width="32" height="42" fill="#c00000" rx="1"/><text x="58"  y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">CobaltMines</text>
+            <rect x="84"  y="24" width="32" height="34" fill="#c00000" rx="1"/><text x="100" y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">Graphite Sup.</text>
+            <rect x="126" y="38" width="32" height="20" fill="#b87000" rx="1"/><text x="142" y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">EnergyCells</text>
+            <rect x="168" y="48" width="32" height="10" fill="#b87000" rx="1"/><text x="184" y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">BatteryTech</text>
+            <rect x="210" y="54" width="32" height="4"  fill="#316ac5" rx="1"/><text x="226" y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">GlobalCells</text>
+            <rect x="252" y="58" width="32" height="4"  fill="#2a8a2a" rx="1"/><text x="268" y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">LithiumCorp</text>
+            <rect x="294" y="58" width="32" height="7"  fill="#2a8a2a" rx="1"/><text x="310" y="84" text-anchor="middle" font-size="5.5" fill="#1a1a1a">NickelSource</text>
+          </svg>
+        </div>
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+          <table class="tbl" style="font-size:9px">
+            <thead><tr><th>Supplier</th><th>Assets</th><th>Avg Deg/day</th><th>Fleet Avg</th><th>Deviation</th><th>Z-Score</th><th>Confidence</th></tr></thead>
             <tbody>
-              <tr><td><b>CobaltMines Ltd</b></td><td style="font-family:'JetBrains Mono',monospace">0.0487%</td><td style="font-family:'JetBrains Mono',monospace;color:#7f8c8d">0.038%</td><td style="color:#a93226;font-weight:700">+28.3%</td><td><span class="tag r">z = 2.84</span></td></tr>
-              <tr><td><b>Graphite Supplies</b></td><td style="font-family:'JetBrains Mono',monospace">0.0464%</td><td style="font-family:'JetBrains Mono',monospace;color:#7f8c8d">0.038%</td><td style="color:#a93226;font-weight:700">+22.1%</td><td><span class="tag r">z = 2.21</span></td></tr>
+              <tr><td style="font-weight:bold;color:#0a246a">CobaltMines Ltd</td><td style="text-align:right;font-family:monospace">9</td><td style="font-family:monospace">0.0487%</td><td style="font-family:monospace;color:#6a6a6a">0.038%</td><td style="color:#c00000;font-weight:bold;font-family:monospace">+28.3%</td><td><span class="br">z = 2.84</span></td><td>85%</td></tr>
+              <tr><td style="font-weight:bold;color:#0a246a">Graphite Supplies</td><td style="text-align:right;font-family:monospace">7</td><td style="font-family:monospace">0.0464%</td><td style="font-family:monospace;color:#6a6a6a">0.038%</td><td style="color:#c00000;font-weight:bold;font-family:monospace">+22.1%</td><td><span class="br">z = 2.21</span></td><td>70%</td></tr>
+              <tr><td style="font-weight:bold;color:#0a246a">EnergyCells Ltd</td><td style="text-align:right;font-family:monospace">11</td><td style="font-family:monospace">0.0435%</td><td style="font-family:monospace;color:#6a6a6a">0.038%</td><td style="color:#856404;font-weight:bold;font-family:monospace">+14.5%</td><td><span class="by">z = 1.45</span></td><td>100%</td></tr>
             </tbody>
           </table>
+          <div style="background:linear-gradient(to bottom,#d0d8e8,#b8c8de);border-top:1px solid #7f9db9;padding:2px 8px;font-size:9px;color:#4a4a4a">12 suppliers analysed</div>
         </div>
       </div>
     </div>
-    <div>
-      <div class="fml" style="margin-bottom:14px">
-<span class="c">// Z-score per supplier</span>
-z = (avgDegRate &#8722; &#956;) &#247; &#963;
+  </div>
+  <p class="step">8.2 &nbsp; Formula: &nbsp;<span style="font-family:monospace;font-size:12px">z = (supplierAvgDegRate &minus; &mu;) / &sigma;</span>. &nbsp; Any z &gt; 2.0 (&asymp; 95th percentile) triggers a <b>FIELD_TO_SOURCE_CORRELATION</b> alert visible to <i>both</i> the fleet manager and supply chain manager simultaneously.</p>
+  <div class="callout"><b>Why this is the core differentiator:</b> CellSight is the only platform that automatically links real-world field degradation back to the specific cell batch and raw material supplier that caused it. When the alert fires, both teams see it at the same time. Z-score is self-calibrating &mdash; the threshold adjusts as the fleet grows. No manual tuning required.</div>
+</div>
 
-<span class="c">// &#956; and &#963; computed across all suppliers</span>
-<span class="c">// with confidence &#8805; 0.5 (&#8805; 5 linked assets)</span>
-
-<span class="c">// Flag if z &gt; 2.0 (&#8776; 95th percentile)</span>
-<span class="c">// Self-calibrates as fleet grows</span></div>
-      <div class="ibox" style="margin-bottom:12px">
-        <h4>Why Z-Score, Not a Fixed Threshold?</h4>
-        <p>A fixed 20% deviation threshold treats the same deviation identically whether a supplier has 3 or 300 linked assets. Z-score is self-calibrating — the significance level adjusts automatically as the fleet and supplier base grow, eliminating the need for manual threshold tuning.</p>
-      </div>
-      <div class="ibox g">
-        <h4>The Core Differentiator</h4>
-        <p>This is the only platform that automatically links real-world field degradation back to the originating supplier batch. When this alert fires, it is delivered simultaneously to the fleet manager and the supply chain manager — creating a shared feedback loop between two teams that previously had no connection.</p>
+<!-- s11 ALERTS -->
+<div class="card" id="s11">
+  <div class="sec">Unified Alert Feed &amp; Outbox Pattern</div>
+  <p class="step">9.1 &nbsp; Click <b>Alerts</b> in the sidebar to see the unified feed from all three agents (APM, Supply Chain, Correlation) in one place. Alerts arrive in real time via Server-Sent Events and are never lost even if the browser disconnects.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; CellSight &mdash; Unified Alert Feed</div>
+      <div class="ss-body">
+        <div class="kpi" style="margin-bottom:6px">
+          <div class="kpi-b" style="background:#f8d7da;border-color:#e07070"><div class="kl">Open</div><div class="kn" style="color:#721c24">15</div></div>
+          <div class="kpi-b" style="background:#fff3cd;border-color:#f0ad4e"><div class="kl">Acknowledged</div><div class="kn" style="color:#856404">8</div></div>
+          <div class="kpi-b" style="background:#d4edda;border-color:#82c891"><div class="kl">Resolved</div><div class="kn" style="color:#155724">42</div></div>
+          <div class="kpi-b"><div class="kl">Total</div><div class="kn">65</div></div>
+        </div>
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+          <table class="tbl">
+            <thead><tr><th style="width:3px"></th><th>Alert</th><th>Agent</th><th>Severity</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0;background:#c00000;width:3px"></td><td><div style="font-weight:bold;font-size:9px">RUL THRESHOLD: Forklift-FL05 &mdash; 7 days</div><div style="font-size:8px;color:#6a6a6a">Schedule immediate battery replacement &middot; <span style="color:#316ac5">View asset &rarr;</span></div></td><td><span class="bb" style="font-size:8px">Fleet APM</span></td><td><span class="br">CRITICAL</span></td><td><span class="br">Open</span></td><td><div style="display:flex;gap:3px"><div style="background:linear-gradient(to bottom,#f4f2ec,#dbd8cc);border:1px solid #7f9db9;padding:1px 6px;font-size:8px">Ack</div><div style="background:#d4edda;border:1px solid #82c891;padding:1px 6px;font-size:8px;color:#155724">Resolve</div></div></td></tr>
+              <tr><td style="padding:0;background:#c00000;width:3px"></td><td><div style="font-weight:bold;font-size:9px">COMPLIANCE GAP: CobaltMines Ltd &mdash; cert expired</div><div style="font-size:8px;color:#6a6a6a">Verify responsible-sourcing compliance &middot; <span style="color:#316ac5">View supplier &rarr;</span></div></td><td><span style="background:#e2d9f3;border:1px solid #9f86c0;color:#4b2d80;padding:1px 4px;font-size:8px;font-weight:bold">Supply Chain</span></td><td><span class="br">CRITICAL</span></td><td><span class="br">Open</span></td><td><div style="display:flex;gap:3px"><div style="background:linear-gradient(to bottom,#f4f2ec,#dbd8cc);border:1px solid #7f9db9;padding:1px 6px;font-size:8px">Ack</div></div></td></tr>
+              <tr><td style="padding:0;background:#b87000;width:3px"></td><td><div style="font-weight:bold;font-size:9px">FIELD&harr;SOURCE: Batch BATCH-GCM-004 &mdash; z=2.84, +28.3%</div><div style="font-size:8px;color:#6a6a6a">9 assets degrading faster than fleet population</div></td><td><span style="background:#fff3cd;border:1px solid #f0ad4e;color:#856404;padding:1px 4px;font-size:8px;font-weight:bold">Correlation</span></td><td><span class="by">WARNING</span></td><td><span class="br">Open</span></td><td><div style="display:flex;gap:3px"><div style="background:linear-gradient(to bottom,#f4f2ec,#dbd8cc);border:1px solid #7f9db9;padding:1px 6px;font-size:8px">Ack</div></div></td></tr>
+            </tbody>
+          </table>
+          <div style="background:linear-gradient(to bottom,#d0d8e8,#b8c8de);border-top:1px solid #7f9db9;padding:2px 8px;font-size:9px;color:#4a4a4a">15 open alerts displayed</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">8 / 16</span></div>
+  <p class="step">9.2 &nbsp; The <b>left border colour</b> gives instant visual severity before reading any text &mdash; red for CRITICAL, amber for WARNING. Each alert has contextual links to the affected asset or supplier.</p>
+  <div class="callout"><b>Outbox Pattern &mdash; guaranteed delivery:</b><br/>
+  1. AlertService writes the alert and an outbox_events row in a <b>single atomic transaction</b> &mdash; no dual-write inconsistency possible.<br/>
+  2. OutboxPublisher polls unpublished rows every second and pushes to SSE clients.<br/>
+  3. On reconnect, the browser sends a <b>Last-Event-ID</b> header. Server replays all missed events since that ID &mdash; no alert is ever lost during a network drop.</div>
 </div>
 
-<!-- SLIDE 9 — ALERTS -->
-<div class="slide" id="s9">
-<div class="shdr"><div class="eye">Real-Time Operations</div><h2>Unified Alert Feed &amp; Guaranteed Real-Time Delivery</h2><div class="desc">9 alert types across 3 source agents &middot; Outbox pattern for atomic write and guaranteed SSE delivery &middot; Last-Event-ID replay on reconnect &middot; In-place acknowledge and resolve workflow</div></div>
-<div class="sbody tight">
-  <div class="mockup" style="margin-bottom:16px">
-    <div class="m-bar">&#9889; CellSight &#8212; Unified Alert Feed<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-    <div class="m-body">
-      <div class="m-kpi">
-        <div class="mk" style="background:#fdf2f2;border-color:#f1948a"><div class="kl">Open</div><div class="kn" style="color:#a93226">15</div></div>
-        <div class="mk" style="background:#fefce7;border-color:#f9e79f"><div class="kl">Acknowledged</div><div class="kn" style="color:#9a7d0a">8</div></div>
-        <div class="mk" style="background:#f0faf4;border-color:#a9dfbf"><div class="kl">Resolved</div><div class="kn" style="color:#1a7a42">42</div></div>
-        <div class="mk"><div class="kl">Total</div><div class="kn">65</div></div>
+<!-- s12 EV READINESS -->
+<div class="card" id="s12">
+  <div class="sec">EV Readiness &amp; Procurement Intelligence</div>
+  <p class="step">10.1 &nbsp; Navigate to <b>EV Readiness</b> to see per-asset electrification scores, recommended EV models, ROI projections, and transition blockers across the entire fleet.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; Fleet Electrification Readiness &amp; Procurement Intelligence</div>
+      <div class="ss-body">
+        <div class="kpi" style="margin-bottom:6px">
+          <div class="kpi-b" style="background:#d4edda;border-color:#82c891"><div class="kl">Ready Now</div><div class="kn" style="color:#155724">5</div></div>
+          <div class="kpi-b" style="background:#fff3cd;border-color:#f0ad4e"><div class="kl">Near Ready</div><div class="kn" style="color:#856404">2</div></div>
+          <div class="kpi-b" style="background:#f8d7da;border-color:#e07070"><div class="kl">Needs Review</div><div class="kn" style="color:#721c24">2</div></div>
+          <div class="kpi-b"><div class="kl">Not Suitable</div><div class="kn">1</div></div>
+          <div class="kpi-b" style="background:#d4edda;border-color:#82c891"><div class="kl">Annual Saving</div><div class="kn" style="color:#155724;font-size:14px">&pound;703k</div></div>
+          <div class="kpi-b" style="background:#cce5ff;border-color:#7fb3e0"><div class="kl">CO&sub2; Reduction</div><div class="kn" style="color:#004085;font-size:14px">578t</div></div>
+        </div>
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+          <table class="tbl" style="font-size:9px">
+            <thead><tr><th>Asset</th><th>Type</th><th style="min-width:90px">Readiness Score</th><th>Tier</th><th>Recommended EV</th><th>Saving/yr</th></tr></thead>
+            <tbody>
+              <tr style="outline:2px solid #316ac5;outline-offset:-2px"><td style="font-weight:bold;color:#0a246a">&#9658; FreightLiner-001</td><td>Freight Truck</td><td><div class="bw"><div class="bt"><div style="width:92%;height:100%;background:#2a8a2a"></div></div><span style="font-size:8px;font-weight:bold;color:#155724">92</span></div></td><td><span class="bg">Ready</span></td><td style="font-size:8px">Volvo FH Electric</td><td style="font-family:monospace;font-size:8px;color:#155724;font-weight:bold">&pound;28k</td></tr>
+              <tr><td style="font-weight:bold;color:#0a246a">Haul-Truck-A1</td><td>Mining Vehicle</td><td><div class="bw"><div class="bt"><div style="width:61%;height:100%;background:#b87000"></div></div><span style="font-size:8px;font-weight:bold;color:#856404">61</span></div></td><td><span class="by">Near Ready</span></td><td style="font-size:8px">Komatsu 930E EV</td><td style="font-family:monospace;font-size:8px;color:#155724;font-weight:bold">&pound;310k</td></tr>
+              <tr><td style="color:#6a6a6a">Loader-LD1</td><td>Construction</td><td><div class="bw"><div class="bt"><div style="width:36%;height:100%;background:#888"></div></div><span style="font-size:8px;color:#6a6a6a">36</span></div></td><td><span style="background:#e2e3e5;border:1px solid #adb5bd;color:#383d41;padding:1px 5px;font-size:8px;font-weight:bold">Not Suitable</span></td><td colspan="2" style="font-size:8px;color:#6a6a6a;font-style:italic">No commercial EV equivalent at required power rating</td></tr>
+            </tbody>
+          </table>
+          <div style="background:linear-gradient(to bottom,#d0d8e8,#b8c8de);border-top:1px solid #7f9db9;padding:2px 8px;font-size:9px;color:#4a4a4a">10 assets displayed</div>
+        </div>
       </div>
-      <table class="mt">
-        <thead><tr><th style="width:4px"></th><th>Alert</th><th>Source Agent</th><th>Severity</th><th>Status</th><th>Actions</th></tr></thead>
+    </div>
+  </div>
+  <p class="step">10.2 &nbsp; Click any asset row to expand the full <b>Procurement Panel</b> &mdash; recommended EV model, list price, delivery lead time, annual saving, CO&sub2; reduction, and payback period.</p>
+  <p class="step">10.3 &nbsp; <b>Loader-LD1</b> is flagged &ldquo;Not Suitable&rdquo; &mdash; no commercial EV exists at its power rating. Honest gap identification prevents over-optimistic electrification planning. Fleet-wide: &pound;703k/yr saving and 578 tonnes CO&sub2; reduction.</p>
+</div>
+
+<!-- s13 MAINTENANCE -->
+<div class="card" id="s13">
+  <div class="sec">Predictive Maintenance Operations</div>
+  <p class="step">11.1 &nbsp; Navigate to <b>Maintenance</b> to see the AI-generated job queue, workshop shift capacity, and EV charging slot utilisation. All jobs are created automatically by the APM agent&rsquo;s 5-minute scheduler.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; CellSight &mdash; Maintenance Operations</div>
+      <div class="ss-body">
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden;margin-bottom:6px">
+          <div style="background:linear-gradient(to right,#dce6f5,#b8cfe8);border-bottom:1px solid #7f9db9;padding:3px 8px;font-size:8px;font-weight:bold;color:#0a246a">Workshop &amp; Charging Capacity by Shift</div>
+          <table class="tbl" style="font-size:9px">
+            <thead><tr><th>Shift</th><th>Hours</th><th style="min-width:110px">Technicians</th><th style="min-width:110px">Charge Slots</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:bold">Day</td><td style="font-family:monospace;font-size:8px">06:00&ndash;14:00</td><td><div class="bw"><div class="bt"><div style="width:100%;height:100%;background:#c00000"></div></div><span style="font-size:8px;font-weight:bold;color:#721c24">3/3</span></div></td><td><div class="bw"><div class="bt"><div style="width:75%;height:100%;background:#b87000"></div></div><span style="font-size:8px;font-weight:bold;color:#856404">6/8</span></div></td><td><span class="br">Fully Booked</span></td></tr>
+              <tr><td style="font-weight:bold">Afternoon</td><td style="font-family:monospace;font-size:8px">14:00&ndash;22:00</td><td><div class="bw"><div class="bt"><div style="width:50%;height:100%;background:#2a8a2a"></div></div><span style="font-size:8px;font-weight:bold;color:#155724">1/2</span></div></td><td><div class="bw"><div class="bt"><div style="width:37%;height:100%;background:#2a8a2a"></div></div><span style="font-size:8px;font-weight:bold;color:#155724">3/8</span></div></td><td><span class="bg">Available</span></td></tr>
+              <tr><td style="font-weight:bold">Night</td><td style="font-family:monospace;font-size:8px">22:00&ndash;06:00</td><td><div class="bw"><div class="bt"><div style="width:100%;height:100%;background:#c00000"></div></div><span style="font-size:8px;font-weight:bold;color:#721c24">1/1</span></div></td><td><div class="bw"><div class="bt"><div style="width:87%;height:100%;background:#c00000"></div></div><span style="font-size:8px;font-weight:bold;color:#721c24">7/8</span></div></td><td><span class="by">Near Capacity</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:#f0f4f8;border:1px solid #7f9db9;overflow:hidden">
+          <table class="tbl" style="font-size:9px">
+            <thead><tr><th>Asset</th><th>Job (AI-generated)</th><th>Priority</th><th>Status</th><th>Est.</th><th>&#9889;</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:bold;color:#0a246a">FreightLiner-001</td><td>Battery Thermal System Inspection</td><td><span class="br">CRITICAL</span></td><td><span class="by">Due Today</span></td><td style="font-family:monospace;font-size:8px">3h</td><td style="text-align:center;color:#b87000">&#9889;</td></tr>
+              <tr style="background:#fce8e8"><td style="font-weight:bold;color:#721c24">Forklift-FL05</td><td>RUL Critical &mdash; Battery Swap Preparation</td><td><span class="br">CRITICAL</span></td><td><span class="bg">Upcoming</span></td><td style="font-family:monospace;font-size:8px">6h</td><td style="text-align:center;color:#b87000">&#9889;</td></tr>
+              <tr><td style="color:#721c24;font-style:italic">Forklift-FL01</td><td>Routine 500-Cycle Service</td><td><span style="background:#e2e3e5;border:1px solid #adb5bd;color:#383d41;padding:1px 5px;font-size:8px;font-weight:bold">LOW</span></td><td><span class="br">Overdue</span></td><td style="font-family:monospace;font-size:8px">2h</td><td style="text-align:center;color:#aaa">&mdash;</td></tr>
+            </tbody>
+          </table>
+          <div style="background:linear-gradient(to bottom,#d0d8e8,#b8c8de);border-top:1px solid #7f9db9;padding:2px 8px;font-size:9px;color:#4a4a4a">10 jobs displayed &mdash; generated by APM agent scheduler</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="step">11.2 &nbsp; The <b>&#9889; column</b> flags jobs that require an EV charging slot in addition to a workshop bay. The Day shift is fully booked &mdash; Forklift-FL05&rsquo;s battery swap must go to the Afternoon shift, which has 5 free charge slots.</p>
+  <div class="callout"><b>Scheduler engineering note:</b> The scheduler&rsquo;s first tick is deliberately deferred by one full interval (5 minutes). This ensures Railway&rsquo;s healthcheck responds before any blocking database work starts &mdash; preventing the service from being marked unhealthy on cold start. This is a real production engineering decision, not just a demo consideration.</div>
+</div>
+
+<!-- s14 ARCHITECTURE -->
+<div class="card" id="s14">
+  <div class="sec">System Architecture &amp; Tech Stack</div>
+  <p class="step">12.1 &nbsp; CellSight is a full-stack TypeScript monorepo. The backend runs on <b>Railway</b> (Node.js + PostgreSQL), the frontend on <b>Vercel</b> (React + Vite). All AI algorithms are pure TypeScript &mdash; zero external ML dependencies.</p>
+  <div style="display:flex;gap:8px;margin-bottom:12px;font-family:Tahoma,Arial,sans-serif;font-size:9px;align-items:stretch">
+    <div style="flex:1;background:#fff;border:1px solid #aaa;padding:9px 11px;box-shadow:1px 1px 3px rgba(0,0,0,.15)">
+      <div style="font-weight:bold;color:#0a246a;margin-bottom:5px;font-size:10px;border-bottom:1px solid #c8d8ef;padding-bottom:3px">Data Sources</div>
+      <div style="line-height:1.8;color:#1a1a1a">BMS / IoT Telemetry<br/>ERP / Supply Chain<br/>REST API ingestion<br/>Synthetic demo mode</div>
+    </div>
+    <div style="display:flex;align-items:center;color:#888;font-size:18px">&rarr;</div>
+    <div style="flex:2;background:#fff;border:1px solid #aaa;padding:9px 11px;box-shadow:1px 1px 3px rgba(0,0,0,.15)">
+      <div style="font-weight:bold;color:#155724;margin-bottom:5px;font-size:10px;border-bottom:1px solid #c8d8ef;padding-bottom:3px">Backend &mdash; Node.js + Express (Railway)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;line-height:1.7;color:#1a1a1a">
+        <div>SohCalculationService<br/><span style="color:#6a6a6a;font-size:8px">OLS regression</span></div>
+        <div>RiskScoringService<br/><span style="color:#6a6a6a;font-size:8px">4-dimension formulas</span></div>
+        <div>PredictiveMaintenanceService<br/><span style="color:#6a6a6a;font-size:8px">4 automated checks</span></div>
+        <div>CorrelationService<br/><span style="color:#6a6a6a;font-size:8px">Z-score outliers</span></div>
+        <div>AlertService + OutboxPublisher<br/><span style="color:#6a6a6a;font-size:8px">Guaranteed delivery</span></div>
+        <div>TraceabilityService<br/><span style="color:#6a6a6a;font-size:8px">4-tier chain traversal</span></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;color:#888;font-size:18px">&rarr;</div>
+    <div style="flex:1;background:#fff;border:1px solid #aaa;padding:9px 11px;box-shadow:1px 1px 3px rgba(0,0,0,.15)">
+      <div style="font-weight:bold;color:#4b2d80;margin-bottom:5px;font-size:10px;border-bottom:1px solid #c8d8ef;padding-bottom:3px">Database</div>
+      <div style="line-height:1.8;color:#1a1a1a">PostgreSQL (prod)<br/>sql.js (dev fallback)<br/>10 normalised tables<br/>Repository pattern<br/>Outbox table</div>
+    </div>
+    <div style="display:flex;align-items:center;color:#888;font-size:18px">&rarr;</div>
+    <div style="flex:1;background:#fff;border:1px solid #aaa;padding:9px 11px;box-shadow:1px 1px 3px rgba(0,0,0,.15)">
+      <div style="font-weight:bold;color:#856404;margin-bottom:5px;font-size:10px;border-bottom:1px solid #c8d8ef;padding-bottom:3px">Frontend (Vercel)</div>
+      <div style="line-height:1.8;color:#1a1a1a">React 18 + Vite 5<br/>React Router v6<br/>Recharts charts<br/>Axios interceptors<br/>SSE real-time</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div>
+      <table class="tbl" style="font-size:9px">
+        <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
         <tbody>
-          <tr><td style="padding:0;background:#a93226;width:4px"></td><td><div style="font-weight:700;font-size:9px">RUL THRESHOLD: Forklift-FL05 &mdash; 7 days remaining</div><div style="font-size:8px;color:#7f8c8d">Schedule immediate battery replacement &nbsp;&middot;&nbsp; <span style="color:#1f618d">View asset &rarr;</span></div></td><td><span class="tag b">Fleet APM</span></td><td><span class="tag r">CRITICAL</span></td><td><span class="tag r">Open</span></td><td><div style="display:flex;gap:4px"><div style="background:#f2f4f5;border:1px solid #aab7b8;padding:2px 8px;border-radius:3px;font-size:8px">Acknowledge</div><div style="background:#f0faf4;border:1px solid #a9dfbf;padding:2px 8px;border-radius:3px;font-size:8px;color:#1a7a42">Resolve</div></div></td></tr>
-          <tr><td style="padding:0;background:#a93226;width:4px"></td><td><div style="font-weight:700;font-size:9px">COMPLIANCE GAP: CobaltMines Ltd &mdash; Certification expired 2026-05-12</div><div style="font-size:8px;color:#7f8c8d">Verify responsible-sourcing compliance immediately &nbsp;&middot;&nbsp; <span style="color:#1f618d">View supplier &rarr;</span></div></td><td><span class="tag pu">Supply Chain</span></td><td><span class="tag r">CRITICAL</span></td><td><span class="tag r">Open</span></td><td><div style="display:flex;gap:4px"><div style="background:#f2f4f5;border:1px solid #aab7b8;padding:2px 8px;border-radius:3px;font-size:8px">Acknowledge</div></div></td></tr>
-          <tr><td style="padding:0;background:#b7770d;width:4px"></td><td><div style="font-weight:700;font-size:9px">FIELD&#8596;SOURCE CORRELATION: Batch BATCH-GCM-004 &mdash; z=2.84, +28.3% deviation</div><div style="font-size:8px;color:#7f8c8d">9 assets linked to this batch are degrading significantly faster than the fleet population</div></td><td><span class="tag a">Correlation</span></td><td><span class="tag a">WARNING</span></td><td><span class="tag r">Open</span></td><td><div style="display:flex;gap:4px"><div style="background:#f2f4f5;border:1px solid #aab7b8;padding:2px 8px;border-radius:3px;font-size:8px">Acknowledge</div></div></td></tr>
+          <tr><td style="font-weight:bold">Runtime</td><td>Node.js &ge; 18 &middot; TypeScript 5</td></tr>
+          <tr><td style="font-weight:bold">Backend</td><td>Express 4 &middot; Zod &middot; JWT + bcryptjs</td></tr>
+          <tr><td style="font-weight:bold">Database</td><td>PostgreSQL (Railway) &middot; sql.js dev fallback</td></tr>
+          <tr><td style="font-weight:bold">Frontend</td><td>React 18 &middot; Vite 5 &middot; React Router v6</td></tr>
+          <tr><td style="font-weight:bold">Charts</td><td>Recharts (LineChart, BarChart)</td></tr>
+          <tr><td style="font-weight:bold">Realtime</td><td>Server-Sent Events &middot; Outbox pattern</td></tr>
+          <tr><td style="font-weight:bold">Deploy</td><td>Railway (backend) &middot; Vercel (frontend)</td></tr>
+          <tr><td style="font-weight:bold">CI/CD</td><td>GitHub Actions &mdash; 5-job pipeline</td></tr>
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="two">
     <div>
-      <h3 style="margin-bottom:10px">Outbox Pattern &mdash; Guaranteed Delivery</h3>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:flex-start;gap:10px"><div style="width:22px;height:22px;background:#0b1e3a;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0">1</div><p style="margin:0;font-size:12px"><strong>AlertService</strong> writes the alert record and an outbox_events row in a single atomic transaction. Dual-write inconsistency is architecturally impossible.</p></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div style="width:22px;height:22px;background:#0b1e3a;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0">2</div><p style="margin:0;font-size:12px"><strong>OutboxPublisher</strong> polls unpublished rows every second and pushes events to all connected SSE clients.</p></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div style="width:22px;height:22px;background:#1f618d;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0">3</div><p style="margin:0;font-size:12px">On reconnect, the browser sends a <strong>Last-Event-ID</strong> header. The server replays all missed events since that ID &mdash; no alert is ever lost during a network interruption.</p></div>
+      <div style="font-size:10px;font-weight:bold;color:#0a246a;margin-bottom:6px">CI/CD Pipeline (5 Jobs)</div>
+      <div style="font-family:Tahoma,Arial,sans-serif;font-size:9px;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:7px"><span style="background:#155724;color:#fff;padding:1px 6px;font-size:8px;font-weight:bold">0</span><span><b>Secret Scan</b> &mdash; gitleaks full history, blocks all jobs</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="background:#0a246a;color:#fff;padding:1px 6px;font-size:8px;font-weight:bold">1</span><span><b>Backend CI</b> &mdash; typecheck + ESLint</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="background:#0a246a;color:#fff;padding:1px 6px;font-size:8px;font-weight:bold">2</span><span><b>Frontend CI</b> &mdash; typecheck + lint + Vite build</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="background:#4b2d80;color:#fff;padding:1px 6px;font-size:8px;font-weight:bold">3</span><span><b>Deploy Backend</b> &mdash; Railway health check</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="background:#4b2d80;color:#fff;padding:1px 6px;font-size:8px;font-weight:bold">4</span><span><b>Deploy Frontend</b> &mdash; Vercel CLI production deploy</span></div>
       </div>
-    </div>
-    <div>
-      <h3 style="margin-bottom:10px">9 Alert Types Across 3 Agents</h3>
-      <table class="tbl">
-        <thead><tr><th>Agent</th><th>Alert Types</th></tr></thead>
-        <tbody>
-          <tr><td><span class="tag b">Fleet APM</span></td><td style="font-size:11px">Thermal event &middot; SoH degradation &middot; RUL threshold &middot; Charge pattern</td></tr>
-          <tr><td><span class="tag pu">Supply Chain</span></td><td style="font-size:11px">Concentration risk &middot; Geopolitical risk &middot; Quality deviation &middot; Compliance gap</td></tr>
-          <tr><td><span class="tag a">Correlation</span></td><td style="font-size:11px">Field-to-source correlation (z-score outlier)</td></tr>
-        </tbody>
-      </table>
-      <div style="margin-top:10px;font-size:11px;color:#5d6d7e;line-height:1.5">The coloured left border provides immediate visual severity indication — red for CRITICAL, amber for WARNING — without requiring the reader to locate the severity badge.</div>
+      <div class="callout" style="margin-top:10px;font-size:11px"><b>Multi-tenant isolation:</b> Every query, API route, and SSE channel is scoped by organizationId. An organisation&rsquo;s data is never accessible to another tenant &mdash; enforced at the database layer.</div>
     </div>
   </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">9 / 16</span></div>
 </div>
 
-<!-- SLIDE 10 — EV READINESS -->
-<div class="slide" id="s10">
-<div class="shdr"><div class="eye">Strategic Planning</div><h2>Fleet Electrification Readiness &amp; Procurement Intelligence</h2><div class="desc">Per-asset readiness scoring 0&#8211;100 &middot; OEM recommendations matched to duty cycle &middot; ROI and payback period analysis &middot; CO&#8322; reduction quantification &middot; Transition blocker identification</div></div>
-<div class="sbody tight">
-  <div class="kgrid c5" style="margin-bottom:16px">
-    <div class="kcard g"><div class="kl">Ready Now</div><div class="kn">5</div><div class="ks">Score &#8805; 80</div></div>
-    <div class="kcard a"><div class="kl">Near Ready</div><div class="kn">2</div><div class="ks">Score 50&#8211;79</div></div>
-    <div class="kcard r"><div class="kl">Needs Review</div><div class="kn">2</div><div class="ks">Score &lt; 50</div></div>
-    <div class="kcard g"><div class="kl">Annual Saving</div><div class="kn">&#163;703k</div><div class="ks">All qualifying assets</div></div>
-    <div class="kcard"><div class="kl">CO&#8322; Reduction</div><div class="kn">578t</div><div class="ks">Tonnes per year</div></div>
+<!-- s15 LANDING PAGE -->
+<div class="card" id="s15">
+  <div class="sec">Public Landing Page &mdash; Marketing Layer</div>
+  <p class="step">13.1 &nbsp; Unauthenticated visitors who navigate to <b>cell-sight.vercel.app</b> see the public marketing landing page. Authenticated users are automatically redirected to their dashboard.</p>
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <div class="ss">
+      <div class="ss-bar">&#9889; CellSight &mdash; Battery Intelligence Platform &mdash; cell-sight.vercel.app</div>
+      <div style="background:linear-gradient(135deg,#0a246a 0%,#1b4da0 50%,#316ac5 100%);padding:20px 22px;text-align:center;color:#fff">
+        <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);padding:2px 10px;font-size:8px;color:#a0c8f0;display:inline-block;margin-bottom:10px">&#9889; Battery Intelligence Platform</span>
+        <div style="font-size:14px;font-weight:bold;margin-bottom:6px">Know When Batteries Fail &mdash; Before They Do</div>
+        <div style="font-size:9px;color:#bdd8f8;max-width:440px;margin:0 auto 12px;line-height:1.6">CellSight gives industrial fleet operators real-time battery health monitoring and EV manufacturers full supply chain traceability &mdash; connected by an AI correlation engine.</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
+          <div style="background:#316ac5;color:#fff;padding:6px 16px;font-size:9px;font-weight:bold;font-family:Tahoma,Arial,sans-serif">Start Free Trial</div>
+          <div style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);padding:6px 16px;font-size:9px;font-family:Tahoma,Arial,sans-serif">Request a Demo</div>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(212,237,218,.15);border:1px solid rgba(130,200,145,.4);padding:3px 10px;font-size:8px;color:#b0e8b8">&#9203; We respond to all enquiries within 1 business day</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-family:Tahoma,Arial,sans-serif;font-size:9px">
+        <div style="background:#f5f7fa;padding:9px 11px;border-right:1px solid #dde8f0;border-top:1px solid #dde8f0">
+          <div style="font-size:8px;font-weight:bold;text-transform:uppercase;color:#316ac5;margin-bottom:4px">Case Studies</div>
+          <div style="color:#1a1a1a;line-height:1.7"><b>23% reduction</b> in unplanned downtime &mdash; Large Logistics Fleet<br/><b>&pound;2.1M</b> warranty claims prevented &mdash; Tier 1 OEM</div>
+        </div>
+        <div style="background:#fff;padding:9px 11px;border-right:1px solid #dde8f0;border-top:1px solid #dde8f0">
+          <div style="font-size:8px;font-weight:bold;text-transform:uppercase;color:#316ac5;margin-bottom:4px">FAQ (5 items)</div>
+          <div style="color:#1a1a1a;line-height:1.7">Pricing &middot; Data security<br/>ERP integration<br/>Time-to-value<br/>Supported vehicles</div>
+        </div>
+        <div style="background:#f5f7fa;padding:9px 11px;border-right:1px solid #dde8f0;border-top:1px solid #dde8f0">
+          <div style="font-size:8px;font-weight:bold;text-transform:uppercase;color:#316ac5;margin-bottom:4px">Reviews (4.6/5)</div>
+          <div style="color:#f59e0b;font-size:11px">&#9733;&#9733;&#9733;&#9733;&#9733; &#9733;&#9733;&#9733;&#9733;&#9733; &#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <div style="font-size:8px;color:#6a6a6a;margin-top:3px">5 real customer testimonials with star ratings</div>
+        </div>
+        <div style="background:#fff;padding:9px 11px;border-top:1px solid #dde8f0">
+          <div style="font-size:8px;font-weight:bold;text-transform:uppercase;color:#316ac5;margin-bottom:4px">Demo Request</div>
+          <div style="color:#1a1a1a;line-height:1.7">Name &middot; Work email<br/>Message &rarr; submits to<br/>/enquiry/thank-you</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <table class="tbl" style="margin-bottom:16px">
-    <thead><tr><th>Asset</th><th>Type</th><th style="min-width:100px">Readiness Score</th><th>Classification</th><th>Recommended EV</th><th>List Price</th><th>Annual Saving</th><th>CO&#8322; Reduction</th></tr></thead>
+  <p class="step">13.2 &nbsp; <b>Sticky mobile CTA:</b> On screens narrower than 768 px, a &ldquo;Get Started Free&rdquo; bar is pinned to the bottom of the viewport. It hides automatically when the user scrolls within 200 px of the footer.</p>
+  <p class="step">13.3 &nbsp; An <b>OpenStreetMap iframe</b> is embedded in the contact section with a &ldquo;Contact Us&rdquo; email link. Three <b>JSON-LD structured data schemas</b> are injected &mdash; LocalBusiness, FAQPage, and Organization with aggregateRating &mdash; making CellSight eligible for Google rich results.</p>
+</div>
+
+<!-- s16 SEO -->
+<div class="card" id="s16">
+  <div class="sec">SEO, Metadata &amp; Privacy Policy</div>
+  <p class="step">14.1 &nbsp; Every route has a unique <b>&lt;title&gt;</b>, <b>meta description</b>, <b>canonical link</b>, <b>Open Graph tags</b>, and <b>Twitter Card tags</b> managed by the <code style="font-family:monospace;font-size:12px">useDocumentMeta</code> hook. Tags update on every route change and clean up on unmount.</p>
+  <table class="tbl" style="margin-bottom:12px">
+    <thead><tr><th>Route</th><th>Page Title</th></tr></thead>
     <tbody>
-      <tr><td><b>FreightLiner-001</b></td><td>Freight Truck</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:92%;background:#1a7a42"></div></div><span style="font-size:9px;font-weight:700;color:#1a7a42">92</span></div></td><td><span class="tag g">Ready</span></td><td style="font-size:11px">Volvo FH Electric</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">&#163;380k</td><td style="font-weight:700;color:#1a7a42">&#163;28k</td><td style="color:#1f618d">54 t</td></tr>
-      <tr><td><b>Haul-Truck-A1</b></td><td>Mining Vehicle</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:61%;background:#b7770d"></div></div><span style="font-size:9px;font-weight:700;color:#9a7d0a">61</span></div></td><td><span class="tag a">Near Ready</span></td><td style="font-size:11px">Komatsu 930E EV</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">&#163;3.4M</td><td style="font-weight:700;color:#1a7a42">&#163;310k</td><td style="color:#1f618d">210 t</td></tr>
-      <tr><td><b>Forklift-FL01</b></td><td>Forklift</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:97%;background:#1a7a42"></div></div><span style="font-size:9px;font-weight:700;color:#1a7a42">97</span></div></td><td><span class="tag g">Ready</span></td><td style="font-size:11px">Toyota 8FBMT</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">&#163;48k</td><td style="font-weight:700;color:#1a7a42">&#163;9k</td><td style="color:#1f618d">8 t</td></tr>
-      <tr><td style="color:#7f8c8d">Loader-LD1</td><td>Construction</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:36%;background:#7f8c8d"></div></div><span style="font-size:9px;color:#7f8c8d">36</span></div></td><td><span class="tag gr">Not Suitable</span></td><td colspan="3" style="font-size:10px;color:#7f8c8d;font-style:italic">No commercial EV equivalent at required power rating</td><td></td></tr>
+      <tr><td style="font-family:monospace;font-size:9px">/</td><td>Battery Intelligence Platform &mdash; CellSight</td></tr>
+      <tr><td style="font-family:monospace;font-size:9px">/fleet</td><td>Fleet Health Dashboard &mdash; CellSight</td></tr>
+      <tr><td style="font-family:monospace;font-size:9px">/supply-chain</td><td>Supplier Portal &mdash; CellSight</td></tr>
+      <tr><td style="font-family:monospace;font-size:9px">/correlation</td><td>Field Claims &amp; Correlation &mdash; CellSight</td></tr>
+      <tr><td style="font-family:monospace;font-size:9px">/privacy</td><td>Privacy Policy &mdash; CellSight</td></tr>
+      <tr><td style="font-family:monospace;font-size:9px">* (any unknown URL)</td><td>Page Not Found &mdash; CellSight (noindex)</td></tr>
     </tbody>
   </table>
-  <div class="igrid c3">
-    <div class="ibox"><h4>Readiness Scoring Methodology</h4><p>Score 0&#8211;100 based on annual kilometres, daily dwell time available for charging, route profile, and power rating match against available EV models. Scores &#8805; 80 are classified Ready; 50&#8211;79 Near Ready; below 50 Needs Review.</p></div>
-    <div class="ibox"><h4>Honest Gap Identification</h4><p>Loader-LD1 receives a Not Suitable classification — no commercial EV equivalent exists at its required power rating. Identifying this prevents over-optimistic electrification planning and budget misallocation.</p></div>
-    <div class="ibox g"><h4>Fleet-Wide Business Case</h4><p>Aggregated across all qualifying assets: &#163;703k annual fuel and maintenance saving and 578 tonnes CO&#8322; reduction per year. These figures provide a quantified financial and ESG justification for the fleet electrification programme.</p></div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">10 / 16</span></div>
+  <p class="step">14.2 &nbsp; <b>robots.txt</b> is served as a static file from <code style="font-family:monospace;font-size:12px">frontend/public/</code>. Vercel serves it before the SPA catch-all rewrite fires. All authenticated routes are disallowed to avoid wasted crawl budget.</p>
+  <p class="step">14.3 &nbsp; A full <b>Privacy Policy</b> is live at <code style="font-family:monospace;font-size:12px">/privacy</code> (no login required). It covers data collection, retention periods, third-party services (Google Analytics 4, Railway, Vercel), user rights, and a contact email. It is linked from the sidebar footer on every authenticated page and from the landing page footer.</p>
+  <p class="step">14.4 &nbsp; A branded <b>404 page</b> replaces the old silent redirect. A <b>Thank You page</b> at <code style="font-family:monospace;font-size:12px">/enquiry/thank-you</code> confirms demo requests with a &ldquo;We respond within 1 business day&rdquo; badge. Both pages carry noindex meta tags.</p>
+  <p class="step">14.5 &nbsp; <b>Google Analytics 4</b> fires a <code style="font-family:monospace;font-size:12px">page_view</code> event on every route change. It only loads if <code style="font-family:monospace;font-size:12px">VITE_GA_MEASUREMENT_ID</code> is set &mdash; empty locally so development traffic never pollutes the Analytics stream.</p>
 </div>
 
-<!-- SLIDE 11 — MAINTENANCE OPS -->
-<div class="slide" id="s11">
-<div class="shdr"><div class="eye">Operations</div><h2>Predictive Maintenance Operations</h2><div class="desc">AI-generated priority job queue &middot; Workshop and charging infrastructure capacity planning by shift &middot; Severity-ranked jobs automatically refreshed every 5 minutes</div></div>
-<div class="sbody tight">
-  <div class="mockup" style="margin-bottom:16px">
-    <div class="m-bar">&#9889; CellSight &#8212; Maintenance Operations<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-    <div class="m-body">
-      <div style="background:#fff;border:1px solid #e2e6ea;border-radius:4px;overflow:hidden;margin-bottom:8px">
-        <div style="background:#f2f4f5;border-bottom:1px solid #e2e6ea;padding:4px 10px;font-size:9px;font-weight:700;color:#0b1e3a">Workshop &amp; Charging Infrastructure Capacity by Shift</div>
-        <table class="mt" style="font-size:10px">
-          <thead><tr><th>Shift</th><th>Hours</th><th style="min-width:130px">Technician Utilisation</th><th style="min-width:130px">EV Charge Slot Utilisation</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><b>Day Shift</b></td><td style="font-family:'JetBrains Mono',monospace">06:00&#8211;14:00</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:100%;background:#a93226"></div></div><span style="font-size:8px;font-weight:700;color:#a93226">3 / 3</span></div></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:75%;background:#b7770d"></div></div><span style="font-size:8px;font-weight:700;color:#9a7d0a">6 / 8</span></div></td><td><span class="tag r">Fully Booked</span></td></tr>
-            <tr><td><b>Afternoon</b></td><td style="font-family:'JetBrains Mono',monospace">14:00&#8211;22:00</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:50%;background:#1a7a42"></div></div><span style="font-size:8px;font-weight:700;color:#1a7a42">1 / 2</span></div></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:37%;background:#1a7a42"></div></div><span style="font-size:8px;font-weight:700;color:#1a7a42">3 / 8</span></div></td><td><span class="tag g">Available</span></td></tr>
-            <tr><td><b>Night Shift</b></td><td style="font-family:'JetBrains Mono',monospace">22:00&#8211;06:00</td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:100%;background:#a93226"></div></div><span style="font-size:8px;font-weight:700;color:#a93226">1 / 1</span></div></td><td><div class="sbar"><div class="sbar-t"><div class="sbar-f" style="width:87%;background:#a93226"></div></div><span style="font-size:8px;font-weight:700;color:#a93226">7 / 8</span></div></td><td><span class="tag a">Near Capacity</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <table class="mt" style="font-size:10px">
-        <thead><tr><th>Asset</th><th>Job Description (AI-Generated)</th><th>Priority</th><th>Status</th><th>Est. Duration</th><th>Charge Impact</th></tr></thead>
-        <tbody>
-          <tr><td><b>FreightLiner-001</b></td><td>Battery Thermal System Inspection</td><td><span class="tag r">CRITICAL</span></td><td><span class="tag a">Due Today</span></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">3 hr</td><td style="text-align:center;color:#b7770d;font-weight:700">Yes</td></tr>
-          <tr style="background:#fdf2f2"><td><b style="color:#a93226">Forklift-FL05</b></td><td>RUL Critical &#8212; Battery Replacement Preparation</td><td><span class="tag r">CRITICAL</span></td><td><span class="tag g">Upcoming</span></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">6 hr</td><td style="text-align:center;color:#b7770d;font-weight:700">Yes</td></tr>
-          <tr><td style="color:#a93226;font-style:italic">Forklift-FL01</td><td>Routine 500-Cycle Service</td><td><span class="tag gr">LOW</span></td><td><span class="tag r">Overdue</span></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">2 hr</td><td style="text-align:center;color:#7f8c8d">No</td></tr>
-        </tbody>
-      </table>
+<!-- CLOSING CARD -->
+<div class="card cover" style="padding:44px 36px">
+  <div style="font-size:18px;font-weight:normal;line-height:2;color:#fff;margin-bottom:24px">
+    &#9889; CellSight &mdash; Battery Intelligence Platform<br/>
+    <span style="font-size:14px;color:#aaa">The only platform that automatically links real-world battery degradation back to the originating cell batch and supplier &mdash; creating a shared feedback loop that improves both fleet performance and supply chain quality simultaneously.</span>
+  </div>
+  <div style="display:flex;justify-content:center;gap:28px;margin-bottom:28px;flex-wrap:wrap">
+    <div style="text-align:center"><div style="font-size:30px;font-weight:bold;color:#fff">5</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">AI Agents</div></div>
+    <div style="text-align:center"><div style="font-size:30px;font-weight:bold;color:#fff">9</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">Alert Types</div></div>
+    <div style="text-align:center"><div style="font-size:30px;font-weight:bold;color:#fff">50+</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">Fleet Assets</div></div>
+    <div style="text-align:center"><div style="font-size:30px;font-weight:bold;color:#fff">10k+</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">Telemetry Points</div></div>
+    <div style="text-align:center"><div style="font-size:30px;font-weight:bold;color:#fff">0</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">TypeScript Errors</div></div>
+  </div>
+  <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:14px 20px;margin-bottom:18px;text-align:left;max-width:480px;margin-left:auto;margin-right:auto">
+    <div style="font-size:9px;font-weight:bold;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Live Demo</div>
+    <div style="font-family:monospace;font-size:11px;color:#d0d0d0;line-height:2">
+      &rarr; <a href="https://cell-sight.vercel.app" style="color:#6db3f2">https://cell-sight.vercel.app</a>
     </div>
   </div>
-  <div class="igrid c2">
-    <div class="ibox"><h4>Charge Impact Flag</h4><p>Jobs that require an EV charging slot in addition to a workshop bay are explicitly flagged. The Day Shift is fully booked — the Forklift-FL05 battery replacement must therefore be allocated to the Afternoon Shift, which has 5 free charge slots. This prevents scheduling conflicts without manual cross-referencing.</p></div>
-    <div class="ibox a"><h4>Production Engineering Note: Deferred Scheduler Start</h4><p>The scheduler's first tick is deliberately deferred by one full interval (5 minutes). This ensures the platform's Railway health check responds before any blocking database work begins — preventing the service from being marked unhealthy during cold start. This is a real production consideration, not a demo accommodation.</p></div>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:5px 13px;font-size:9px;color:#ddd;text-align:center;font-family:Tahoma,Arial,sans-serif"><div style="font-weight:bold;margin-bottom:2px">Fleet Manager</div><div style="font-family:monospace;color:#6db3f2;font-size:8px">fleet@cellsight.com</div></div>
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:5px 13px;font-size:9px;color:#ddd;text-align:center;font-family:Tahoma,Arial,sans-serif"><div style="font-weight:bold;margin-bottom:2px">Supply Chain</div><div style="font-family:monospace;color:#6db3f2;font-size:8px">supply@cellsight.com</div></div>
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:5px 13px;font-size:9px;color:#ddd;text-align:center;font-family:Tahoma,Arial,sans-serif"><div style="font-weight:bold;margin-bottom:2px">Maintenance</div><div style="font-family:monospace;color:#6db3f2;font-size:8px">maintenance@cellsight.com</div></div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:5px 13px;font-size:9px;color:rgba(255,255,255,.5);text-align:center;font-family:Tahoma,Arial,sans-serif;align-self:center">Password: <span style="font-family:monospace">demo123</span></div>
   </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">11 / 16</span></div>
+  <div style="color:rgba(255,255,255,.25);font-size:10px">CellSight v1.0 &middot; 2026 &middot; React 18 + TypeScript &middot; Node.js + Express &middot; PostgreSQL &middot; Railway + Vercel</div>
 </div>
 
-<!-- SLIDE 12 — ARCHITECTURE -->
-<div class="slide" id="s12">
-<div class="shdr"><div class="eye">Technical Architecture</div><h2>Platform Architecture &amp; Technology Stack</h2><div class="desc">Full-stack TypeScript monorepo &middot; Express REST API &middot; React 18 SPA &middot; PostgreSQL on Railway &middot; Vercel frontend &middot; 5-stage CI/CD pipeline with secret scanning</div></div>
-<div class="sbody tight">
-  <div style="background:#f4f6f7;border:1px solid #e2e6ea;border-radius:6px;padding:16px 20px;margin-bottom:16px">
-    <div style="display:flex;align-items:stretch;gap:6px;flex-wrap:nowrap">
-      <div style="flex:1;min-width:120px;background:#eaf4fb;border:1.5px solid #aed6f1;border-radius:4px;padding:12px 14px">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1a5276;margin-bottom:8px">Data Sources</div>
-        <div style="font-size:10px;color:#2c3e50;line-height:1.9">BMS / IoT Telemetry<br/>ERP / Supply Chain<br/>REST API ingestion<br/>Synthetic demo mode</div>
-      </div>
-      <div style="display:flex;align-items:center;color:#7f8c8d;font-size:16px;padding:0 4px">&#8594;</div>
-      <div style="flex:2;min-width:200px;background:#f0faf4;border:1.5px solid #a9dfbf;border-radius:4px;padding:12px 14px">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1a7a42;margin-bottom:8px">Backend &#8212; Node.js + Express (Railway)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:10px;color:#2c3e50">
-          <div>SohCalculationService<br/><span style="color:#7f8c8d">OLS regression (scratch)</span></div>
-          <div>RiskScoringService<br/><span style="color:#7f8c8d">4-dimension formulas</span></div>
-          <div>PredictiveMaintenanceService<br/><span style="color:#7f8c8d">4 automated checks</span></div>
-          <div>CorrelationService<br/><span style="color:#7f8c8d">Z-score outlier detection</span></div>
-          <div>AlertService + OutboxPublisher<br/><span style="color:#7f8c8d">Atomic write + SSE delivery</span></div>
-          <div>TraceabilityService<br/><span style="color:#7f8c8d">4-tier chain traversal</span></div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;color:#7f8c8d;font-size:16px;padding:0 4px">&#8594;</div>
-      <div style="flex:1;min-width:120px;background:#f5eef8;border:1.5px solid #d7bde2;border-radius:4px;padding:12px 14px">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6c3483;margin-bottom:8px">Database</div>
-        <div style="font-size:10px;color:#2c3e50;line-height:1.9">PostgreSQL (production)<br/>sql.js (development)<br/>10 normalised tables<br/>Repository pattern<br/>Outbox events table</div>
-      </div>
-      <div style="display:flex;align-items:center;color:#7f8c8d;font-size:16px;padding:0 4px">&#8594;</div>
-      <div style="flex:1;min-width:120px;background:#fefce7;border:1.5px solid #f9e79f;border-radius:4px;padding:12px 14px">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9a7d0a;margin-bottom:8px">Frontend (Vercel)</div>
-        <div style="font-size:10px;color:#2c3e50;line-height:1.9">React 18 + Vite 5<br/>React Router v6<br/>Recharts (charts)<br/>Axios interceptors<br/>SSE real-time feed</div>
-      </div>
-    </div>
-  </div>
-  <div class="two">
-    <div>
-      <h3 style="margin-bottom:10px">Technology Stack</h3>
-      <table class="tbl">
-        <tbody>
-          <tr><td><b>Runtime</b></td><td>Node.js &#8805; 18 &middot; TypeScript 5</td></tr>
-          <tr><td><b>Backend framework</b></td><td>Express 4 &middot; Zod input validation</td></tr>
-          <tr><td><b>Authentication</b></td><td>JWT + bcryptjs &middot; httpOnly refresh cookie</td></tr>
-          <tr><td><b>Database</b></td><td>PostgreSQL (Railway) &middot; sql.js dev fallback</td></tr>
-          <tr><td><b>Frontend</b></td><td>React 18 &middot; Vite 5 &middot; React Router v6</td></tr>
-          <tr><td><b>Charts</b></td><td>Recharts &#8212; LineChart, BarChart</td></tr>
-          <tr><td><b>Real-time</b></td><td>Server-Sent Events + Outbox pattern</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <h3 style="margin-bottom:10px">CI/CD Pipeline &#8212; 5 Stages</h3>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        <div style="display:flex;align-items:center;gap:9px;font-size:12px"><span style="background:#0b1e3a;color:#fff;border-radius:3px;padding:2px 8px;font-size:9px;font-weight:700;min-width:20px;text-align:center">0</span><span><b>Secret Scan</b> &#8212; gitleaks full-history audit; blocks all downstream jobs</span></div>
-        <div style="display:flex;align-items:center;gap:9px;font-size:12px"><span style="background:#1f618d;color:#fff;border-radius:3px;padding:2px 8px;font-size:9px;font-weight:700;min-width:20px;text-align:center">1</span><span><b>Backend CI</b> &#8212; TypeScript typecheck + ESLint</span></div>
-        <div style="display:flex;align-items:center;gap:9px;font-size:12px"><span style="background:#1f618d;color:#fff;border-radius:3px;padding:2px 8px;font-size:9px;font-weight:700;min-width:20px;text-align:center">2</span><span><b>Frontend CI</b> &#8212; TypeScript typecheck + lint + Vite production build</span></div>
-        <div style="display:flex;align-items:center;gap:9px;font-size:12px"><span style="background:#6c3483;color:#fff;border-radius:3px;padding:2px 8px;font-size:9px;font-weight:700;min-width:20px;text-align:center">3</span><span><b>Deploy Backend</b> &#8212; Railway health check verification</span></div>
-        <div style="display:flex;align-items:center;gap:9px;font-size:12px"><span style="background:#6c3483;color:#fff;border-radius:3px;padding:2px 8px;font-size:9px;font-weight:700;min-width:20px;text-align:center">4</span><span><b>Deploy Frontend</b> &#8212; Vercel CLI production deployment</span></div>
-      </div>
-      <div class="ibox" style="margin-top:12px"><h4>Multi-Tenant Isolation</h4><p>Every API route, database query, and SSE channel is scoped by <code style="font-family:'JetBrains Mono',monospace;font-size:10px">organizationId</code>. Data isolation is enforced at the database layer, not only at the API layer.</p></div>
-    </div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">12 / 16</span></div>
-</div>
-
-<!-- SLIDE 13 — PUBLIC LANDING PAGE -->
-<div class="slide" id="s13">
-<div class="shdr"><div class="eye">Marketing &amp; Conversion</div><h2>Public Landing Page &amp; Lead Generation</h2><div class="desc">Unauthenticated visitors see a full marketing funnel &middot; Authenticated users redirect to their dashboard &middot; Sticky mobile CTA &middot; FAQ accordion &middot; Customer reviews &middot; Demo request form</div></div>
-<div class="sbody tight">
-  <div style="border:1px solid #d5d8dc;border-radius:6px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:16px">
-    <div style="background:linear-gradient(135deg,#07101e 0%,#0b1e3a 40%,#1a5276 80%,#1f618d 100%);padding:22px 28px;text-align:center;color:#fff">
-      <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:3px;padding:3px 12px;font-size:9px;color:rgba(255,255,255,.6);display:inline-block;margin-bottom:12px;letter-spacing:.5px">BATTERY INTELLIGENCE PLATFORM</span>
-      <div style="font-size:18px;font-weight:800;line-height:1.3;margin-bottom:8px">Know When Batteries Fail — Before They Do</div>
-      <div style="font-size:10px;color:rgba(255,255,255,.55);max-width:480px;margin:0 auto 16px;line-height:1.6">CellSight gives industrial fleet operators real-time battery health monitoring and EV manufacturers full supply chain traceability — connected by a statistical correlation engine.</div>
-      <div style="display:flex;gap:9px;justify-content:center">
-        <div style="background:#1f618d;color:#fff;padding:9px 22px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.3px">Start Free Trial</div>
-        <div style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);padding:9px 22px;border-radius:3px;font-size:10px">Request a Demo</div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-top:1px solid #e2e6ea">
-      <div style="padding:12px 16px;border-right:1px solid #e2e6ea;background:#f8f9fa">
-        <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1f618d;margin-bottom:6px">Case Studies</div>
-        <div style="font-size:9px;color:#5d6d7e;line-height:1.7"><strong>23%</strong> reduction in unplanned downtime — Large Logistics Operator<br/><strong>&#163;2.1M</strong> warranty claims prevented — Tier 1 OEM</div>
-      </div>
-      <div style="padding:12px 16px;border-right:1px solid #e2e6ea">
-        <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1f618d;margin-bottom:6px">FAQ — 5 Items</div>
-        <div style="font-size:9px;color:#5d6d7e;line-height:1.7">Pricing &middot; Data security &middot; ERP integration &middot; Time-to-value &middot; Supported vehicle types<br/><span style="color:#aab7b8;font-size:8px">FAQPage JSON-LD &#8594; Google rich results</span></div>
-      </div>
-      <div style="padding:12px 16px;border-right:1px solid #e2e6ea;background:#f8f9fa">
-        <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1f618d;margin-bottom:6px">Reviews — 4.6 / 5</div>
-        <div style="font-size:9px;color:#5d6d7e;line-height:1.7">5 customer testimonials with star ratings and role / sector attribution. Aggregate rating embedded in Organization JSON-LD schema.</div>
-      </div>
-      <div style="padding:12px 16px">
-        <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1f618d;margin-bottom:6px">Response Commitment</div>
-        <div style="font-size:9px;color:#5d6d7e;line-height:1.7">Response time badge displayed prominently: "We respond to all enquiries within 1 business day." Shown on landing page and the Thank You confirmation page.</div>
-      </div>
-    </div>
-  </div>
-  <div class="igrid c3">
-    <div class="ibox"><h4>Authenticated Routing</h4><p>When a signed-in user visits <code style="font-family:'JetBrains Mono',monospace;font-size:10px">/</code>, they are redirected to their dashboard — Fleet Managers to <code style="font-family:'JetBrains Mono',monospace;font-size:10px">/fleet</code>, Supply Chain Managers to <code style="font-family:'JetBrains Mono',monospace;font-size:10px">/supply-chain</code>. Unauthenticated users see the landing page.</p></div>
-    <div class="ibox"><h4>Sticky Mobile CTA</h4><p>On screens narrower than 768 px a fixed "Get Started Free" button is pinned to the bottom of the viewport. It hides automatically when the user scrolls within 200 px of the footer, using a scroll event listener rather than a CSS-only solution.</p></div>
-    <div class="ibox"><h4>Structured Data</h4><p>Three JSON-LD schemas are injected on the landing page: <strong>LocalBusiness</strong> (knowledge panel eligibility), <strong>FAQPage</strong> (rich FAQ results in search), and <strong>Organization</strong> with <strong>aggregateRating</strong> (star rating in search results).</p></div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">13 / 16</span></div>
-</div>
-
-<!-- SLIDE 14 — SEO -->
-<div class="slide" id="s14">
-<div class="shdr"><div class="eye">Search &amp; Discoverability</div><h2>SEO Infrastructure &amp; Technical Metadata</h2><div class="desc">Unique page titles and meta descriptions on every route &middot; Open Graph and Twitter Card tags &middot; robots.txt with authenticated route protection &middot; JSON-LD structured data &middot; Google Analytics 4</div></div>
-<div class="sbody tight">
-  <div class="two wide" style="margin-bottom:16px">
-    <div>
-      <h3 style="margin-bottom:10px">useDocumentMeta Hook — Applied to All 17 Routes</h3>
-      <table class="tbl" style="margin-bottom:14px">
-        <thead><tr><th>Route</th><th>Page Title</th><th>Indexed</th></tr></thead>
-        <tbody>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">/</td><td>Battery Intelligence Platform &#8212; CellSight</td><td><span class="tag g">Yes</span></td></tr>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">/fleet</td><td>Fleet Health Dashboard &#8212; CellSight</td><td><span class="tag gr">Restricted</span></td></tr>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">/fleet/:id</td><td>{Asset Name} &#8212; Fleet Health &#8212; CellSight</td><td><span class="tag gr">Restricted</span></td></tr>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">/supply-chain</td><td>Supplier Portal &#8212; CellSight</td><td><span class="tag gr">Restricted</span></td></tr>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">/privacy</td><td>Privacy Policy &#8212; CellSight</td><td><span class="tag g">Yes</span></td></tr>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">/enquiry/thank-you</td><td>Thank You &#8212; CellSight</td><td><span class="tag r">noindex</span></td></tr>
-          <tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px">*</td><td>Page Not Found &#8212; CellSight</td><td><span class="tag r">noindex</span></td></tr>
-        </tbody>
-      </table>
-      <p style="font-size:12px">Each route receives a unique <strong>meta description</strong>, <strong>canonical link</strong>, and a full set of <strong>Open Graph</strong> and <strong>Twitter Card</strong> tags. Tags are managed client-side via a custom hook that upserts rather than appending, preventing duplicates across route changes.</p>
-    </div>
-    <div>
-      <h3 style="margin-bottom:10px">robots.txt Directives</h3>
-      <div class="fml" style="margin-bottom:12px;font-size:11px">
-<span class="c">Allow:    /  /login  /signup  /privacy</span>
-<span class="c">Allow:    /enquiry/thank-you</span>
-
-<span class="h">Disallow: /fleet          /fleet/</span>
-<span class="h">Disallow: /supply-chain   /supply-chain/</span>
-<span class="h">Disallow: /alerts         /correlation/</span>
-<span class="h">Disallow: /profile        /register/</span>
-<span class="h">Disallow: /api/</span>
-
-Sitemap: https://cell-sight.vercel.app/sitemap.xml</div>
-      <p style="font-size:11px">Authenticated routes are disallowed — search crawlers would only receive a redirect to the login page, wasting crawl budget. The file is served as a static asset from <code style="font-family:'JetBrains Mono',monospace;font-size:10px">frontend/public/</code>, which Vercel serves before the SPA catch-all rewrite applies.</p>
-    </div>
-  </div>
-  <div class="igrid c3">
-    <div class="ibox"><h4>JSON-LD Structured Data</h4><p><strong>LocalBusiness</strong> schema enables Google knowledge panel eligibility. <strong>FAQPage</strong> schema renders FAQ items directly in search results. <strong>Organization + aggregateRating</strong> (4.6/5 from 5 reviews) enables star rating display in search.</p></div>
-    <div class="ibox"><h4>Google Analytics 4</h4><p>The <code style="font-family:'JetBrains Mono',monospace;font-size:10px">useAnalytics</code> hook loads GA4 asynchronously only when <code style="font-family:'JetBrains Mono',monospace;font-size:10px">VITE_GA_MEASUREMENT_ID</code> is set. The variable is deliberately empty in the local development environment to prevent contamination of the production data stream.</p></div>
-    <div class="ibox g"><h4>Privacy Policy</h4><p>A full privacy policy at <code style="font-family:'JetBrains Mono',monospace;font-size:10px">/privacy</code> covers data collection, retention, third-party services (GA4, Railway, Vercel), and user rights. It is linked from the sidebar footer on every authenticated page and from the public landing page footer.</p></div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">14 / 16</span></div>
-</div>
-
-<!-- SLIDE 15 — ASSET DETAIL (bonus/appendix) -->
-<div class="slide" id="s15">
-<div class="shdr"><div class="eye">Asset Intelligence</div><h2>Asset Detail View &#8212; SoH Trend, Alerts &amp; Provenance Link</h2><div class="desc">Full SoH history as a trend chart &middot; Four telemetry chart tabs &middot; Active maintenance alert list &middot; Direct link to supply chain trace &middot; Breadcrumb navigation</div></div>
-<div class="sbody tight">
-  <div class="mockup" style="margin-bottom:16px">
-    <div class="m-bar">&#9889; Asset Detail &#8212; Forklift-FL05<div class="dots"><div class="dot" style="background:#e74c3c"></div><div class="dot" style="background:#f39c12"></div><div class="dot" style="background:#2ecc71"></div></div></div>
-    <div class="m-body">
-      <div style="background:#fdf2f2;border:1px solid #f1948a;border-radius:3px;padding:4px 10px;margin-bottom:7px;display:flex;align-items:center;gap:10px;font-size:9px">
-        <span class="tag r">Critical</span>
-        <span>Last telemetry: <strong>2 hours ago</strong></span>
-        <span>Model confidence: <strong style="color:#a93226">88%</strong></span>
-        <span style="margin-left:auto;color:#1f618d;font-weight:600;cursor:pointer">View supply chain trace &#8594;</span>
-      </div>
-      <div class="m-kpi">
-        <div class="mk" style="background:#fdf2f2;border-color:#f1948a"><div class="kl">State of Health</div><div class="kn" style="color:#a93226">76.4%</div></div>
-        <div class="mk" style="background:#fdf2f2;border-color:#f1948a"><div class="kl">Remaining Useful Life</div><div class="kn" style="color:#a93226">7 days</div></div>
-        <div class="mk"><div class="kl">Total Cycles</div><div class="kn">521</div></div>
-        <div class="mk" style="background:#fefce7;border-color:#f9e79f"><div class="kl">Open Alerts</div><div class="kn" style="color:#9a7d0a">3</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0">
-        <div style="background:#fff;border:1px solid #e2e6ea;border-radius:3px">
-          <div style="background:#f2f4f5;border-bottom:1px solid #e2e6ea;padding:4px 9px;font-size:8px;font-weight:700;color:#0b1e3a">SoH Trend &#8212; June to August 2026</div>
-          <div style="padding:5px 8px">
-            <svg viewBox="0 0 230 70" style="width:100%;height:60px">
-              <line x1="18" y1="26" x2="226" y2="26" stroke="#f9e79f" stroke-width="0.8" stroke-dasharray="3,2"/>
-              <line x1="18" y1="46" x2="226" y2="46" stroke="#f1948a" stroke-width="0.8" stroke-dasharray="3,2"/>
-              <text x="14" y="29" text-anchor="end" font-size="6" fill="#aab7b8">85%</text>
-              <text x="14" y="49" text-anchor="end" font-size="6" fill="#aab7b8">80%</text>
-              <polyline points="22,8 52,11 82,15 112,21 142,29 172,40 202,52 226,62" fill="none" stroke="#1f618d" stroke-width="1.8"/>
-              <circle cx="226" cy="62" r="3" fill="#a93226"/>
-              <text x="22" y="69" font-size="5.5" fill="#aab7b8">Jun 1</text>
-              <text x="197" y="69" font-size="5.5" fill="#aab7b8">Aug 7</text>
-            </svg>
-          </div>
-        </div>
-        <div style="background:#fff;border:1px solid #e2e6ea;border-radius:3px">
-          <div style="background:#f2f4f5;border-bottom:1px solid #e2e6ea;padding:4px 9px;font-size:8px;font-weight:700;color:#0b1e3a">Active Maintenance Alerts</div>
-          <table class="mt" style="font-size:9px">
-            <tbody>
-              <tr><td><b>RUL THRESHOLD: 7 days remaining</b></td><td><span class="tag r">CRITICAL</span></td></tr>
-              <tr><td><b>SOH DEGRADATION: 76.4% below critical floor</b></td><td><span class="tag r">CRITICAL</span></td></tr>
-              <tr><td><b>CHARGE PATTERN: avg SoC 12% (below 20% floor)</b></td><td><span class="tag b">INFO</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="igrid c3">
-    <div class="ibox"><h4>SoH Trend Chart</h4><p>The red dot marks the current SoH value — below the 80% critical threshold (lower dashed line). The amber dashed line represents the 85% warning threshold. Rendered using Recharts <code style="font-family:'JetBrains Mono',monospace;font-size:10px">LineChart</code> from the full SoH history database records.</p></div>
-    <div class="ibox r"><h4>Three AI-Generated Alerts</h4><p>All three alerts were raised automatically by the PredictiveMaintenanceService scheduler — no manual input. The INFO charge pattern advisory identifies that the average minimum SoC of 12% falls below the recommended 20% floor, which accelerates cell degradation independently of cycle count.</p></div>
-    <div class="ibox"><h4>Breadcrumb Navigation</h4><p>Asset Detail, Trace View, and Profile pages render a breadcrumb trail with <code style="font-family:'JetBrains Mono',monospace;font-size:10px">aria-label="breadcrumb"</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:10px">aria-current="page"</code> on the active item, meeting WCAG 2.1 AA accessibility requirements.</p></div>
-  </div>
-</div>
-<div class="sftr"><span class="brand">&#9889; CellSight</span><span class="right">15 / 16</span></div>
-</div>
-
-<!-- SLIDE 16 — CLOSING -->
-<div class="slide" id="s16">
-<div class="cover" style="min-height:480px">
-  <div class="cover-main" style="align-items:center;text-align:center;padding-top:48px;padding-bottom:36px">
-    <div class="c-logo" style="justify-content:center;margin-bottom:28px"><div class="c-icon">&#9889;</div><span class="c-name">CellSight</span></div>
-    <h1 style="font-size:36px;margin-bottom:14px">Bridging Fleet Operations<br/><span>and Battery Supply Chains</span></h1>
-    <p class="sub" style="text-align:center;max-width:580px;margin:0 auto 28px">The only platform that automatically connects real-world battery degradation back to the originating cell batch and supplier &mdash; creating a shared feedback loop that improves both fleet performance and supply chain quality simultaneously.</p>
-    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:18px 28px;margin-bottom:24px;text-align:left;max-width:540px">
-      <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">Live Demonstration</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.8);line-height:2.1">
-        <span style="color:#5dade2">&#8594;</span> <a href="https://cell-sight.vercel.app" style="color:#85c1e9;text-decoration:none;font-weight:600">https://cell-sight.vercel.app</a>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <div style="background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:8px 18px;text-align:center"><div style="font-size:10px;font-weight:600;color:rgba(255,255,255,.75);margin-bottom:3px">Fleet Manager</div><div style="font-family:'JetBrains Mono',monospace;color:#85c1e9;font-size:9px">fleet@cellsight.com</div></div>
-      <div style="background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:8px 18px;text-align:center"><div style="font-size:10px;font-weight:600;color:rgba(255,255,255,.75);margin-bottom:3px">Supply Chain</div><div style="font-family:'JetBrains Mono',monospace;color:#85c1e9;font-size:9px">supply@cellsight.com</div></div>
-      <div style="background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:8px 18px;text-align:center"><div style="font-size:10px;font-weight:600;color:rgba(255,255,255,.75);margin-bottom:3px">Maintenance</div><div style="font-family:'JetBrains Mono',monospace;color:#85c1e9;font-size:9px">maintenance@cellsight.com</div></div>
-      <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 18px;text-align:center;align-self:center"><div style="font-size:10px;color:rgba(255,255,255,.38)">Password</div><div style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.45);font-size:10px">demo123</div></div>
-    </div>
-  </div>
-  <div class="cover-stats">
-    <div class="cst"><div class="n">5</div><div class="l">AI Agents</div></div>
-    <div class="cst"><div class="n">9</div><div class="l">Alert Types</div></div>
-    <div class="cst"><div class="n">50+</div><div class="l">Fleet Assets</div></div>
-    <div class="cst"><div class="n">10k+</div><div class="l">Telemetry Records</div></div>
-    <div class="cst"><div class="n">3</div><div class="l">Supplier Tiers</div></div>
-    <div class="cst"><div class="n">0</div><div class="l">TypeScript Errors</div></div>
-  </div>
-  <div class="c-foot">
-    <span>CellSight v1.0 &nbsp;&middot;&nbsp; 2026</span>
-    <span>React 18 &nbsp;&middot;&nbsp; Node.js &nbsp;&middot;&nbsp; PostgreSQL &nbsp;&middot;&nbsp; Railway + Vercel</span>
-  </div>
-</div>
-</div>
-
-<!-- NAV -->
-<div class="nav">
+<!-- NAVBAR -->
+<div class="navbar">
   <a href="#s1">Cover</a>
-  <span class="sep">|</span>
-  <a href="#s2">Problem</a>
-  <a href="#s3">Auth</a>
-  <a href="#s4">Fleet APM</a>
-  <a href="#s5">AI Model</a>
-  <a href="#s6">Supply Chain Risk</a>
-  <a href="#s7">Trace View</a>
-  <a href="#s8">Correlation</a>
-  <a href="#s9">Alerts</a>
-  <a href="#s10">EV Readiness</a>
-  <a href="#s11">Maintenance</a>
-  <a href="#s12">Architecture</a>
-  <a href="#s13">Landing Page</a>
-  <a href="#s14">SEO</a>
-  <a href="#s15">Asset Detail</a>
-  <a href="#s16">Closing</a>
-  <span class="sep">|</span>
-  <a href="javascript:window.print()" style="background:#0b1e3a;border-color:#1f618d;color:#85c1e9">&#9113; Print / PDF</a>
+  <a href="#s2">Contents</a>
+  <a href="#s3">Problem</a>
+  <a href="#s4">Login</a>
+  <a href="#s5">Fleet APM</a>
+  <a href="#s6">Asset Detail</a>
+  <a href="#s7">AI Model</a>
+  <a href="#s8">Supply Chain Risk</a>
+  <a href="#s9">Trace</a>
+  <a href="#s10">Correlation</a>
+  <a href="#s11">Alerts</a>
+  <a href="#s12">EV Readiness</a>
+  <a href="#s13">Maintenance</a>
+  <a href="#s14">Architecture</a>
+  <a href="#s15">Landing Page</a>
+  <a href="#s16">SEO</a>
+  <a href="javascript:window.print()" style="background:#1a5a1a;border-color:#2a7a2a">&#128424; Print / PDF</a>
 </div>
 
 </body>
