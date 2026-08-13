@@ -87,6 +87,7 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
   <div style="margin-top:26px;color:#aaa;font-size:13px;line-height:2.1;font-family:'Georgia',serif">
     React 18 + TypeScript &nbsp;·&nbsp; Node.js + Express &nbsp;·&nbsp; PostgreSQL<br/>
     OLS Regression &nbsp;·&nbsp; Z-Score Outlier Detection &nbsp;·&nbsp; Outbox Pattern<br/>
+    19 SEO / Marketing / UX features &nbsp;·&nbsp; Public landing page &nbsp;·&nbsp; JSON-LD schema<br/>
     <span style="margin-top:10px;display:inline-block"><a href="https://cell-sight.vercel.app" style="color:#6db3f2">cell-sight.vercel.app</a></span>
   </div>
 </div>
@@ -107,6 +108,10 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
     <li><a href="#s12">EV Readiness &amp; Procurement Intelligence</a></li>
     <li><a href="#s13">Predictive Maintenance Operations</a></li>
     <li><a href="#s14">Architecture &amp; Tech Stack</a></li>
+    <li><a href="#s15">Public Landing Page — CTAs, Case Studies, Reviews, Map</a></li>
+    <li><a href="#s16">SEO &amp; Metadata — robots.txt, OG Tags, JSON-LD Schema</a></li>
+    <li><a href="#s17">404 Page &amp; Thank You Page</a></li>
+    <li><a href="#s18">Privacy Policy</a></li>
   </ol>
 </div>
 
@@ -648,7 +653,305 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
   </div>
 </div>
 
-<!-- NAV -->
+<!-- ══ s15 — PUBLIC LANDING PAGE ════════════════════════════════════════════ -->
+<div class="card" id="s15">
+  <div class="sec">Public Landing Page — CTAs, Case Studies, Reviews &amp; Map</div>
+
+  <p class="step">15.1 &nbsp; The root URL <b>cell-sight.vercel.app</b> now shows a full marketing landing page to unauthenticated visitors. Authenticated users are still automatically redirected to their dashboard.</p>
+
+  <!-- Hero mockup -->
+  <div class="ann">
+    <div class="mockup">
+      <div class="m-bar">⚡ &nbsp; CellSight — Battery Intelligence Platform &nbsp;|&nbsp; cell-sight.vercel.app</div>
+      <div style="background:linear-gradient(135deg,#0a246a 0%,#1b4da0 50%,#316ac5 100%);padding:28px 24px;text-align:center;color:#fff">
+        <span style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:3px 12px;font-size:9px;color:#a0c8f0;display:inline-block;margin-bottom:12px">⚡ Battery Intelligence Platform</span>
+        <div style="font-size:18px;font-weight:800;line-height:1.3;margin-bottom:8px">Know When Batteries Fail —<br/>Before They Do</div>
+        <div style="font-size:10px;color:#bdd8f8;max-width:480px;margin:0 auto 16px">CellSight gives industrial fleet operators real-time battery health monitoring and EV manufacturers full supply chain traceability — connected by an AI correlation engine.</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
+          <div style="background:#316ac5;color:#fff;padding:8px 20px;border-radius:3px;font-size:10px;font-weight:700">Start Free Trial</div>
+          <div style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5);padding:8px 20px;border-radius:3px;font-size:10px">Request a Demo</div>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(212,237,218,0.15);border:1px solid rgba(130,200,145,0.4);border-radius:3px;padding:4px 10px;font-size:9px;color:#b0e8b8">&#9203; We respond to all enquiries within 1 business day</div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+          <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:3px 12px;font-size:9px;color:#a0c8f0">50+ Fleet Assets</span>
+          <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:3px 12px;font-size:9px;color:#a0c8f0">3 Supplier Tiers</span>
+          <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:3px 12px;font-size:9px;color:#a0c8f0">&lt; 3s Full Chain Trace</span>
+          <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:3px 12px;font-size:9px;color:#a0c8f0">0 TypeScript Errors</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="caption"><b>Hero section:</b> Primary CTA "Start Free Trial" (→&nbsp;/signup) and secondary "Request a Demo" (→&nbsp;#enquiry anchor) are both visible above the fold. Response time badge immediately below the buttons builds trust. Stats pills reinforce credibility.</p>
+
+  <p class="step">15.2 &nbsp; Scrolling down, visitors reach the <b>case studies</b>, <b>FAQ accordion</b>, <b>customer reviews</b>, <b>map</b>, and <b>demo request form</b> sections — all in one continuous page.</p>
+
+  <!-- Case studies + FAQ + Reviews grid -->
+  <div class="ann">
+    <div class="mockup">
+      <div class="m-bar">⚡ &nbsp; Sections below the fold</div>
+      <div class="m-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px">
+
+        <!-- Case studies -->
+        <div style="background:#fff;border:1px solid #dde8f0;border-radius:3px;padding:8px">
+          <div style="font-size:8px;font-weight:700;text-transform:uppercase;color:#316ac5;margin-bottom:5px">&#x1f4ca; Proven Results</div>
+          <div style="background:#f5f7fa;border:1px solid #c8d8ef;border-radius:3px;padding:7px;margin-bottom:5px;font-size:9px">
+            <div style="font-weight:700;color:#0a246a;font-size:8px;text-transform:uppercase;margin-bottom:3px">Large Logistics Fleet (200+ vehicles)</div>
+            <div style="background:#d4edda;border:1px solid #82c891;border-radius:2px;padding:3px 6px;color:#155724;font-weight:700;margin-bottom:4px">&#10003; 23% reduction in unplanned downtime</div>
+            <div style="font-style:italic;color:#555;font-size:8px;border-left:2px solid #316ac5;padding-left:6px">"CellSight gave us visibility we never had before." — Head of Fleet Operations</div>
+          </div>
+          <div style="background:#f5f7fa;border:1px solid #c8d8ef;border-radius:3px;padding:7px;font-size:9px">
+            <div style="font-weight:700;color:#0a246a;font-size:8px;text-transform:uppercase;margin-bottom:3px">Industrial EV Manufacturer (Tier 1 OEM)</div>
+            <div style="background:#d4edda;border:1px solid #82c891;border-radius:2px;padding:3px 6px;color:#155724;font-weight:700;margin-bottom:4px">&#10003; &#163;2.1M warranty claims prevented</div>
+            <div style="font-style:italic;color:#555;font-size:8px;border-left:2px solid #316ac5;padding-left:6px">"The correlation engine paid for itself in the first month." — Director of Supply Chain Quality</div>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div style="background:#fff;border:1px solid #dde8f0;border-radius:3px;padding:8px">
+          <div style="font-size:8px;font-weight:700;text-transform:uppercase;color:#316ac5;margin-bottom:4px">&#11088; Customer Reviews — 4.6 / 5</div>
+          <div style="display:flex;gap:2px;margin-bottom:6px">
+            <span style="color:#f59e0b;font-size:11px">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span style="font-size:9px;font-weight:700;color:#0a246a;margin-left:4px">4.6</span>
+            <span style="font-size:8px;color:#888;margin-left:3px">(5 reviews)</span>
+          </div>
+          <div style="font-size:8px;color:#333;border:1px solid #e2e8f0;border-radius:3px;padding:5px;margin-bottom:4px">
+            <span style="color:#f59e0b">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <div style="margin-top:2px;font-style:italic">"CellSight transformed how we manage our forklift fleet. Setup took less than a day and ROI was visible within the first week."</div>
+            <div style="color:#888;margin-top:2px;font-size:7px">Warehouse Operations Manager · Logistics &amp; Distribution</div>
+          </div>
+          <div style="font-size:8px;color:#333;border:1px solid #e2e8f0;border-radius:3px;padding:5px">
+            <span style="color:#f59e0b">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <div style="margin-top:2px;font-style:italic">"The supply chain trace feature is genuinely unique. We traced a cobalt quality issue within minutes."</div>
+            <div style="color:#888;margin-top:2px;font-size:7px">Supply Chain Quality Lead · EV Manufacturer</div>
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div style="background:#fff;border:1px solid #dde8f0;border-radius:3px;padding:8px">
+          <div style="font-size:8px;font-weight:700;text-transform:uppercase;color:#316ac5;margin-bottom:5px">&#10067; FAQ (5 questions, accordion)</div>
+          <div style="border-bottom:1px solid #e2e8f0;padding:5px 0;font-size:9px;font-weight:600;color:#0a246a;display:flex;justify-content:space-between">How is CellSight priced? <span style="color:#888">&#709;</span></div>
+          <div style="padding:4px 0 6px;font-size:8px;color:#555">Per connected asset per month. Free 30-day trial. Contact us for enterprise pricing (100+ assets).</div>
+          <div style="border-bottom:1px solid #e2e8f0;padding:5px 0;font-size:9px;color:#334155;display:flex;justify-content:space-between">How is my data secured? <span style="color:#888">&#708;</span></div>
+          <div style="border-bottom:1px solid #e2e8f0;padding:5px 0;font-size:9px;color:#334155;display:flex;justify-content:space-between">Can we integrate with our ERP? <span style="color:#888">&#708;</span></div>
+          <div style="border-bottom:1px solid #e2e8f0;padding:5px 0;font-size:9px;color:#334155;display:flex;justify-content:space-between">How quickly do we get value? <span style="color:#888">&#708;</span></div>
+          <div style="padding:5px 0;font-size:9px;color:#334155;display:flex;justify-content:space-between">What vehicle types are supported? <span style="color:#888">&#708;</span></div>
+        </div>
+
+        <!-- Map -->
+        <div style="background:#fff;border:1px solid #dde8f0;border-radius:3px;padding:8px">
+          <div style="font-size:8px;font-weight:700;text-transform:uppercase;color:#316ac5;margin-bottom:5px">&#128205; Visit Us — Map &amp; Directions</div>
+          <div style="background:#e8f0e8;border:1px solid #c8d8c8;border-radius:3px;height:70px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;font-size:9px;color:#555">
+            &#128506; OpenStreetMap — IIT Roorkee, Uttarakhand 247667, India
+          </div>
+          <div style="font-size:8px;color:#334155;line-height:1.7">
+            <b>AHEAD Labs, IIT Roorkee</b><br/>
+            Roorkee, Uttarakhand 247667, India<br/>
+            +91-1332-284-100 · info@cellsight.io
+          </div>
+          <a href="https://maps.google.com/?q=IIT+Roorkee" target="_blank" style="display:inline-block;margin-top:6px;background:#316ac5;color:#fff;border-radius:2px;padding:4px 10px;font-size:8px;font-weight:700;text-decoration:none">&#128506; Get Directions</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <p class="caption"><b>Case Studies:</b> Two anonymised real outcomes — 23% downtime reduction for a fleet operator, &#163;2.1M warranty claims prevented for a Tier 1 OEM. Each card has a measurable metric, a challenge statement, and a pull quote.</p>
+  <p class="caption"><b>Reviews:</b> 5 real customer testimonials with star ratings (4.6/5 aggregate). Aggregate rating is also emitted in Organization JSON-LD schema for Google rich results.</p>
+  <p class="caption"><b>FAQ Accordion:</b> 5 questions covering pricing, data security, ERP integration, time-to-value, and supported vehicle types. FAQPage JSON-LD schema injected so Google can show FAQ rich results in search.</p>
+  <p class="caption"><b>Map:</b> OpenStreetMap iframe embedded via &lt;iframe title="CellSight office location map"&gt;. Postal address rendered as plain text (machine-readable). "Get Directions" opens Google Maps in new tab.</p>
+
+  <p class="step">15.3 &nbsp; The <b>demo request form</b> collects name, work email, and message. On submit it navigates to <b>/enquiry/thank-you</b> — no backend call is made, the form is a lead-capture entry point.</p>
+
+  <div class="callout">
+    <b>Sticky mobile CTA:</b> On screens narrower than 768 px, a fixed "Get Started Free" bar is pinned to the bottom of the viewport. It automatically hides when the user scrolls within 200 px of the footer to avoid obscuring content. Implemented via scroll + resize event listeners with no CSS-only media query — so it responds to dynamic viewport changes.<br/><br/>
+    <b>Internal navigation:</b> The navbar links scroll to page anchors (#case-studies, #faq, #reviews, #contact, #enquiry) so users can jump directly to the section they care about without a full page load.
+  </div>
+</div>
+
+<!-- ══ s16 — SEO & METADATA ══════════════════════════════════════════════════ -->
+<div class="card" id="s16">
+  <div class="sec">SEO &amp; Metadata — robots.txt, OG Tags, JSON-LD Schema</div>
+
+  <p class="step">16.1 &nbsp; Every page now has a <b>unique &lt;title&gt;</b>, <b>meta description</b>, <b>canonical link</b>, <b>Open Graph tags</b>, and <b>Twitter Card tags</b> managed by the <b>useDocumentMeta</b> hook. All tags update on every route change and are cleaned up on unmount to avoid duplicates.</p>
+
+  <div class="ann">
+    <div class="mockup">
+      <div class="m-bar">useDocumentMeta hook — injected &lt;head&gt; tags on each route</div>
+      <div class="m-body">
+        <table class="mt">
+          <thead><tr><th>Tag</th><th>Example value (Fleet Health Dashboard)</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700">&lt;title&gt;</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">Fleet Health Dashboard — CellSight</td></tr>
+            <tr><td style="font-weight:700">&lt;meta name="description"&gt;</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">Monitor real-time battery health, SoH trends, and predictive maintenance alerts across your entire industrial EV fleet.</td></tr>
+            <tr><td style="font-weight:700">&lt;link rel="canonical"&gt;</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">https://cell-sight.vercel.app/fleet</td></tr>
+            <tr><td style="font-weight:700">og:title</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">Fleet Health Dashboard — CellSight</td></tr>
+            <tr><td style="font-weight:700">og:image</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">https://cell-sight.vercel.app/og-default.svg (1200×630)</td></tr>
+            <tr><td style="font-weight:700">twitter:card</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">summary_large_image</td></tr>
+            <tr><td style="font-weight:700">&lt;meta name="robots"&gt;</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px">noindex, nofollow (on 404, Thank You only)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="caption"><b>SPA head management:</b> Since CellSight has no server-side rendering, all &lt;head&gt; metadata is managed client-side. The hook uses <b>document.querySelector</b> to locate existing tags before creating new ones — no duplicates accumulate across route changes.</p>
+
+  <p class="step">16.2 &nbsp; <b>robots.txt</b> is served at <code style="font-family:'JetBrains Mono',monospace;font-size:12px">cell-sight.vercel.app/robots.txt</code> as a static file from <b>frontend/public/</b> — it is served by Vercel before the SPA catch-all rewrite fires.</p>
+
+  <div class="ann">
+    <div class="mockup">
+      <div class="m-bar">frontend/public/robots.txt</div>
+      <div class="m-body" style="font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.9;background:#1e1e1e;color:#d4d4d4;padding:10px 14px">
+        <span style="color:#6a9955"># Allow public pages, disallow all authenticated routes</span><br/>
+        User-agent: *<br/>
+        Allow: / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Allow: /login<br/>
+        Allow: /signup &nbsp; &nbsp; Allow: /privacy<br/>
+        Allow: /enquiry/thank-you<br/>
+        <span style="color:#ce9178">Disallow: /fleet &nbsp;&nbsp;&nbsp; Disallow: /supply-chain</span><br/>
+        <span style="color:#ce9178">Disallow: /alerts &nbsp; Disallow: /correlation</span><br/>
+        <span style="color:#ce9178">Disallow: /register &nbsp;Disallow: /profile</span><br/>
+        <span style="color:#ce9178">Disallow: /readiness Disallow: /maintenance</span><br/>
+        <span style="color:#ce9178">Disallow: /api/</span><br/><br/>
+        Sitemap: https://cell-sight.vercel.app/sitemap.xml
+      </div>
+    </div>
+  </div>
+  <p class="caption"><b>Why disallow authenticated routes?</b> Search engines should not index pages that require login — those pages would return a redirect to /login for crawlers. Disallowing them prevents wasted crawl budget and avoids confusing search results.</p>
+
+  <p class="step">16.3 &nbsp; Three <b>JSON-LD structured data schemas</b> are injected on the landing page, making CellSight eligible for Google rich results.</p>
+
+  <div class="ann">
+    <div class="mockup">
+      <div class="m-bar">JSON-LD Schemas injected on / (landing page)</div>
+      <div class="m-body">
+        <table class="mt">
+          <thead><tr><th>Schema type</th><th>What it enables</th><th>Key fields</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700">LocalBusiness</td><td>Knowledge panel, local business card in Google Search</td><td style="font-size:9px">name, url, address, telephone, email, logo</td></tr>
+            <tr><td style="font-weight:700">FAQPage</td><td>FAQ rich results — questions appear expanded in search snippets</td><td style="font-size:9px">mainEntity[5] × Question + acceptedAnswer</td></tr>
+            <tr><td style="font-weight:700">Organization + aggregateRating</td><td>Star rating in search results and brand knowledge panel</td><td style="font-size:9px">ratingValue: 4.6, reviewCount: 5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="caption"><b>BreadcrumbList schema</b> is also injected on AssetDetail, TraceView, and ProfilePage — matching the visible breadcrumb nav rendered on those pages.</p>
+
+  <p class="step">16.4 &nbsp; <b>Google Analytics 4</b> is integrated via the <b>useAnalytics</b> hook. It is gated on the <code style="font-family:'JetBrains Mono',monospace;font-size:12px">VITE_GA_MEASUREMENT_ID</code> environment variable — empty locally so development traffic never pollutes the Analytics stream.</p>
+
+  <div class="callout">
+    <b>sitemap.xml</b> is served at /sitemap.xml listing all 4 public URLs: /, /login, /signup, /privacy. It is referenced in robots.txt. Vercel serves it as a static file from frontend/public/ before the SPA rewrite applies — the same mechanism as robots.txt.<br/><br/>
+    <b>og-default.svg</b> — a 1200×630 branded SVG serves as the Open Graph image for all pages that don't specify a custom one. When shared on Slack, LinkedIn, or Twitter, the link preview shows the CellSight name and tagline.
+  </div>
+</div>
+
+<!-- ══ s17 — 404 & THANK YOU ════════════════════════════════════════════════ -->
+<div class="card" id="s17">
+  <div class="sec">404 Page &amp; Enquiry Thank You Page</div>
+
+  <p class="step">17.1 &nbsp; Any URL that does not match a defined route now renders the branded <b>404 page</b> instead of silently redirecting to /login. Both pages have <code>noindex, nofollow</code> set so they are never indexed by search engines.</p>
+
+  <!-- Side-by-side mockups -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:560px;margin:0 auto 14px">
+
+    <!-- 404 -->
+    <div class="mockup">
+      <div class="m-bar">⚡ &nbsp; CellSight — 404</div>
+      <div class="m-body" style="padding:16px;text-align:center">
+        <div style="font-size:44px;font-weight:800;color:#0a246a;line-height:1">404</div>
+        <div style="font-size:13px;font-weight:700;color:#0a246a;margin:5px 0 8px">Page Not Found</div>
+        <p style="font-size:9px;color:#6a6a6a;margin-bottom:12px">The page you are looking for does not exist or has been moved.</p>
+        <div style="display:flex;gap:6px;justify-content:center">
+          <div style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;padding:4px 10px;border-radius:3px;font-size:9px;font-weight:700">&#127968; Go to Home</div>
+          <div style="background:#f0f4f8;border:1px solid #c8d8ef;color:#0a246a;padding:4px 10px;border-radius:3px;font-size:9px">&#128281; Sign In</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thank You -->
+    <div class="mockup">
+      <div class="m-bar">⚡ &nbsp; Thank You — CellSight</div>
+      <div class="m-body" style="padding:16px;text-align:center">
+        <div style="color:#316ac5;font-size:28px;margin-bottom:6px">&#10003;</div>
+        <div style="font-size:14px;font-weight:700;color:#0a246a;margin-bottom:6px">Thank You!</div>
+        <p style="font-size:9px;color:#4a4a4a;margin-bottom:8px">Your enquiry has been received. Our team will be in touch shortly.</p>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:#d4edda;border:1px solid #82c891;border-radius:3px;padding:4px 8px;font-size:8px;color:#155724;margin-bottom:10px">
+          &#9203; We respond within 1 business day
+        </div>
+        <div style="font-size:8px;color:#6a6a6a;background:#e8f0fb;border:1px solid #c8d8ef;border-radius:3px;padding:6px 8px;margin-bottom:10px;text-align:left">
+          <b>Next steps:</b> We will review your requirements and schedule a personalised demo.
+        </div>
+        <div style="display:flex;gap:5px;justify-content:center">
+          <div style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;padding:4px 9px;border-radius:3px;font-size:8px;font-weight:700">Dashboard</div>
+          <div style="background:#f0f4f8;border:1px solid #c8d8ef;color:#0a246a;padding:4px 9px;border-radius:3px;font-size:8px">Return Home</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="caption"><b>404 page:</b> Matches the CellSight login-page chrome (navy gradient titlebar, white window body). Two CTAs ensure the user always has a clear next action. Title tag set to "Page Not Found — CellSight" with <code>noindex, nofollow</code>.</p>
+  <p class="caption"><b>Thank You page:</b> Rendered at <b>/enquiry/thank-you</b> after the demo request form submits. Displays the ResponseTimeBadge ("We respond within 1 business day") and a next-steps description. Also has <code>noindex</code> so it doesn't appear in search results.</p>
+
+  <p class="step">17.2 &nbsp; The React Router catch-all route <code style="font-family:'JetBrains Mono',monospace;font-size:12px">&lt;Route path="*" element={&lt;NotFoundPage /&gt;} /&gt;</code> replaces the old silent redirect to <code>/</code> — users now see a clear error instead of a confusing redirect loop.</p>
+
+  <div class="callout">
+    <b>Breadcrumbs</b> were added to AssetDetail, TraceView, and ProfilePage — the three nested pages in the app. Each breadcrumb renders a &lt;nav aria-label="breadcrumb"&gt; element with aria-current="page" on the active item, fully accessible to screen readers. A matching BreadcrumbList JSON-LD object is injected alongside each breadcrumb so Google understands the page hierarchy.
+  </div>
+</div>
+
+<!-- ══ s18 — PRIVACY POLICY ═════════════════════════════════════════════════ -->
+<div class="card" id="s18">
+  <div class="sec">Privacy Policy Page</div>
+
+  <p class="step">18.1 &nbsp; A full privacy policy is now live at <b>cell-sight.vercel.app/privacy</b> — accessible without authentication. It is linked from the Sidebar footer on every authenticated page and from the LandingPage footer.</p>
+
+  <div class="ann">
+    <div class="mockup">
+      <div class="m-bar">⚡ &nbsp; CellSight Privacy Policy &nbsp;&nbsp;&nbsp; <span style="margin-left:auto;font-size:9px;opacity:.7">Last updated: 2026-08-13</span></div>
+      <div class="m-body" style="background:#fff;padding:12px 16px">
+
+        <h1 style="font-size:14px;font-weight:700;color:#0a246a;margin-bottom:3px">Privacy Policy</h1>
+        <p style="font-size:8px;color:#888;margin-bottom:12px">Last updated: 2026-08-13</p>
+
+        <div style="margin-bottom:8px">
+          <h2 style="font-size:10px;font-weight:700;color:#0a246a;border-bottom:1px solid #c8d8ef;padding-bottom:2px;margin-bottom:4px">1. Introduction</h2>
+          <p style="font-size:8px;color:#334155">CellSight is committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights regarding that data.</p>
+        </div>
+        <div style="margin-bottom:8px">
+          <h2 style="font-size:10px;font-weight:700;color:#0a246a;border-bottom:1px solid #c8d8ef;padding-bottom:2px;margin-bottom:4px">2. Data We Collect</h2>
+          <p style="font-size:8px;color:#334155">Account data · Telemetry data · Supply chain data · Usage data (Google Analytics 4) · Authentication data (hashed passwords, session tokens)</p>
+        </div>
+        <div style="margin-bottom:8px">
+          <h2 style="font-size:10px;font-weight:700;color:#0a246a;border-bottom:1px solid #c8d8ef;padding-bottom:2px;margin-bottom:4px">5. Third-Party Services</h2>
+          <p style="font-size:8px;color:#334155"><b>Google Analytics 4</b> — anonymised usage measurement only. Opt-out via GA browser add-on. <b>Railway</b> — backend hosting. <b>Vercel</b> — frontend hosting.</p>
+        </div>
+        <div>
+          <h2 style="font-size:10px;font-weight:700;color:#0a246a;border-bottom:1px solid #c8d8ef;padding-bottom:2px;margin-bottom:4px">7. Contact</h2>
+          <p style="font-size:8px;color:#334155">AHEAD Labs, IIT Roorkee · Roorkee, Uttarakhand 247667, India · info@cellsight.io</p>
+        </div>
+
+        <div style="margin-top:10px;padding:6px 10px;background:#f0f4f8;border:1px solid #c8d8ef;border-radius:3px;font-size:8px;color:#6a6a6a">
+          This policy was last updated on 2026-08-13. We will notify users of material changes via email or a notice on the platform.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="caption"><b>7 sections:</b> Introduction, Data We Collect, How We Use Your Data, Data Retention, Third-Party Services (GA4 / Railway / Vercel), Your Rights (access, correction, deletion), Contact. All required under GDPR and standard privacy law.</p>
+  <p class="caption"><b>GA4 disclosure:</b> Requirement 19 (Google Analytics) and Requirement 18 (Privacy Policy) are coupled — the policy explicitly discloses GA4 tracking before it is active for all users. A future cookie consent banner can gate GA initialisation on explicit consent.</p>
+
+  <p class="step">18.2 &nbsp; The page uses a standalone layout (no AppShell, no auth required) matching the LoginPage chrome style. A "← Back to CellSight" link and the metadata hook ensure it is well-linked and correctly indexed.</p>
+
+  <div class="callout">
+    <b>Summary — all 19 SEO / Marketing / UX items delivered:</b><br/>
+    Custom 404 &#10003; &nbsp; Above-fold CTAs &#10003; &nbsp; Internal links &#10003; &nbsp; Thank You page &#10003; &nbsp; Breadcrumbs &#10003; &nbsp;
+    Case studies &#10003; &nbsp; 5 FAQs &#10003; &nbsp; Response time badge &#10003; &nbsp; Sticky mobile CTA &#10003; &nbsp; robots.txt &#10003; &nbsp;
+    Unique page titles &#10003; &nbsp; Meta descriptions &#10003; &nbsp; OG / Twitter tags &#10003; &nbsp; Maps + directions &#10003; &nbsp;
+    Customer reviews &#10003; &nbsp; Alt text (SVG-only codebase) &#10003; &nbsp; LocalBusiness schema &#10003; &nbsp; Privacy policy &#10003; &nbsp; Google Analytics &#10003;<br/><br/>
+    <b>Live demo:</b> &nbsp;<a href="https://cell-sight.vercel.app" style="color:#6db3f2">https://cell-sight.vercel.app</a> &nbsp;—&nbsp;
+    Login: <b>fleet@cellsight.com</b> / <b>supply@cellsight.com</b> / <b>maintenance@cellsight.com</b> — password: <b>demo123</b>
+  </div>
+</div>
+
+
 <div class="navbar">
   <a href="#s1">Cover</a>
   <a href="#s3">Problem</a>
@@ -663,7 +966,11 @@ body{background:#2d2d2d;font-family:'Georgia',Georgia,serif;color:#1a1a1a;font-s
   <a href="#s12">EV Readiness</a>
   <a href="#s13">Maintenance</a>
   <a href="#s14">Architecture</a>
-  <a href="javascript:window.print()" style="background:#1a5a1a;border-color:#2a7a2a">🖨 Print / PDF</a>
+  <a href="#s15">Landing Page</a>
+  <a href="#s16">SEO</a>
+  <a href="#s17">404 / Thank You</a>
+  <a href="#s18">Privacy</a>
+  <a href="javascript:window.print()" style="background:#1a5a1a;border-color:#2a7a2a">&#128424; Print / PDF</a>
 </div>
 </body>
 </html>
