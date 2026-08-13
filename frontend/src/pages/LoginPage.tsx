@@ -115,7 +115,7 @@ export default function LoginPage() {
               padding: '5px 10px', marginBottom: 12, fontSize: 12, color: '#721c24',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <span style={{ fontWeight: 'bold' }}>âš </span> {error}
+              <span style={{ fontWeight: 'bold' }}>⚠</span> {error}
             </div>
           )}
 

@@ -149,7 +149,7 @@ function AddMaterialLotForm() {
       <MsgBanner msg={msg} />
       {suppliers.length === 0 && (
         <div style={{ fontSize: 11, color: '#b87000', marginBottom: 10, padding: '5px 8px', background: '#fff8e6', border: '1px solid #e0c060', borderRadius: 2 }}>
-          âš  No Tier 3 suppliers found. Register a Tier 3 supplier first.
+          ⚠ No Tier 3 suppliers found. Register a Tier 3 supplier first.
         </div>
       )}
       <FormWrap>
@@ -215,7 +215,7 @@ function AddCellBatchForm() {
       <MsgBanner msg={msg} />
       {suppliers.length === 0 && (
         <div style={{ fontSize: 11, color: '#b87000', marginBottom: 10, padding: '5px 8px', background: '#fff8e6', border: '1px solid #e0c060', borderRadius: 2 }}>
-          âš  No Tier 2 suppliers found. Register a cell manufacturer (Tier 2) supplier first.
+          ⚠ No Tier 2 suppliers found. Register a cell manufacturer (Tier 2) supplier first.
         </div>
       )}
       <FormWrap>

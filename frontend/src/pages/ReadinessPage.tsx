@@ -271,7 +271,7 @@ export default function ReadinessPage() {
               {selected.blockers.length > 0 && (
                 <div className="win-panel" style={{ overflow: 'hidden' }}>
                   <div className="win-section-header" style={{ color: '#721c24', background: 'linear-gradient(to right,#f8d7da,#fce8e8 60%,#fddada 100%)' }}>
-                    âš  Transition Blockers ({selected.blockers.length})
+                    ⚠ Transition Blockers ({selected.blockers.length})
                   </div>
                   <ul style={{ margin: 0, padding: '8px 12px 8px 28px', fontSize: 11 }}>
                     {selected.blockers.map((b, i) => <li key={i} style={{ color: '#721c24', marginBottom: 3 }}>{b}</li>)}
