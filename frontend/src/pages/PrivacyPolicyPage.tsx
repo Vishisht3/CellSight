@@ -103,10 +103,8 @@ export default function PrivacyPolicyPage() {
 
         <Section title="7. Contact">
           <p>
-            <strong>CellSight — AHEAD Labs, IIT Roorkee</strong><br />
-            Roorkee, Uttarakhand 247667, India<br />
-            Email: <a href="mailto:info@cellsight.io" style={{ color: '#316ac5' }}>info@cellsight.io</a><br />
-            Phone: +91-1332-284-100
+            <strong>CellSight</strong><br />
+            Email: <a href="mailto:info@cellsight.io" style={{ color: '#316ac5' }}>info@cellsight.io</a>
           </p>
         </Section>
 

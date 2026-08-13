@@ -7,7 +7,7 @@ import ResponseTimeBadge from '../components/ui/ResponseTimeBadge';
 import StickyMobileCTA from '../components/ui/StickyMobileCTA';
 
 const SCHEMA = [
-  { "@context": "https://schema.org", "@type": "LocalBusiness", "name": "CellSight", "url": "https://cell-sight.vercel.app", "description": "Battery intelligence platform for EV fleet operators and supply chain managers.", "logo": "https://cell-sight.vercel.app/og-default.svg", "address": { "@type": "PostalAddress", "streetAddress": "AHEAD Labs, IIT Roorkee", "addressLocality": "Roorkee", "addressRegion": "Uttarakhand", "postalCode": "247667", "addressCountry": "IN" }, "telephone": "+91-1332-284-100", "email": "info@cellsight.io" },
+  { "@context": "https://schema.org", "@type": "LocalBusiness", "name": "CellSight", "url": "https://cell-sight.vercel.app", "description": "Battery intelligence platform for EV fleet operators and supply chain managers.", "logo": "https://cell-sight.vercel.app/og-default.svg", "email": "info@cellsight.io" },
   { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "How is CellSight priced?", "acceptedAnswer": { "@type": "Answer", "text": "CellSight is priced per connected asset per month, with a free 30-day trial. Contact us for enterprise pricing on fleets of 100+ assets." } }, { "@type": "Question", "name": "How is my data stored and secured?", "acceptedAnswer": { "@type": "Answer", "text": "All data is encrypted at rest and in transit. Your organisation's data is logically isolated. We are hosted on Railway and Vercel, both SOC 2 compliant platforms." } }, { "@type": "Question", "name": "Can CellSight integrate with our existing ERP or telematics system?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. CellSight provides a REST API that can ingest telemetry data from any source. We support direct integration with common fleet telematics platforms and CSV import for batch historical data." } }, { "@type": "Question", "name": "How quickly can we get value from CellSight?", "acceptedAnswer": { "@type": "Answer", "text": "Most customers see their first predictive maintenance alerts within 48 hours. Full SoH trending and RUL predictions are available after 100+ telemetry readings (typically 2-5 days)." } }, { "@type": "Question", "name": "What vehicle and battery types does CellSight support?", "acceptedAnswer": { "@type": "Answer", "text": "CellSight supports any industrial EV with a BMS reporting voltage, current, temperature, and state of charge — including forklifts, freight trucks, mining vehicles, and construction equipment." } } ] },
   { "@context": "https://schema.org", "@type": "Organization", "name": "CellSight", "url": "https://cell-sight.vercel.app", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "reviewCount": "5" } }
 ];
@@ -213,21 +213,15 @@ export default function LandingPage() {
               style={{ width: '100%', height: 300, border: '1px solid #c8d8ef', borderRadius: 4 }}
             />
             <div>
-              <h3 style={{ fontSize: 15, fontWeight: 'bold', color: '#0a246a', marginBottom: 12 }}>AHEAD Labs, IIT Roorkee</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 'bold', color: '#0a246a', marginBottom: 12 }}>Get in Touch</h3>
               <address style={{ fontStyle: 'normal', fontSize: 13, color: '#4a4a4a', lineHeight: 2 }}>
-                IIT Roorkee Campus<br />
-                Roorkee, Uttarakhand 247667<br />
-                India<br />
-                <a href="tel:+9113322841000" style={{ color: '#316ac5' }}>+91-1332-284-100</a><br />
                 <a href="mailto:info@cellsight.io" style={{ color: '#316ac5' }}>info@cellsight.io</a>
               </address>
               <a
-                href="https://maps.google.com/?q=IIT+Roorkee,+Roorkee,+Uttarakhand+247667,+India"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:info@cellsight.io"
                 style={{ display: 'inline-block', marginTop: 14, background: '#316ac5', color: '#fff', borderRadius: 3, padding: '8px 16px', fontSize: 13, textDecoration: 'none', fontWeight: 'bold' }}
               >
-                🗺 Get Directions
+                ✉ Contact Us
               </a>
             </div>
           </div>
