@@ -54,8 +54,13 @@ body{background:#2b2b2b;font-family:Georgia,'Times New Roman',serif;font-size:14
 <body>
 <div class="card cover" id="s1">
   <div class="cover-logo">&#9889;</div>
-  <div class="cover-title">CellSight<br/>Battery Intelligence Platform<br/>Platform Guide &amp; Feature Walkthrough</div>
-  <div class="cover-sub">React 18 + TypeScript &nbsp;&middot;&nbsp; Node.js + Express &nbsp;&middot;&nbsp; PostgreSQL<br/>OLS Regression &nbsp;&middot;&nbsp; Z-Score Outlier Detection &nbsp;&middot;&nbsp; Outbox Pattern<br/><br/><a href="https://cell-sight.vercel.app" style="color:#6db3f2">cell-sight.vercel.app</a></div>
+  <div class="cover-title">
+    CellSight<br/>
+    AI for Industrial EV Supply Chain<br/>
+    &amp; Asset Intelligence<br/>
+    <span style="font-size:15px;color:#aaa;margin-top:10px;display:block">Accelerating Net Zero</span>
+  </div>
+  <div class="cover-sub">React 18 + TypeScript &nbsp;&middot;&nbsp; Node.js + Express &nbsp;&middot;&nbsp; PostgreSQL<br/>OLS Regression &nbsp;&middot;&nbsp; Z-Score Outlier Detection &nbsp;&middot;&nbsp; Outbox Pattern<br/><br/><a href="https://cell-sight.vercel.app" style="color:#6db3f2">cell-sight.vercel.app</a><br/><br/><span style="font-size:11px;color:#666">Theme: Sustainability / EV Manufacturing / Asset Performance Management / Supply Chain</span></div>
 </div>
 
 <div class="card toc" id="s2">
@@ -81,9 +86,9 @@ body{background:#2b2b2b;font-family:Georgia,'Times New Roman',serif;font-size:14
 <!-- s3 PROBLEM -->
 <div class="card" id="s3">
   <div class="sec">The Problem &amp; What CellSight Solves</div>
-  <p class="step">1.1 &nbsp; <b>Industrial EV fleets have no Battery APM.</b> Industrial machinery has decades of Asset Performance Management tooling. EV batteries have none. Fleet managers cannot see real-time degradation rates, thermal risk, or replacement timing &mdash; leading to unplanned downtime and accelerated wear from suboptimal charging.</p>
-  <p class="step">1.2 &nbsp; <b>EV manufacturers have no supply chain visibility.</b> Battery materials pass through 3+ supplier tiers with no unified risk view. When field packs degrade faster than expected, there is no mechanism to trace back to the originating cell batch or raw material supplier.</p>
-  <p class="step">1.3 &nbsp; <b>The gap nobody fills.</b> Field performance data sits with fleet operators. Supply chain data sits with manufacturers. The correlation that would improve <i>both</i> sides is never made. <b>CellSight makes that connection automatically.</b></p>
+  <p class="step">1.1 &nbsp; <b>Industrial EV adoption is stalled by lack of asset intelligence.</b> India registered 2 million EVs in FY2025, yet industrial segments (freight, mining, logistics, construction) remain below 2.5% penetration (SIAM FY2025). The barrier is not financial &mdash; FAME-II has disbursed over Rs 10,000 crore. The barrier is <i>operational</i>: industrial fleet operators lack the asset intelligence tools to manage EV procurement, battery lifecycle, and maintenance with the rigour they apply to conventional equipment.</p>
+  <p class="step">1.2 &nbsp; <b>EV manufacturers have no supply chain visibility.</b> Battery materials pass through 3+ supplier tiers with no unified risk view. When field packs degrade faster than expected, there is no mechanism to trace back to the originating cell batch or raw material supplier. For India to meet its 30% EV penetration target by 2030, it needs an AI layer that addresses both the industrial adoption gap and the manufacturing supply chain gap simultaneously.</p>
+  <p class="step">1.3 &nbsp; <b>The gap nobody fills.</b> Field performance data sits with fleet operators. Supply chain data sits with manufacturers. The correlation that would improve <i>both</i> sides is never made. <b>CellSight makes that connection automatically — the only platform that links real-world battery degradation back to the specific cell batch and supplier that caused it.</b></p>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;font-family:Tahoma,Arial,sans-serif;font-size:10px">
     <div style="background:#d4edda;border:1px solid #82c891;padding:10px 12px">
       <div style="font-weight:bold;color:#155724;margin-bottom:5px">&#129302; APM Agent</div>
@@ -441,10 +446,10 @@ RUL = (SoH &minus; 80%) &divide; deg/day
   3. On reconnect, the browser sends a <b>Last-Event-ID</b> header. Server replays all missed events since that ID &mdash; no alert is ever lost during a network drop.</div>
 </div>
 
-<!-- s12 EV READINESS -->
+<!-- s12 EV READINESS + NET ZERO -->
 <div class="card" id="s12">
-  <div class="sec">EV Readiness &amp; Procurement Intelligence</div>
-  <p class="step">10.1 &nbsp; Navigate to <b>EV Readiness</b> to see per-asset electrification scores, recommended EV models, ROI projections, and transition blockers across the entire fleet.</p>
+  <div class="sec">EV Readiness, Procurement &amp; Net Zero Progress</div>
+  <p class="step">10.1 &nbsp; Navigate to <b>EV Readiness</b> to see per-asset electrification scores, recommended EV models, ROI projections, and real-time tracking of fleet electrification progress against organizational net-zero commitments. Scope 1 and Scope 3 emission reductions are quantified per route and asset class.</p>
   <div style="display:flex;justify-content:center;margin-bottom:12px">
     <div class="ss">
       <div class="ss-bar">&#9889; Fleet Electrification Readiness &amp; Procurement Intelligence</div>
@@ -472,7 +477,8 @@ RUL = (SoH &minus; 80%) &divide; deg/day
     </div>
   </div>
   <p class="step">10.2 &nbsp; Click any asset row to expand the full <b>Procurement Panel</b> &mdash; recommended EV model, list price, delivery lead time, annual saving, CO&sub2; reduction, and payback period.</p>
-  <p class="step">10.3 &nbsp; <b>Loader-LD1</b> is flagged &ldquo;Not Suitable&rdquo; &mdash; no commercial EV exists at its power rating. Honest gap identification prevents over-optimistic electrification planning. Fleet-wide: &pound;703k/yr saving and 578 tonnes CO&sub2; reduction.</p>
+  <p class="step">10.3 &nbsp; <b>Net Zero Progress Tracker:</b> The dashboard tracks cumulative CO&sub2; reduction (578 tonnes/yr achieved, 2,400 tonnes/yr target by 2030), identifies highest-impact next electrification priorities based on both carbon and operational criteria, and quantifies Scope 1 emission reductions per vehicle. <b>Loader-LD1</b> is flagged &ldquo;Not Suitable&rdquo; &mdash; no commercial EV exists at its power rating. Honest gap identification prevents over-optimistic planning.</p>
+  <div class="callout"><b>India EV transition context:</b> With FAME-II disbursing Rs 10,000+ crore and TCO parity approaching for many commercial use cases, the barrier to 30% penetration by 2030 is no longer financial &mdash; it's operational. CellSight provides the asset intelligence layer industrial fleet operators need to manage EV procurement and battery lifecycle with the same rigour as conventional equipment.</div>
 </div>
 
 <!-- s13 MAINTENANCE -->
@@ -639,9 +645,18 @@ RUL = (SoH &minus; 80%) &divide; deg/day
 
 <!-- CLOSING CARD -->
 <div class="card cover" style="padding:44px 36px">
-  <div style="font-size:18px;font-weight:normal;line-height:2;color:#fff;margin-bottom:24px">
-    &#9889; CellSight &mdash; Battery Intelligence Platform<br/>
-    <span style="font-size:14px;color:#aaa">The only platform that automatically links real-world battery degradation back to the originating cell batch and supplier &mdash; creating a shared feedback loop that improves both fleet performance and supply chain quality simultaneously.</span>
+  <div style="font-size:18px;font-weight:normal;line-height:2;color:#fff;margin-bottom:16px">
+    &#9889; CellSight &mdash; AI for Industrial EV Supply Chain & Asset Intelligence<br/>
+    <span style="font-size:14px;color:#aaa">Addressing the industrial EV transition from two interconnected angles: (1) helping asset-intensive organisations manage EV fleets with operational rigour — covering procurement intelligence, predictive asset performance management, and maintenance operations; and (2) helping EV manufacturers manage complex, quality-critical supply chains that make reliable EVs possible.</span>
+  </div>
+  <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:12px 18px;margin-bottom:18px;text-align:left;max-width:520px;margin-left:auto;margin-right:auto">
+    <div style="font-size:9px;font-weight:bold;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Evaluation Focus Coverage</div>
+    <div style="font-size:11px;color:#d0d0d0;line-height:1.9">
+      &#10003; Battery degradation prediction &mdash; OLS regression, train/test split, RMSE<br/>
+      &#10003; Supply chain risk detection &mdash; 4-dimension scoring, z-score correlation<br/>
+      &#10003; Fleet electrification readiness scoring &mdash; 92-point readiness index<br/>
+      &#10003; Net Zero progress &mdash; Scope 1/3 tracking, 578t CO&sub2; reduction achieved
+    </div>
   </div>
   <div style="display:flex;justify-content:center;gap:28px;margin-bottom:28px;flex-wrap:wrap">
     <div style="text-align:center"><div style="font-size:30px;font-weight:bold;color:#fff">5</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">AI Agents</div></div>
