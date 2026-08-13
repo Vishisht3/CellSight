@@ -5,13 +5,21 @@ Allow: /signup
 Allow: /privacy
 Allow: /enquiry/thank-you
 Disallow: /fleet
+Disallow: /fleet/
 Disallow: /supply-chain
+Disallow: /supply-chain/
 Disallow: /alerts
+Disallow: /alerts/
 Disallow: /correlation
+Disallow: /correlation/
 Disallow: /register
+Disallow: /register/
 Disallow: /profile
+Disallow: /profile/
 Disallow: /readiness
+Disallow: /readiness/
 Disallow: /maintenance
+Disallow: /maintenance/
 Disallow: /api/
 
 Sitemap: https://cell-sight.vercel.app/sitemap.xml

@@ -40,7 +40,7 @@ function setLink(rel: string, href: string) {
 
 export function useDocumentMeta({ title, description, ogImage, schema, noindex }: DocumentMetaOptions) {
   useEffect(() => {
-    const fullTitle = `${title} -- ${SITE_NAME}`;
+    const fullTitle = `${title} \u2014 ${SITE_NAME}`;
     const desc = description ?? DEFAULT_DESCRIPTION;
     const image = ogImage ?? DEFAULT_OG_IMAGE;
     const canonical = `${BASE_URL}${window.location.pathname}`;
@@ -76,7 +76,7 @@ export function useDocumentMeta({ title, description, ogImage, schema, noindex }
     }
 
     return () => {
-      document.title = `${SITE_NAME} -- Battery Intelligence Platform`;
+      document.title = `${SITE_NAME} \u2014 Battery Intelligence Platform`;
       document.querySelectorAll('script[data-cellsight-schema]').forEach(s => s.remove());
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,6 +1,7 @@
 import Navbar from '../components/layout/Navbar';
 import PageContainer from '../components/ui/PageContainer';
 import { GitMerge } from 'lucide-react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 function Box({ title, items, color }: { title: string; items: string[]; color: string }) {
   return (
@@ -57,6 +58,7 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 }
 
 export default function ArchitecturePage() {
+  useDocumentMeta({ title: 'System Architecture', description: 'CellSight platform architecture — data flows, AI services, tech stack, and role-based access design.' });
   return (
     <>
       <Navbar
