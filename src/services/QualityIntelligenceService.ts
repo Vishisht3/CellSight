@@ -349,7 +349,6 @@ export class QualityIntelligenceService {
           sourceAgent: AlertSourceAgent.QMS,
           title: `Quality Defect: Batch ${batch.batchNumber} — ${defectRate.toFixed(1)}% defect rate`,
           description: `Production batch ${batch.batchNumber} has ${batch.failedQuantity} failed units out of ${batch.producedQuantity} (${defectRate.toFixed(1)}% defect rate, threshold 5%). Investigate process parameters and incoming material quality.`,
-          status: 'open',
           metadata: {
             productionBatchId: batch.id,
             batchNumber: batch.batchNumber,
@@ -384,7 +383,6 @@ export class QualityIntelligenceService {
           sourceAgent: AlertSourceAgent.QMS,
           title: `SPC Violation: ${param.parameterName} out of control`,
           description: `Process parameter ${param.parameterName} is ${param.currentValue.toFixed(2)} — outside control limits (${param.lcl.toFixed(2)} to ${param.ucl.toFixed(2)}). Immediate process adjustment required to prevent quality drift.`,
-          status: 'open',
           metadata: {
             parameterName: param.parameterName,
             currentValue: param.currentValue.toFixed(2),
