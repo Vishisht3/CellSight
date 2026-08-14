@@ -117,7 +117,7 @@ export class QualityIntelligenceService {
       ORDER BY updated_at DESC
       LIMIT 50
     `;
-    const rows = this.dbContext.db.all(query, [this.organizationId, thresholdPercent]);
+    const rows = this.dbContext.db.prepare(query).all(this.organizationId, thresholdPercent);
     return rows as ProductionBatch[];
   }
 
@@ -130,7 +130,7 @@ export class QualityIntelligenceService {
       WHERE production_batch_id = ? AND organization_id = ?
       ORDER BY inspection_timestamp ASC
     `;
-    const rows = this.dbContext.db.all(query, [productionBatchId, this.organizationId]);
+    const rows = this.dbContext.db.prepare(query).all(productionBatchId, this.organizationId);
     return rows as QualityInspection[];
   }
 
@@ -163,7 +163,7 @@ export class QualityIntelligenceService {
       ORDER BY pp.measurement_time DESC
     `;
 
-    const rows = this.dbContext.db.all(query, [this.organizationId, this.organizationId]);
+    const rows = this.dbContext.db.prepare(query).all(this.organizationId, this.organizationId);
 
     return rows.map((row: any) => {
       const deviation = Math.abs(row.current_value - row.center_line);
@@ -202,7 +202,7 @@ export class QualityIntelligenceService {
       WHERE organization_id = ?
       ORDER BY parameter_name ASC
     `;
-    const rows = this.dbContext.db.all(query, [this.organizationId]);
+    const rows = this.dbContext.db.prepare(query).all(this.organizationId);
     return rows as SpcControlLimit[];
   }
 
@@ -239,7 +239,7 @@ export class QualityIntelligenceService {
         GROUP BY pp.parameter_name
       `;
 
-      const params = this.dbContext.db.all(paramQuery, [batch.id, this.organizationId]) as any[];
+      const params = this.dbContext.db.prepare(paramQuery).all(batch.id, this.organizationId) as any[];
 
       // Step 4: Identify parameters that deviated from control limits
       const correlatedParameters = params
@@ -310,7 +310,7 @@ export class QualityIntelligenceService {
       WHERE pb.id = ? AND pb.organization_id = ?
     `;
 
-    const batch = this.dbContext.db.get(batchQuery, [productionBatchId, this.organizationId]);
+    const batch = this.dbContext.db.prepare(batchQuery).get(productionBatchId, this.organizationId);
     if (!batch) return null;
 
     const inspections = this.getInspectionsByBatch(productionBatchId);
@@ -335,10 +335,9 @@ export class QualityIntelligenceService {
       const defectRate = (batch.failedQuantity / batch.producedQuantity) * 100;
 
       // Check if alert already exists for this batch
-      const existingAlert = this.dbContext.db.get(
-        `SELECT id FROM alerts WHERE type = 'QUALITY_DEFECT' AND metadata LIKE ? AND status = 'open'`,
-        [`%"productionBatchId":"${batch.id}"%`]
-      );
+      const existingAlert = this.dbContext.db.prepare(
+        `SELECT id FROM alerts WHERE type = 'QUALITY_DEFECT' AND metadata LIKE ? AND status = 'open'`
+      ).get(`%"productionBatchId":"${batch.id}"%`);
 
       if (!existingAlert) {
         const alertService = new (require('./AlertService').AlertService)(this.dbContext, this.organizationId);
@@ -371,10 +370,9 @@ export class QualityIntelligenceService {
     const outOfControl = spcStatus.filter((s) => s.status === 'out_of_control');
 
     for (const param of outOfControl) {
-      const existingAlert = this.dbContext.db.get(
-        `SELECT id FROM alerts WHERE type = 'SPC_OUT_OF_CONTROL' AND metadata LIKE ? AND status = 'open'`,
-        [`%"parameterName":"${param.parameterName}"%`]
-      );
+      const existingAlert = this.dbContext.db.prepare(
+        `SELECT id FROM alerts WHERE type = 'SPC_OUT_OF_CONTROL' AND metadata LIKE ? AND status = 'open'`
+      ).get(`%"parameterName":"${param.parameterName}"%`);
 
       if (!existingAlert) {
         const alertService = new (require('./AlertService').AlertService)(this.dbContext, this.organizationId);

@@ -234,7 +234,7 @@ router.get('/emission-records', async (req: Request, res: Response) => {
 
     query += ` ORDER BY e.record_date DESC LIMIT 500`;
 
-    const records = dbContext.db.all(query, params);
+    const records = dbContext.db.prepare(query).all(...params);
 
     const summary = {
       totalRecords: records.length,

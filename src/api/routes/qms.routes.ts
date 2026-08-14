@@ -27,7 +27,7 @@ router.get('/batches', async (req: Request, res: Response) => {
         ORDER BY updated_at DESC
         LIMIT 100
       `;
-      const batches = dbContext.db.all(query, [orgId]);
+      const batches = dbContext.db.prepare(query).all(orgId);
       res.json({ batches, count: batches.length });
     }
   } catch (error) {
@@ -44,10 +44,9 @@ router.get('/batches/:id', async (req: Request, res: Response) => {
     const dbContext = await getDatabaseContext();
     const qmsService = new QualityIntelligenceService(dbContext, orgId);
 
-    const batch = dbContext.db.get(
-      `SELECT * FROM production_batches WHERE id = ? AND organization_id = ?`,
-      [req.params.id, orgId]
-    );
+    const batch = dbContext.db.prepare(
+      `SELECT * FROM production_batches WHERE id = ? AND organization_id = ?`
+    ).get(req.params.id, orgId);
 
     if (!batch) {
       res.status(404).json({ error: 'Production batch not found' });
@@ -98,7 +97,7 @@ router.get('/inspections', async (req: Request, res: Response) => {
 
     query += ` ORDER BY qi.inspection_timestamp DESC LIMIT 100`;
 
-    const inspections = dbContext.db.all(query, params);
+    const inspections = dbContext.db.prepare(query).all(...params);
     res.json({ inspections, count: inspections.length });
   } catch (error) {
     console.error('QMS inspections fetch error:', error);
@@ -198,7 +197,7 @@ router.get('/process-parameters', async (req: Request, res: Response) => {
 
     query += ` ORDER BY measurement_time ASC`;
 
-    const parameters = dbContext.db.all(query, params);
+    const parameters = dbContext.db.prepare(query).all(...params);
     res.json({ parameters, count: parameters.length });
   } catch (error) {
     console.error('QMS process parameters error:', error);

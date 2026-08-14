@@ -115,7 +115,7 @@ export class NetZeroService {
       ORDER BY target_year DESC
       LIMIT 1
     `;
-    const row = this.dbContext.db.get(query, [this.organizationId]);
+    const row = this.dbContext.db.prepare(query).get(this.organizationId);
     return row ? (row as NetZeroTarget) : null;
   }
 
@@ -137,7 +137,7 @@ export class NetZeroService {
       GROUP BY scope
     `;
 
-    const rows = this.dbContext.db.all(query, [this.organizationId, currentYear.toString()]) as any[];
+    const rows = this.dbContext.db.prepare(query).all(this.organizationId, currentYear.toString()) as any[];
 
     let scope1Tonnes = 0;
     let scope3Tonnes = 0;
@@ -228,7 +228,7 @@ export class NetZeroService {
       LIMIT 50
     `;
 
-    const rows = this.dbContext.db.all(query, [currentYear.toString(), this.organizationId]) as any[];
+    const rows = this.dbContext.db.prepare(query).all(currentYear.toString(), this.organizationId) as any[];
 
     return rows.map((row) => {
       const currentAnnualCo2 = row.annual_co2;
@@ -293,7 +293,7 @@ export class NetZeroService {
       ORDER BY total_co2 DESC
     `;
 
-    const rows = this.dbContext.db.all(query, [this.organizationId, currentYear.toString()]) as any[];
+    const rows = this.dbContext.db.prepare(query).all(this.organizationId, currentYear.toString()) as any[];
 
     return rows.map((row: any) => {
       const co2PerKm = row.total_distance > 0 ? row.total_co2 / row.total_distance : 0;
@@ -310,11 +310,11 @@ export class NetZeroService {
           AND strftime('%Y', e.record_date) = ?
       `;
 
-      const assetCounts = this.dbContext.db.get(assetQuery, [
+      const assetCounts = this.dbContext.db.prepare(assetQuery).get(
         row.route,
         this.organizationId,
         currentYear.toString(),
-      ]) as any;
+      ) as any;
 
       // Estimate potential reduction if all ICE assets on this route were electrified
       const potentialReduction = row.total_co2 * 0.9 * (assetCounts.ice_count / row.asset_count);
@@ -359,7 +359,7 @@ export class NetZeroService {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    this.dbContext.db.run(query, [
+    this.dbContext.db.prepare(query).run(
       id,
       input.assetId,
       input.recordDate,
@@ -372,8 +372,8 @@ export class NetZeroService {
       input.kwhConsumed || null,
       input.calculationMethod,
       this.organizationId,
-      now,
-    ]);
+      now
+    );
 
     logger.info('Emission recorded', {
       assetId: input.assetId,
