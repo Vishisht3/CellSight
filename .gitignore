@@ -42,10 +42,10 @@ tmp/
 temp/
 *.tmp
 
-# Kiro configuration
+# Local configuration
 .kiro/
 
-# Vercel
+# Deployment
 .vercel/
 !.vercel/project.json
 .env*
