@@ -44,6 +44,8 @@ export enum AlertType {
   QUALITY_DEVIATION = 'quality_deviation',
   COMPLIANCE_GAP = 'compliance_gap',
   FIELD_TO_SOURCE_CORRELATION = 'field_to_source_correlation',
+  QUALITY_DEFECT = 'quality_defect',
+  SPC_OUT_OF_CONTROL = 'spc_out_of_control',
 }
 
 // Alert source agent
@@ -51,6 +53,7 @@ export enum AlertSourceAgent {
   APM = 'apm',
   SUPPLY_CHAIN = 'supply_chain',
   CORRELATION = 'correlation',
+  QMS = 'qms',
 }
 
 // Alert status

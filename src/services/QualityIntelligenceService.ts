@@ -17,6 +17,7 @@
 import { DatabaseContext } from '../database';
 import { logger } from '../utils/logger';
 import { AlertService } from './AlertService';
+import { AlertType, AlertSeverity, AlertSourceAgent } from '../config/constants';
 
 export interface ProductionBatch {
   id: string;
@@ -343,19 +344,19 @@ export class QualityIntelligenceService {
       if (!existingAlert) {
         const alertService = new AlertService(this.dbContext, this.organizationId);
         alertService.createAlert({
-          type: 'QUALITY_DEFECT',
-          severity: defectRate >= 10 ? 'CRITICAL' : 'WARNING',
-          sourceAgent: 'qms',
+          type: AlertType.QUALITY_DEFECT,
+          severity: defectRate >= 10 ? AlertSeverity.CRITICAL : AlertSeverity.WARNING,
+          sourceAgent: AlertSourceAgent.QMS,
           title: `Quality Defect: Batch ${batch.batchNumber} — ${defectRate.toFixed(1)}% defect rate`,
           description: `Production batch ${batch.batchNumber} has ${batch.failedQuantity} failed units out of ${batch.producedQuantity} (${defectRate.toFixed(1)}% defect rate, threshold 5%). Investigate process parameters and incoming material quality.`,
           status: 'open',
-          metadata: JSON.stringify({
+          metadata: {
             productionBatchId: batch.id,
             batchNumber: batch.batchNumber,
             defectRate: defectRate.toFixed(2),
             failedQuantity: batch.failedQuantity,
             producedQuantity: batch.producedQuantity,
-          }),
+          },
         });
 
         logger.info('Quality defect alert raised', {
@@ -378,13 +379,13 @@ export class QualityIntelligenceService {
       if (!existingAlert) {
         const alertService = new AlertService(this.dbContext, this.organizationId);
         alertService.createAlert({
-          type: 'SPC_OUT_OF_CONTROL',
-          severity: 'CRITICAL',
-          sourceAgent: 'qms',
+          type: AlertType.SPC_OUT_OF_CONTROL,
+          severity: AlertSeverity.CRITICAL,
+          sourceAgent: AlertSourceAgent.QMS,
           title: `SPC Violation: ${param.parameterName} out of control`,
           description: `Process parameter ${param.parameterName} is ${param.currentValue.toFixed(2)} — outside control limits (${param.lcl.toFixed(2)} to ${param.ucl.toFixed(2)}). Immediate process adjustment required to prevent quality drift.`,
           status: 'open',
-          metadata: JSON.stringify({
+          metadata: {
             parameterName: param.parameterName,
             currentValue: param.currentValue.toFixed(2),
             centerLine: param.centerLine.toFixed(2),
@@ -392,7 +393,7 @@ export class QualityIntelligenceService {
             lcl: param.lcl.toFixed(2),
             deviation: param.deviation.toFixed(2),
             measurementTime: param.measurementTime,
-          }),
+          },
         });
 
         logger.info('SPC out-of-control alert raised', {
