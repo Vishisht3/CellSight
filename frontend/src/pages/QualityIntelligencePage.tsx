@@ -3,7 +3,7 @@ import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Activity, AlertTriangle, CheckCircle, TrendingDown } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine, Legend,
+  ResponsiveContainer, Legend,
 } from 'recharts';
 import axios from 'axios';
 import Navbar from '../components/layout/Navbar';
@@ -93,7 +93,6 @@ export default function QualityIntelligencePage() {
       ? batches.reduce((sum, b) => sum + (b.failedQuantity / b.producedQuantity) * 100, 0) / batches.length
       : 0;
 
-  const spcInControl = spcStatus.filter((s) => s.status === 'in_control').length;
   const spcWarning = spcStatus.filter((s) => s.status === 'warning').length;
   const spcOutOfControl = spcStatus.filter((s) => s.status === 'out_of_control').length;
 
@@ -220,7 +219,7 @@ export default function QualityIntelligencePage() {
         {/* Defective Batches Table */}
         {batches.length > 0 ? (
           <div className="win-panel" style={{ overflow: 'hidden' }}>
-            <div className="win-section-header">Production Batches with Quality Issues (Defect Rate > 3%)</div>
+            <div className="win-section-header">Production Batches with Quality Issues (Defect Rate &gt; 3%)</div>
             <div style={{ overflowX: 'auto' }}>
               <table className="win-table">
                 <thead>
@@ -268,7 +267,7 @@ export default function QualityIntelligencePage() {
         ) : (
           <EmptyState
             title="No Quality Issues Detected"
-            message="All production batches are within acceptable defect rate thresholds (< 3%)"
+            description="All production batches are within acceptable defect rate thresholds (< 3%)"
           />
         )}
 

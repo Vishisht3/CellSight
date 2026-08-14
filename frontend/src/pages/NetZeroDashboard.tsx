@@ -3,7 +3,7 @@ import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Leaf, TrendingDown, Target, Zap } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, LineChart, Line, Legend,
+  ResponsiveContainer, Legend,
 } from 'recharts';
 import axios from 'axios';
 import Navbar from '../components/layout/Navbar';
