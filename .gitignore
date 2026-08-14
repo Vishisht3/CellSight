@@ -45,8 +45,8 @@ temp/
 # Kiro configuration (agent configs, hooks, skills, steering)
 .kiro/
 
-# GitHub Actions workflows
-.github/workflows/
+# GitHub Actions workflows (hide individual workflow files)
+.github/workflows/*.yml
 
 # Vercel
 .vercel/
