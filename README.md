@@ -1,13 +1,15 @@
 # CellSight
 
-Battery intelligence platform for industrial EV fleets.
+Battery intelligence platform for industrial EV fleets and supply chain management.
 
 ## What CellSight does
 
-CellSight has two agents:
+CellSight provides comprehensive battery lifecycle intelligence:
 
 1. **APM Agent** — monitors battery state-of-health (SoH), predicts remaining useful life (RUL), and generates maintenance triggers for fleet operators.
 2. **Supply Chain Agent** — tracks material sourcing, cell batch traceability, and supplier risk across three tiers.
+3. **QMS Module** — quality intelligence for battery production with SPC monitoring and defect tracking.
+4. **Net Zero Module** — carbon footprint tracking and sustainability reporting.
 
 The correlation engine links field degradation data to the originating cell batch and supplier.
 
