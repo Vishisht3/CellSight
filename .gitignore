@@ -42,9 +42,13 @@ tmp/
 temp/
 *.tmp
 
-.vercel
-!.vercel/project.json
-.env*
+# Kiro configuration (agent configs, hooks, skills, steering)
+.kiro/
 
-.vercel
+# GitHub Actions workflows
+.github/workflows/
+
+# Vercel
+.vercel/
+!.vercel/project.json
 .env*

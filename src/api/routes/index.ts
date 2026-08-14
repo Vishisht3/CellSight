@@ -5,6 +5,8 @@ import supplyChainRoutes from './supply-chain.routes';
 import alertRoutes       from './alerts.routes';
 import correlationRoutes from './correlation.routes';
 import sseRoutes         from './sse.routes';
+import qmsRoutes         from './qms.routes';
+import netZeroRoutes     from './net-zero.routes';
 import { authenticate }      from '../../middleware/auth';
 import { config }            from '../../config/environment';
 import { getDatabaseContext } from '../../database';
@@ -23,6 +25,8 @@ router.use('/apm',          authenticate, apmRoutes);
 router.use('/supply-chain', authenticate, supplyChainRoutes);
 router.use('/alerts',       authenticate, alertRoutes);
 router.use('/correlation',  authenticate, correlationRoutes);
+router.use('/qms',          authenticate, qmsRoutes);
+router.use('/net-zero',     authenticate, netZeroRoutes);
 
 // ── Health ────────────────────────────────────────────────────────────────
 const _startedAt = Date.now();

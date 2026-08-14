@@ -188,6 +188,97 @@ const SCHEMA_SQL = `
       attempts       INTEGER NOT NULL DEFAULT 0
     );
 
+    CREATE TABLE IF NOT EXISTS production_batches (
+      id                   TEXT PRIMARY KEY,
+      batch_number         TEXT UNIQUE NOT NULL,
+      cell_batch_id        TEXT NOT NULL,
+      production_line      TEXT NOT NULL,
+      start_time           TEXT NOT NULL,
+      end_time             TEXT,
+      target_quantity      INTEGER NOT NULL,
+      produced_quantity    INTEGER NOT NULL DEFAULT 0,
+      passed_quantity      INTEGER NOT NULL DEFAULT 0,
+      failed_quantity      INTEGER NOT NULL DEFAULT 0,
+      status               TEXT NOT NULL,
+      organization_id      TEXT NOT NULL REFERENCES organizations(id),
+      created_at           TEXT NOT NULL,
+      updated_at           TEXT NOT NULL,
+      FOREIGN KEY (cell_batch_id) REFERENCES cell_batches(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS quality_inspections (
+      id                    TEXT PRIMARY KEY,
+      production_batch_id   TEXT NOT NULL,
+      inspection_type       TEXT NOT NULL,
+      inspection_timestamp  TEXT NOT NULL,
+      defect_type           TEXT,
+      defect_count          INTEGER NOT NULL DEFAULT 0,
+      sample_size           INTEGER NOT NULL,
+      passed                INTEGER NOT NULL,
+      result                TEXT NOT NULL,
+      inspector_id          TEXT,
+      notes                 TEXT,
+      organization_id       TEXT NOT NULL REFERENCES organizations(id),
+      created_at            TEXT NOT NULL,
+      FOREIGN KEY (production_batch_id) REFERENCES production_batches(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS process_parameters (
+      id                   TEXT PRIMARY KEY,
+      production_batch_id  TEXT NOT NULL,
+      parameter_name       TEXT NOT NULL,
+      parameter_value      REAL NOT NULL,
+      measurement_time     TEXT NOT NULL,
+      unit                 TEXT NOT NULL,
+      organization_id      TEXT NOT NULL REFERENCES organizations(id),
+      created_at           TEXT NOT NULL,
+      FOREIGN KEY (production_batch_id) REFERENCES production_batches(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS spc_control_limits (
+      id                TEXT PRIMARY KEY,
+      parameter_name    TEXT UNIQUE NOT NULL,
+      center_line       REAL NOT NULL,
+      ucl               REAL NOT NULL,
+      lcl               REAL NOT NULL,
+      usl               REAL,
+      lsl               REAL,
+      last_updated      TEXT NOT NULL,
+      organization_id   TEXT NOT NULL REFERENCES organizations(id),
+      created_at        TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS net_zero_targets (
+      id                       TEXT PRIMARY KEY,
+      target_year              INTEGER NOT NULL,
+      scope1_target_tonnes     REAL NOT NULL,
+      scope3_target_tonnes     REAL NOT NULL,
+      total_target_tonnes      REAL NOT NULL,
+      baseline_year            INTEGER NOT NULL,
+      baseline_scope1_tonnes   REAL NOT NULL,
+      baseline_scope3_tonnes   REAL NOT NULL,
+      organization_id          TEXT NOT NULL REFERENCES organizations(id),
+      created_at               TEXT NOT NULL,
+      updated_at               TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS emission_records (
+      id                   TEXT PRIMARY KEY,
+      asset_id             TEXT NOT NULL,
+      record_date          TEXT NOT NULL,
+      scope                INTEGER NOT NULL,
+      category             TEXT NOT NULL,
+      co2_tonnes           REAL NOT NULL,
+      route                TEXT,
+      distance_km          REAL,
+      fuel_litres          REAL,
+      kwh_consumed         REAL,
+      calculation_method   TEXT NOT NULL,
+      organization_id      TEXT NOT NULL REFERENCES organizations(id),
+      created_at           TEXT NOT NULL,
+      FOREIGN KEY (asset_id) REFERENCES assets(id)
+    );
+
     CREATE INDEX IF NOT EXISTS idx_outbox_undelivered ON outbox_events(delivered_at) WHERE delivered_at IS NULL;
 
     CREATE INDEX IF NOT EXISTS idx_refresh_tokens_family ON refresh_tokens(family);
@@ -200,6 +291,11 @@ const SCHEMA_SQL = `
     CREATE INDEX IF NOT EXISTS idx_assets_org            ON assets(organization_id);
     CREATE INDEX IF NOT EXISTS idx_suppliers_org         ON suppliers(organization_id);
     CREATE INDEX IF NOT EXISTS idx_alerts_org            ON alerts(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_production_batches_org ON production_batches(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_quality_inspections_batch ON quality_inspections(production_batch_id);
+    CREATE INDEX IF NOT EXISTS idx_process_parameters_batch ON process_parameters(production_batch_id);
+    CREATE INDEX IF NOT EXISTS idx_emission_records_asset ON emission_records(asset_id);
+    CREATE INDEX IF NOT EXISTS idx_emission_records_date ON emission_records(record_date);
 `;
 
 // Seed the demo org row — idempotent
@@ -237,6 +333,12 @@ async function createTablesPg(db: PgDatabase): Promise<void> {
     ALTER TABLE battery_packs ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
     ALTER TABLE assets        ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
     ALTER TABLE alerts        ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE production_batches ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE quality_inspections ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE process_parameters ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE spc_control_limits ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE net_zero_targets ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
+    ALTER TABLE emission_records ADD COLUMN IF NOT EXISTS organization_id TEXT REFERENCES organizations(id);
 
     UPDATE users         SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
     UPDATE suppliers     SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
@@ -245,10 +347,21 @@ async function createTablesPg(db: PgDatabase): Promise<void> {
     UPDATE battery_packs SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
     UPDATE assets        SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
     UPDATE alerts        SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE production_batches SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE quality_inspections SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE process_parameters SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE spc_control_limits SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE net_zero_targets SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
+    UPDATE emission_records SET organization_id = '${DEMO_ORG_ID}' WHERE organization_id IS NULL;
 
     CREATE INDEX IF NOT EXISTS idx_assets_org    ON assets(organization_id);
     CREATE INDEX IF NOT EXISTS idx_suppliers_org ON suppliers(organization_id);
     CREATE INDEX IF NOT EXISTS idx_alerts_org    ON alerts(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_production_batches_org ON production_batches(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_quality_inspections_batch ON quality_inspections(production_batch_id);
+    CREATE INDEX IF NOT EXISTS idx_process_parameters_batch ON process_parameters(production_batch_id);
+    CREATE INDEX IF NOT EXISTS idx_emission_records_asset ON emission_records(asset_id);
+    CREATE INDEX IF NOT EXISTS idx_emission_records_date ON emission_records(record_date);
   `;
   await db.execAsync(MIGRATION_SQL);
 
@@ -257,10 +370,12 @@ async function createTablesPg(db: PgDatabase): Promise<void> {
 
 export async function resetDatabase(db: Database | PgDatabase): Promise<void> {
   const tables = [
+    'emission_records', 'net_zero_targets',
+    'spc_control_limits', 'process_parameters', 'quality_inspections', 'production_batches',
     'outbox_events',
     'alerts', 'soh_history', 'telemetry_data', 'assets',
     'battery_packs', 'batch_material_links', 'cell_batches',
-    'material_lots', 'suppliers', 'users', 'organizations',
+    'material_lots', 'suppliers', 'refresh_tokens', 'users', 'organizations',
   ];
   if (db instanceof PgDatabase) {
     for (const t of tables) {

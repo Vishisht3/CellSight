@@ -1,7 +1,7 @@
 ﻿import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Truck, PackageSearch, Bell, GitMerge, LogOut,
-  Zap, Map, Wrench, PlusCircle, UserCircle,
+  Zap, Map, Wrench, PlusCircle, UserCircle, Leaf, Activity,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -16,7 +16,9 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/fleet',        label: 'Fleet Health',     icon: <Truck size={14} />,        roles: ['fleet_manager', 'admin'] },
   { to: '/readiness',    label: 'Replacement Plan', icon: <Map size={14} />,          roles: ['fleet_manager', 'admin'] },
   { to: '/maintenance',  label: 'Work Orders',      icon: <Wrench size={14} />,       roles: ['fleet_manager', 'admin'] },
+  { to: '/net-zero',     label: 'Net Zero',         icon: <Leaf size={14} />,         roles: ['fleet_manager', 'admin'] },
   { to: '/supply-chain', label: 'Supplier Portal',  icon: <PackageSearch size={14} />,roles: ['supply_chain_manager', 'admin'] },
+  { to: '/quality',      label: 'Quality (QMS)',    icon: <Activity size={14} />,     roles: ['supply_chain_manager', 'admin'] },
   { to: '/alerts',       label: 'Alerts',           icon: <Bell size={14} /> },
   { to: '/correlation',  label: 'Field Claims',     icon: <GitMerge size={14} />,     roles: ['fleet_manager', 'supply_chain_manager', 'admin'] },
   { to: '/register',     label: 'Register Data',    icon: <PlusCircle size={14} /> },

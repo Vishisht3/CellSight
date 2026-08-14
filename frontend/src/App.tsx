@@ -13,6 +13,8 @@ import AlertsPage from './pages/AlertsPage';
 import CorrelationPage from './pages/CorrelationPage';
 import ReadinessPage from './pages/ReadinessPage';
 import MaintenancePage from './pages/MaintenancePage';
+import QualityIntelligencePage from './pages/QualityIntelligencePage';
+import NetZeroDashboard from './pages/NetZeroDashboard';
 import LandingPage from './pages/LandingPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ThankYouPage from './pages/ThankYouPage';
@@ -121,6 +123,20 @@ function AppRoutes() {
         <Route path="/correlation" element={
           <ProtectedRoute allowedRoles={['supply_chain_manager', 'fleet_manager', 'admin']}>
             <CorrelationPage />
+          </ProtectedRoute>
+        } />
+
+        {/* Quality Intelligence (QMS) */}
+        <Route path="/quality" element={
+          <ProtectedRoute allowedRoles={['supply_chain_manager', 'admin']}>
+            <QualityIntelligencePage />
+          </ProtectedRoute>
+        } />
+
+        {/* Net Zero Dashboard */}
+        <Route path="/net-zero" element={
+          <ProtectedRoute allowedRoles={['fleet_manager', 'admin']}>
+            <NetZeroDashboard />
           </ProtectedRoute>
         } />
       </Route>

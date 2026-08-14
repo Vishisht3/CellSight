@@ -37,6 +37,14 @@ async function seedDemoData() {
     const riskResult = riskSvc.updateAllSupplierRiskScores();
     logger.info(`Risk scores: ${riskResult.updated} updated, ${riskResult.alertsCreated} alerts created`);
 
+    // ── Seed QMS data ──
+    logger.info('Seeding QMS data...');
+    await generator.seedQmsData();
+
+    // ── Seed Net Zero data ──
+    logger.info('Seeding Net Zero data...');
+    await generator.seedNetZeroData();
+
     logger.info('=== Demo Data Summary ===');
     logger.info(`Users: ${stats.users}`);
     logger.info(`Suppliers: ${stats.suppliers}`);
@@ -56,7 +64,9 @@ async function seedDemoData() {
     closeDatabaseContext();
     process.exit(0);
   } catch (error) {
-    logger.error('Demo data seeding failed', { error });
+    logger.error('Demo data seeding failed', { error: error instanceof Error ? error.message : error });
+    console.error(error);
+    closeDatabaseContext();
     process.exit(1);
   }
 }

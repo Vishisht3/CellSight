@@ -383,4 +383,262 @@ export class DemoDataGenerator {
     logger.info(`Created ${totalRecords} telemetry records`);
     return totalRecords;
   }
+
+  // ── QMS Seed Data ─────────────────────────────────────────────────────────
+
+  async seedQmsData(): Promise<void> {
+    const t = now();
+    logger.info('Seeding QMS data (production batches, inspections, process parameters, SPC limits)...');
+
+    // 1. SPC Control Limits
+    const spcRows = [
+      ['spc_temp_' + uuidv4().slice(0, 8), 'Temperature', 65.0, 75.0, 55.0, 80.0, 50.0, t, this.orgId, t],
+      ['spc_press_' + uuidv4().slice(0, 8), 'Pressure', 2.5, 3.0, 2.0, 3.2, 1.8, t, this.orgId, t],
+      ['spc_humid_' + uuidv4().slice(0, 8), 'Humidity', 45.0, 55.0, 35.0, 60.0, 30.0, t, this.orgId, t],
+      ['spc_volt_' + uuidv4().slice(0, 8), 'Voltage', 3.7, 3.9, 3.5, 4.0, 3.3, t, this.orgId, t],
+    ];
+
+    if (this.isPostgres) {
+      await pgInsert(this.pg, 'spc_control_limits',
+        ['id', 'parameter_name', 'center_line', 'ucl', 'lcl', 'usl', 'lsl', 'last_updated', 'organization_id', 'created_at'],
+        spcRows
+      );
+    } else {
+      for (const r of spcRows) {
+        this.dbContext.db.prepare(
+          `INSERT INTO spc_control_limits (id, parameter_name, center_line, ucl, lcl, usl, lsl, last_updated, organization_id, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)`
+        ).run(...r);
+      }
+    }
+
+    // 2. Production Batches (10 batches, some with high defect rates)
+    const productionBatchRows: any[] = [];
+    const productionBatchIds: string[] = [];
+
+    for (let i = 1; i <= 10; i++) {
+      const id = `pb_${uuidv4().slice(0, 8)}`;
+      const batchNumber = `PB-2026-${String(i).padStart(3, '0')}`;
+      const cellBatchId = this.cellBatchRows[i % this.cellBatchRows.length].id;
+      const productionLine = `Line-${randInt(1, 3)}`;
+      const startTime = daysAgo(30 - i * 2);
+      const endTime = daysAgo(29 - i * 2);
+      const targetQuantity = 1000;
+      const producedQuantity = randInt(950, 1000);
+      
+      // Some batches have high defect rates (>5%)
+      let failedQuantity = 0;
+      if (i === 3 || i === 7) {
+        failedQuantity = Math.floor(producedQuantity * rand(0.08, 0.12)); // 8-12% defect rate
+      } else if (i === 5) {
+        failedQuantity = Math.floor(producedQuantity * rand(0.04, 0.06)); // 4-6% defect rate
+      } else {
+        failedQuantity = Math.floor(producedQuantity * rand(0.005, 0.02)); // 0.5-2% defect rate
+      }
+
+      const passedQuantity = producedQuantity - failedQuantity;
+      const status = 'completed';
+
+      productionBatchRows.push([
+        id, batchNumber, cellBatchId, productionLine, startTime, endTime,
+        targetQuantity, producedQuantity, passedQuantity, failedQuantity,
+        status, this.orgId, t, t
+      ]);
+      productionBatchIds.push(id);
+    }
+
+    if (this.isPostgres) {
+      await pgInsert(this.pg, 'production_batches',
+        ['id', 'batch_number', 'cell_batch_id', 'production_line', 'start_time', 'end_time',
+         'target_quantity', 'produced_quantity', 'passed_quantity', 'failed_quantity',
+         'status', 'organization_id', 'created_at', 'updated_at'],
+        productionBatchRows
+      );
+    } else {
+      for (const r of productionBatchRows) {
+        this.dbContext.db.prepare(
+          `INSERT INTO production_batches (id, batch_number, cell_batch_id, production_line, start_time, end_time, target_quantity, produced_quantity, passed_quantity, failed_quantity, status, organization_id, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        ).run(...r);
+      }
+    }
+
+    // 3. Quality Inspections (3-5 per batch)
+    const inspectionRows: any[] = [];
+    const defectTypes = ['voltage_deviation', 'physical_damage', 'capacity_drop', 'thermal_anomaly', 'coating_defect'];
+
+    for (const batchId of productionBatchIds) {
+      const inspectionCount = randInt(3, 5);
+      for (let j = 0; j < inspectionCount; j++) {
+        const id = `qi_${uuidv4().slice(0, 8)}`;
+        const inspectionType = j === inspectionCount - 1 ? 'final' : j === 0 ? 'incoming' : 'in-line';
+        const inspectionTimestamp = daysAgo(28 - productionBatchIds.indexOf(batchId) * 2 - j * 0.1);
+        const sampleSize = randInt(20, 50);
+        const passed = Math.floor(sampleSize * rand(0.9, 1.0));
+        const defectCount = sampleSize - passed;
+        const result = defectCount === 0 ? 'pass' : defectCount > sampleSize * 0.1 ? 'fail' : 'conditional';
+        const defectType = defectCount > 0 ? defectTypes[randInt(0, defectTypes.length - 1)] : null;
+
+        inspectionRows.push([
+          id, batchId, inspectionType, inspectionTimestamp, defectType, defectCount,
+          sampleSize, passed, result, null, null, this.orgId, t
+        ]);
+      }
+    }
+
+    if (this.isPostgres) {
+      await pgInsert(this.pg, 'quality_inspections',
+        ['id', 'production_batch_id', 'inspection_type', 'inspection_timestamp', 'defect_type',
+         'defect_count', 'sample_size', 'passed', 'result', 'inspector_id', 'notes', 'organization_id', 'created_at'],
+        inspectionRows
+      );
+    } else {
+      for (const r of inspectionRows) {
+        this.dbContext.db.prepare(
+          `INSERT INTO quality_inspections (id, production_batch_id, inspection_type, inspection_timestamp, defect_type, defect_count, sample_size, passed, result, inspector_id, notes, organization_id, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        ).run(...r);
+      }
+    }
+
+    // 4. Process Parameters (50 measurements per batch across 4 parameters)
+    const processParamRows: any[] = [];
+    const paramNames = ['Temperature', 'Pressure', 'Humidity', 'Voltage'];
+    const paramUnits = ['°C', 'bar', '%', 'V'];
+    const paramBases = [65, 2.5, 45, 3.7];
+
+    for (const batchId of productionBatchIds) {
+      for (let p = 0; p < paramNames.length; p++) {
+        // Generate 50 measurements per parameter
+        for (let m = 0; m < 50; m++) {
+          const id = `pp_${uuidv4().slice(0, 8)}`;
+          const measurementTime = daysAgo(28 - productionBatchIds.indexOf(batchId) * 2 - m * 0.01);
+          
+          // Some batches have out-of-control parameters
+          let value = paramBases[p];
+          if ((batchId === productionBatchIds[2] || batchId === productionBatchIds[6]) && p === 0) {
+            // Temperature out of control for defective batches
+            value = rand(76, 82); // Above UCL (75)
+          } else if (batchId === productionBatchIds[4] && p === 1) {
+            // Pressure slightly high
+            value = rand(2.9, 3.1); // Near UCL
+          } else {
+            // Normal variation within control limits
+            value = paramBases[p] + rand(-5, 5);
+          }
+
+          processParamRows.push([
+            id, batchId, paramNames[p], value, measurementTime, paramUnits[p], this.orgId, t
+          ]);
+        }
+      }
+    }
+
+    if (this.isPostgres) {
+      const CHUNK = 200;
+      for (let start = 0; start < processParamRows.length; start += CHUNK) {
+        const chunk = processParamRows.slice(start, start + CHUNK);
+        await pgInsert(this.pg, 'process_parameters',
+          ['id', 'production_batch_id', 'parameter_name', 'parameter_value', 'measurement_time', 'unit', 'organization_id', 'created_at'],
+          chunk
+        );
+      }
+    } else {
+      for (const r of processParamRows) {
+        this.dbContext.db.prepare(
+          `INSERT INTO process_parameters (id, production_batch_id, parameter_name, parameter_value, measurement_time, unit, organization_id, created_at) VALUES (?,?,?,?,?,?,?,?)`
+        ).run(...r);
+      }
+    }
+
+    logger.info(`✅ QMS seed complete: ${productionBatchRows.length} batches, ${inspectionRows.length} inspections, ${processParamRows.length} process parameters`);
+  }
+
+  // ── Net Zero Seed Data ────────────────────────────────────────────────────
+
+  async seedNetZeroData(): Promise<void> {
+    const t = now();
+    logger.info('Seeding Net Zero data (target, emission records)...');
+
+    // 1. Net Zero Target
+    const targetRow = [
+      `nz_${uuidv4().slice(0, 8)}`,
+      2030,                    // target_year
+      800,                     // scope1_target_tonnes
+      400,                     // scope3_target_tonnes
+      1200,                    // total_target_tonnes
+      2023,                    // baseline_year
+      2400,                    // baseline_scope1_tonnes
+      800,                     // baseline_scope3_tonnes
+      this.orgId,
+      t,
+      t
+    ];
+
+    if (this.isPostgres) {
+      await this.pg.queryAsync(
+        `INSERT INTO net_zero_targets (id, target_year, scope1_target_tonnes, scope3_target_tonnes, total_target_tonnes, baseline_year, baseline_scope1_tonnes, baseline_scope3_tonnes, organization_id, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        targetRow
+      );
+    } else {
+      this.dbContext.db.prepare(
+        `INSERT INTO net_zero_targets (id, target_year, scope1_target_tonnes, scope3_target_tonnes, total_target_tonnes, baseline_year, baseline_scope1_tonnes, baseline_scope3_tonnes, organization_id, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)`
+      ).run(...targetRow);
+    }
+
+    // 2. Emission Records (current year emissions for all assets)
+    const emissionRows: any[] = [];
+    const routes = ['Route-A-London-Manchester', 'Route-B-Birmingham-Leeds', 'Route-C-Glasgow-Edinburgh', 'Route-D-Cardiff-Bristol', null];
+
+    for (const asset of this.assetRows) {
+      // Generate 12 monthly emission records (one per month for 2026)
+      for (let month = 0; month < 12; month++) {
+        const id = `em_${uuidv4().slice(0, 8)}`;
+        const recordDate = `2026-${String(month + 1).padStart(2, '0')}-15`;
+        const route = routes[randInt(0, routes.length - 1)];
+        const distanceKm = route ? randInt(500, 2000) : null;
+        
+        // ICE assets have Scope 1 emissions, EVs have minimal (grid Scope 3)
+        const isEV = asset.id.includes('EV') || false; // Simplified check
+        const scope = isEV ? 3 : 1;
+        const category = isEV ? 'electricity' : 'diesel_combustion';
+        
+        let co2Tonnes: number;
+        if (isEV) {
+          // EV: ~0.2 kg CO₂/kWh grid electricity
+          const kwhConsumed = distanceKm ? distanceKm * 1.5 : randInt(500, 1500);
+          co2Tonnes = (kwhConsumed * 0.0002); // Very low
+        } else {
+          // ICE: ~2.68 kg CO₂/L diesel, ~0.3 L/km
+          const fuelLitres = distanceKm ? distanceKm * 0.3 : randInt(150, 600);
+          co2Tonnes = (fuelLitres * 2.68) / 1000;
+        }
+
+        const calculationMethod = isEV ? 'grid_emission_factor' : 'fuel_combustion';
+
+        emissionRows.push([
+          id, asset.id, recordDate, scope, category, co2Tonnes,
+          route, distanceKm, isEV ? null : (distanceKm ? distanceKm * 0.3 : null),
+          isEV ? (distanceKm ? distanceKm * 1.5 : null) : null,
+          calculationMethod, this.orgId, t
+        ]);
+      }
+    }
+
+    if (this.isPostgres) {
+      const CHUNK = 100;
+      for (let start = 0; start < emissionRows.length; start += CHUNK) {
+        const chunk = emissionRows.slice(start, start + CHUNK);
+        await pgInsert(this.pg, 'emission_records',
+          ['id', 'asset_id', 'record_date', 'scope', 'category', 'co2_tonnes', 'route', 'distance_km', 'fuel_litres', 'kwh_consumed', 'calculation_method', 'organization_id', 'created_at'],
+          chunk
+        );
+      }
+    } else {
+      for (const r of emissionRows) {
+        this.dbContext.db.prepare(
+          `INSERT INTO emission_records (id, asset_id, record_date, scope, category, co2_tonnes, route, distance_km, fuel_litres, kwh_consumed, calculation_method, organization_id, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        ).run(...r);
+      }
+    }
+
+    logger.info(`✅ Net Zero seed complete: 1 target, ${emissionRows.length} emission records`);
+  }
 }
