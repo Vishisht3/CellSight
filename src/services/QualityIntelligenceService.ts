@@ -16,6 +16,7 @@
 
 import { DatabaseContext } from '../database';
 import { logger } from '../utils/logger';
+import { AlertService } from './AlertService';
 
 export interface ProductionBatch {
   id: string;
@@ -340,7 +341,7 @@ export class QualityIntelligenceService {
       ).get(`%"productionBatchId":"${batch.id}"%`);
 
       if (!existingAlert) {
-        const alertService = new (require('./AlertService').AlertService)(this.dbContext, this.organizationId);
+        const alertService = new AlertService(this.dbContext, this.organizationId);
         alertService.createAlert({
           type: 'QUALITY_DEFECT',
           severity: defectRate >= 10 ? 'CRITICAL' : 'WARNING',
@@ -375,7 +376,7 @@ export class QualityIntelligenceService {
       ).get(`%"parameterName":"${param.parameterName}"%`);
 
       if (!existingAlert) {
-        const alertService = new (require('./AlertService').AlertService)(this.dbContext, this.organizationId);
+        const alertService = new AlertService(this.dbContext, this.organizationId);
         alertService.createAlert({
           type: 'SPC_OUT_OF_CONTROL',
           severity: 'CRITICAL',
