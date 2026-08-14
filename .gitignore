@@ -42,11 +42,8 @@ tmp/
 temp/
 *.tmp
 
-# Kiro configuration (agent configs, hooks, skills, steering)
+# Kiro configuration
 .kiro/
-
-# GitHub Actions workflows (hide individual workflow files)
-.github/workflows/*.yml
 
 # Vercel
 .vercel/
