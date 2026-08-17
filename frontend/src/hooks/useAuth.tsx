@@ -17,8 +17,39 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  demoSwitch: (role: 'fleet' | 'supply' | 'maintenance') => void;
   hasRole: (...roles: UserRole[]) => boolean;
 }
+
+// Hardcoded demo user stubs — match the seeded DB rows exactly.
+// demoSwitch sets these instantly with zero network round-trip.
+const DEMO_ORG_ID = 'demo-org-00000000-0000-0000-0000-000000000000';
+const DEMO_USERS: Record<'fleet' | 'supply' | 'maintenance', User> = {
+  fleet: {
+    id: 'demo-fleet-user',
+    email: 'fleet@cellsight.com',
+    name: 'Jordan Lee, Fleet Operations',
+    role: 'fleet_manager',
+    organizationId: DEMO_ORG_ID,
+    createdAt: '2024-01-01T00:00:00.000Z',
+  },
+  supply: {
+    id: 'demo-supply-user',
+    email: 'supply@cellsight.com',
+    name: 'Elena Ruiz, Supplier Quality',
+    role: 'supply_chain_manager',
+    organizationId: DEMO_ORG_ID,
+    createdAt: '2024-01-01T00:00:00.000Z',
+  },
+  maintenance: {
+    id: 'demo-maintenance-user',
+    email: 'maintenance@cellsight.com',
+    name: 'Maya Patel, Maintenance Planner',
+    role: 'fleet_manager',
+    organizationId: DEMO_ORG_ID,
+    createdAt: '2024-01-01T00:00:00.000Z',
+  },
+};
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -80,6 +111,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     navigate('/login', { replace: true });
   }, [navigate]);
 
+  const demoSwitch = useCallback((role: 'fleet' | 'supply' | 'maintenance') => {
+    // Instantly swap user context with no server call.
+    // The real API token is kept so existing requests still work — we only
+    // swap the user object so the UI re-renders immediately for the new role.
+    setUser(DEMO_USERS[role]);
+    // Fire a real login in the background to get a proper token + cookie,
+    // but don't block the UI on it.
+    const emails: Record<string, string> = {
+      fleet: 'fleet@cellsight.com',
+      supply: 'supply@cellsight.com',
+      maintenance: 'maintenance@cellsight.com',
+    };
+    authApi.login(emails[role], 'demo123')
+      .then(data => { setToken(data.accessToken); setUser(data.user); })
+      .catch(() => { /* silent — UI is already showing the right role */ });
+  }, []);
+
   const hasRole = useCallback(
     (...roles: UserRole[]) => {
       if (!user) return false;
@@ -90,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, isAuthenticated: !!user, isLoading, login, logout, hasRole }}
+      value={{ user, token, isAuthenticated: !!user, isLoading, login, logout, demoSwitch, hasRole }}
     >
       {children}
     </AuthContext.Provider>

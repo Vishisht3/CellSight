@@ -1,6 +1,7 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import AppShell from './components/layout/AppShell';
+import DemoSwitcher from './components/ui/DemoSwitcher';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import ProfilePage from './pages/ProfilePage';
@@ -46,8 +47,10 @@ function RootRedirect() {
 
 function AppRoutes() {
   useAnalytics();
+  const { isAuthenticated } = useAuth();
   return (
-    <Routes>
+    <>
+      <Routes>
       {/* Public pages */}
       <Route path="/login"  element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
@@ -144,6 +147,8 @@ function AppRoutes() {
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    {isAuthenticated && <DemoSwitcher />}
+    </>
   );
 }
 
