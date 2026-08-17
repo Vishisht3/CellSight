@@ -16,7 +16,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: () => void;
   demoSwitch: (role: 'fleet' | 'supply' | 'maintenance') => void;
   hasRole: (...roles: UserRole[]) => boolean;
 }
@@ -63,29 +63,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => authApi.getAccessToken());
   const navigate = useNavigate();
 
-  // isLoading is true on first mount: we do not know if the httpOnly cookie
-  // is present until we attempt a silent refresh.
-  const [isLoading, setIsLoading] = useState(true);
+  // isLoading: skip the network wait entirely if there's no cached token.
+  // We only do silentRefresh when we have reason to believe a session exists.
+  const [isLoading, setIsLoading] = useState(() => !!(authApi.getAccessToken() || authApi.getUser()));
 
-  // On mount: attempt a silent token refresh.
-  // If the httpOnly cookie is present and valid, this succeeds and restores the
-  // session without requiring the user to log in again.
-  // If it fails (no cookie, expired, revoked), the user sees the login screen.
   useEffect(() => {
-    // If we already have a valid in-memory token, just validate it.
-    if (token && user) {
+    // If no in-memory token, don't hit the network — show login immediately.
+    if (!token && !user) {
       setIsLoading(false);
       return;
     }
-
-    // Try a silent refresh (uses the httpOnly cookie automatically).
+    // We have a cached token/user — validate silently in background.
     authApi.silentRefresh()
       .then(data => {
         setToken(data.accessToken);
         setUser(data.user);
       })
       .catch(() => {
-        // No valid session — user must log in.
         setToken(null);
         setUser(null);
       })
@@ -94,24 +88,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      const data = await authApi.login(email, password);
-      setToken(data.accessToken);
-      setUser(data.user);
-    } finally {
-      setIsLoading(false);
-    }
+    const data = await authApi.login(email, password);
+    setToken(data.accessToken);
+    setUser(data.user);
   }, []);
 
-  const logout = useCallback(async () => {
-    // authApi.logout() hits the backend to revoke the refresh cookie, then
-    // clears in-memory tokens. We navigate via React Router so there is no
-    // hard reload and no risk of silentRefresh firing immediately after.
-    await authApi.logout();
+  const logout = useCallback(() => {
+    // Clear state immediately — instant for the UI.
     setToken(null);
     setUser(null);
     navigate('/login', { replace: true });
+    // Revoke the cookie in the background — don't block on it.
+    authApi.logout().catch(() => {/* silent */});
   }, [navigate]);
 
   const demoSwitch = useCallback((role: 'fleet' | 'supply' | 'maintenance') => {

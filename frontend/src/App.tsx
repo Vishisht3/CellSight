@@ -47,7 +47,6 @@ function RootRedirect() {
 
 function AppRoutes() {
   useAnalytics();
-  const { isAuthenticated } = useAuth();
   return (
     <>
       <Routes>
@@ -147,7 +146,7 @@ function AppRoutes() {
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-    {isAuthenticated && <DemoSwitcher />}
+    <DemoSwitcher />
     </>
   );
 }

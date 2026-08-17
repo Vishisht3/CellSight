@@ -1,70 +1,77 @@
 /**
- * DemoSwitcher
- *
- * A floating pill visible only during demos. Clicking a role button
- * switches the active user instantly — no login screen, no server wait.
- * The real auth token is refreshed in the background so API calls keep working.
+ * DemoSwitcher — always visible, even on login page.
+ * One click = instant role switch, no server wait.
  */
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const ROLES = [
-  { key: 'fleet',       label: 'Fleet Manager',       color: '#2563eb' },
-  { key: 'supply',      label: 'Supply Chain',         color: '#7c3aed' },
-  { key: 'maintenance', label: 'Maintenance',          color: '#0891b2' },
-] as const;
+  { key: 'fleet'       as const, label: 'Fleet Manager',  color: '#2563eb', dest: '/fleet' },
+  { key: 'supply'      as const, label: 'Supply Chain',   color: '#7c3aed', dest: '/supply-chain' },
+  { key: 'maintenance' as const, label: 'Maintenance',    color: '#0891b2', dest: '/maintenance' },
+];
 
 export default function DemoSwitcher() {
   const { user, demoSwitch } = useAuth();
   const navigate = useNavigate();
 
-  function handleSwitch(role: 'fleet' | 'supply' | 'maintenance') {
+  function handleSwitch(role: 'fleet' | 'supply' | 'maintenance', dest: string) {
     demoSwitch(role);
-    navigate('/', { replace: true });
+    navigate(dest, { replace: true });
   }
+
+  const activeKey = user?.email?.startsWith('fleet') ? 'fleet'
+    : user?.email?.startsWith('supply') ? 'supply'
+    : user?.email?.startsWith('maintenance') ? 'maintenance'
+    : null;
 
   return (
     <div style={{
       position: 'fixed',
-      bottom: 16,
-      right: 16,
-      zIndex: 9999,
+      bottom: 20,
+      right: 20,
+      zIndex: 99999,
       display: 'flex',
       alignItems: 'center',
       gap: 6,
       background: '#0f172a',
-      border: '1px solid #334155',
-      borderRadius: 8,
-      padding: '6px 10px',
-      boxShadow: '0 4px 20px rgba(0,0,0,.5)',
+      border: '1.5px solid #3b82f6',
+      borderRadius: 10,
+      padding: '8px 12px',
+      boxShadow: '0 4px 24px rgba(37,99,235,.4)',
       fontFamily: "'Inter',system-ui,sans-serif",
     }}>
-      <span style={{ fontSize: 10, color: '#64748b', fontWeight: 600, marginRight: 4 }}>
-        DEMO
+      <span style={{
+        fontSize: 9,
+        color: '#3b82f6',
+        fontWeight: 800,
+        letterSpacing: 1,
+        textTransform: 'uppercase',
+        marginRight: 4,
+      }}>
+        Demo
       </span>
-      {ROLES.map(r => {
-        const active = user?.email?.startsWith(r.key === 'fleet' ? 'fleet' : r.key === 'supply' ? 'supply' : 'maintenance');
-        return (
-          <button
-            key={r.key}
-            onClick={() => handleSwitch(r.key)}
-            style={{
-              background: active ? r.color : 'transparent',
-              color: active ? '#fff' : '#94a3b8',
-              border: `1px solid ${active ? r.color : '#334155'}`,
-              borderRadius: 5,
-              padding: '4px 10px',
-              fontSize: 10,
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all .1s',
-              fontFamily: 'inherit',
-            }}
-          >
-            {r.label}
-          </button>
-        );
-      })}
+      {ROLES.map(r => (
+        <button
+          key={r.key}
+          onClick={() => handleSwitch(r.key, r.dest)}
+          style={{
+            background: activeKey === r.key ? r.color : 'rgba(255,255,255,.06)',
+            color: activeKey === r.key ? '#fff' : '#94a3b8',
+            border: `1px solid ${activeKey === r.key ? r.color : '#334155'}`,
+            borderRadius: 6,
+            padding: '5px 12px',
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'all .1s',
+            fontFamily: 'inherit',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {r.label}
+        </button>
+      ))}
     </div>
   );
 }
