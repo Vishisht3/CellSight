@@ -32,6 +32,7 @@ const DEMO_USERS: Record<'fleet' | 'supply' | 'maintenance', User> = {
     role: 'fleet_manager',
     organizationId: DEMO_ORG_ID,
     createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
   },
   supply: {
     id: 'demo-supply-user',
@@ -40,6 +41,7 @@ const DEMO_USERS: Record<'fleet' | 'supply' | 'maintenance', User> = {
     role: 'supply_chain_manager',
     organizationId: DEMO_ORG_ID,
     createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
   },
   maintenance: {
     id: 'demo-maintenance-user',
@@ -48,6 +50,7 @@ const DEMO_USERS: Record<'fleet' | 'supply' | 'maintenance', User> = {
     role: 'fleet_manager',
     organizationId: DEMO_ORG_ID,
     createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
   },
 };
 
