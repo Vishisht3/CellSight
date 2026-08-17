@@ -94,7 +94,7 @@ export default function SignUpPage() {
             <Zap size={13} color="#fff" />
           </div>
           <span style={{ color: '#fff', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-            CellSight â€” Create Your Account
+            CellSight  -  Create Your Account
           </span>
         </div>
 

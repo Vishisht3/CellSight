@@ -45,9 +45,9 @@ export default function SupplyChainDashboard() {
 
   const TIER_TABS: { value: TierFilter; label: string }[] = [
     { value: 'all',    label: 'All Tiers' },
-    { value: 'tier_1', label: 'Tier 1 â€” Direct' },
-    { value: 'tier_2', label: 'Tier 2 â€” Cell Mfg' },
-    { value: 'tier_3', label: 'Tier 3 â€” Raw Material' },
+    { value: 'tier_1', label: 'Tier 1  -  Direct' },
+    { value: 'tier_2', label: 'Tier 2  -  Cell Mfg' },
+    { value: 'tier_3', label: 'Tier 3  -  Raw Material' },
   ];
 
   return (
@@ -68,7 +68,7 @@ export default function SupplyChainDashboard() {
             <StatCard label="High Risk Suppliers" value={summary.highRiskSuppliers} icon={<ShieldAlert size={16}/>}
               variant={summary.highRiskSuppliers > 0 ? 'danger' : 'success'} />
             <StatCard label="Avg Risk Score"
-              value={summary.avgRiskScore != null ? Number(summary.avgRiskScore).toFixed(0) : 'â€”'}
+              value={summary.avgRiskScore != null ? Number(summary.avgRiskScore).toFixed(0) : ' - '}
               icon={<AlertTriangle size={16}/>}
               variant={Number(summary.avgRiskScore) >= 60 ? 'danger' : Number(summary.avgRiskScore) >= 35 ? 'warning' : 'success'}
               subValue="out of 100" />
@@ -86,7 +86,7 @@ export default function SupplyChainDashboard() {
         {summary?.traceabilityStats && (
           <div className="win-panel" style={{ padding: 10 }}>
             <div style={{ fontWeight: 'bold', fontSize: 11, color: '#0a246a', marginBottom: 6 }}>
-              Traceability Coverage â€”&nbsp;
+              Traceability Coverage  - &nbsp;
               <span style={{ fontWeight: 'normal', color: '#4a4a4a' }}>
                 {summary.traceabilityStats.assetsWithFullTrace} of {summary.traceabilityStats.totalAssets} assets fully traced to raw materials
               </span>
@@ -185,7 +185,7 @@ export default function SupplyChainDashboard() {
                             color: new Date(s.certificationExpiry) < new Date() ? '#c00000' : '#1a1a1a',
                             fontWeight: new Date(s.certificationExpiry) < new Date() ? 'bold' : 'normal',
                           }}>
-                            {new Date(s.certificationExpiry) < new Date() ? 'âš  EXPIRED â€” ' : ''}
+                            {new Date(s.certificationExpiry) < new Date() ? 'âš  EXPIRED  -  ' : ''}
                             {new Date(s.certificationExpiry).toLocaleDateString()}
                           </span>
                         ) : (

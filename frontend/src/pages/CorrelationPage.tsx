@@ -50,7 +50,7 @@ export default function CorrelationPage() {
     setRunning(true);
     try {
       const r = await correlationApi.runAnalysis();
-      setInsight(`Analysis complete â€” ${r.insightsGenerated} new insight${r.insightsGenerated !== 1 ? 's' : ''} generated across ${r.batchesAnalyzed} batches and ${r.suppliersAnalyzed} suppliers.`);
+      setInsight(`Analysis complete  -  ${r.insightsGenerated} new insight${r.insightsGenerated !== 1 ? 's' : ''} generated across ${r.batchesAnalyzed} batches and ${r.suppliersAnalyzed} suppliers.`);
       await load();
     } catch { setError('Analysis failed.'); }
     finally { setRunning(false); }
@@ -108,7 +108,7 @@ export default function CorrelationPage() {
         {!loading && chartData.length > 0 && (
           <div className="win-panel" style={{ overflow: 'hidden' }}>
             <div className="win-section-header">
-              Degradation Deviation vs Fleet Average â€” Top 10 {tab === 'batches' ? 'Batches' : 'Suppliers'}
+              Degradation Deviation vs Fleet Average  -  Top 10 {tab === 'batches' ? 'Batches' : 'Suppliers'}
             </div>
             <div style={{ padding: 12 }}>
               <ResponsiveContainer width="100%" height={220}>

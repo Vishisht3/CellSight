@@ -157,7 +157,7 @@ export default function TraceView() {
                               <td style={{ fontFamily:'Courier New,monospace', fontSize:10 }}>{lot.lotNumber}</td>
                               <td>{lot.supplier.name} ({lot.supplier.country})</td>
                               <td style={{ color: outOfSpec ? '#c00000' : '#155724', fontWeight:'bold' }}>
-                                {lot.qualityScore != null ? `${outOfSpec?'âš  ':'âœ“ '}${lot.qualityScore.toFixed(1)}` : 'â€”'}
+                                {lot.qualityScore != null ? `${outOfSpec?'âš  ':'âœ“ '}${lot.qualityScore.toFixed(1)}` : ' - '}
                               </td>
                             </tr>
                           );

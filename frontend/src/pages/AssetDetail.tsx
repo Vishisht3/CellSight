@@ -106,7 +106,7 @@ export default function AssetDetail() {
   return (
     <>
       <Navbar
-        title={`Asset Detail â€” ${asset.name}`}
+        title={`Asset Detail  -  ${asset.name}`}
         subtitle={`${assetTypeLabel[asset.assetType] ?? asset.assetType} Â· Battery pack ${asset.batteryPackId.slice(0,8)}â€¦`}
         alertCount={alerts.filter(a => a.status === 'open').length}
         actions={
@@ -144,7 +144,7 @@ export default function AssetDetail() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
           <StatCard
             label="State of Health"
-            value={asset.currentSoh != null ? `${asset.currentSoh.toFixed(1)}%` : 'â€”'}
+            value={asset.currentSoh != null ? `${asset.currentSoh.toFixed(1)}%` : ' - '}
             subValue={asset.sohConfidence != null ? `Confidence: ${(asset.sohConfidence*100).toFixed(0)}%` : undefined}
             icon={<Battery size={16}/>}
             variant={asset.currentSoh == null ? 'default' : asset.currentSoh >= 85 ? 'success' : asset.currentSoh >= 80 ? 'warning' : 'danger'}

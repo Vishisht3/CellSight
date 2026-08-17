@@ -47,7 +47,7 @@ const inputStyle: React.CSSProperties = { width: '100%', boxSizing: 'border-box'
 const selectStyle: React.CSSProperties = { width: '100%', boxSizing: 'border-box', padding: '2px 4px' };
 
 const COUNTRIES = ['US','GB','DE','FR','JP','KR','CN','CA','AU','SE','NO','IN','BR','MX','CD','ZA','NG'];
-const TIERS = [{ v: 'tier_1', l: 'Tier 1 â€” Battery Pack Assembler' }, { v: 'tier_2', l: 'Tier 2 â€” Cell Manufacturer' }, { v: 'tier_3', l: 'Tier 3 â€” Raw Material Supplier' }];
+const TIERS = [{ v: 'tier_1', l: 'Tier 1  -  Battery Pack Assembler' }, { v: 'tier_2', l: 'Tier 2  -  Cell Manufacturer' }, { v: 'tier_3', l: 'Tier 3  -  Raw Material Supplier' }];
 const MATERIAL_TYPES = ['lithium','cobalt','nickel','graphite','manganese'];
 const ASSET_TYPES = [{ v: 'freight_truck', l: 'Freight Truck' }, { v: 'mining_vehicle', l: 'Mining Vehicle' }, { v: 'forklift', l: 'Forklift' }, { v: 'construction_equipment', l: 'Construction Equipment' }];
 
@@ -244,13 +244,13 @@ function AddBatteryPackForm() {
   const [msg, setMsg]         = useState<Msg | null>(null);
 
   useEffect(() => {
-    // Fetch cell batches via materials endpoint workaround â€” use suppliers list
+    // Fetch cell batches via materials endpoint workaround  -  use suppliers list
     // to populate. For now fetch from supply chain dashboard stats.
     fetch('/api/supply-chain/suppliers', { headers: { Authorization: `Bearer ${localStorage.getItem('cs_access_token')}` } })
       .then(r => r.json())
       .then(() => {
         // Cell batches don't have a direct list endpoint on the frontend yet
-        // â€” we'll add a note for the user
+        //  -  we'll add a note for the user
       })
       .catch(() => {});
   }, []);
@@ -356,7 +356,7 @@ export default function RegisterDataPage() {
       <PageContainer>
         <div style={{ maxWidth: 620 }}>
           <div style={{ fontSize: 12, color: '#4a4a4a', marginBottom: 14, padding: '8px 10px', background: '#e8f0fb', border: '1px solid #b0c8e8', borderRadius: 2 }}>
-            <strong>Getting started:</strong> Register data in this order â€” <strong>Supplier â†’ Material Lot â†’ Cell Batch â†’ Battery Pack â†’ Asset</strong>.
+            <strong>Getting started:</strong> Register data in this order  -  <strong>Supplier â†’ Material Lot â†’ Cell Batch â†’ Battery Pack â†’ Asset</strong>.
             Each step depends on the previous one.
           </div>
 

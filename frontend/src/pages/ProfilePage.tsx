@@ -49,7 +49,7 @@ export default function ProfilePage() {
     setPwLoading(true);
     try {
       // Re-login to verify current password, then update via a future PATCH /auth/me endpoint.
-      // For now surface a success message â€” the endpoint will be wired when added to the backend.
+      // For now surface a success message  -  the endpoint will be wired when added to the backend.
       await new Promise(r => setTimeout(r, 600));
       setPwMsg({ ok: true, text: 'Password updated successfully.' });
       setCurrentPw(''); setNewPw(''); setConfirmPw('');
@@ -108,7 +108,7 @@ export default function ProfilePage() {
               <tbody>
                 <Field label="Organization ID:">
                   <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#4a4a4a' }}>
-                    {(user as any)?.organizationId ?? 'â€”'}
+                    {(user as any)?.organizationId ?? ' - '}
                   </span>
                 </Field>
               </tbody>

@@ -77,7 +77,7 @@ export default function LoginPage() {
             <Zap size={13} color="#fff" />
           </div>
           <span style={{ color: '#fff', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 }}>
-            CellSight â€” Battery Intelligence Portal
+            CellSight  -  Battery Intelligence Portal
           </span>
         </div>
 
@@ -126,7 +126,7 @@ export default function LoginPage() {
               padding: '5px 10px', marginBottom: 12, fontSize: 11, color: '#0a246a',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <Building2 size={12} /> Signing in as administrator â€” credentials pre-filled
+              <Building2 size={12} /> Signing in as administrator  -  credentials pre-filled
             </div>
           )}
 
@@ -207,7 +207,7 @@ export default function LoginPage() {
                   className="win-btn win-btn-primary"
                 >
                   <LogIn size={12} />
-                  {isLoading ? 'Signing inâ€¦' : 'Sign In'}
+                  {isLoading ? 'Signing in...' : 'Sign In'}
                 </button>
                 {!adminMode && (
                   <button

@@ -37,7 +37,7 @@ const VEHICLES: VehicleReadiness[] = [
   { id:'v7', name:'Forklift-FL03', type:'Forklift', currentFuel:'LPG', annualKm:13000, avgPayloadT:4, dailyDwellHours:10, readinessScore:94, readinessTier:'Ready', recommendedEV:'Crown FC 5200 Series', oem:'Crown Equipment', listPriceK:52, deliveryLeadWeeks:10, estAnnualSavingsK:10, co2ReductionT:8, blockers:[], confidence:0.95 },
   { id:'v8', name:'Excavator-EX1', type:'Construction', currentFuel:'Diesel', annualKm:8000, avgPayloadT:0, dailyDwellHours:6, readinessScore:44, readinessTier:'Needs Review', recommendedEV:'Volvo EC230 Electric', oem:'Volvo CE', listPriceK:520, deliveryLeadWeeks:40, estAnnualSavingsK:18, co2ReductionT:22, blockers:['Limited OEM range availability','Site grid capacity unknown','Heavy-duty duty-cycle analysis required'], confidence:0.55 },
   { id:'v9', name:'Excavator-EX2', type:'Construction', currentFuel:'Diesel', annualKm:7500, avgPayloadT:0, dailyDwellHours:5, readinessScore:42, readinessTier:'Needs Review', recommendedEV:'Volvo EC230 Electric', oem:'Volvo CE', listPriceK:520, deliveryLeadWeeks:40, estAnnualSavingsK:16, co2ReductionT:20, blockers:['Limited OEM range availability','Site grid capacity unknown'], confidence:0.52 },
-  { id:'v10', name:'Loader-LD1', type:'Construction', currentFuel:'Diesel', annualKm:15000, avgPayloadT:0, dailyDwellHours:5, readinessScore:36, readinessTier:'Not Suitable', recommendedEV:'N/A â€” No commercial option', oem:'â€”', listPriceK:0, deliveryLeadWeeks:0, estAnnualSavingsK:0, co2ReductionT:12, blockers:['No commercially available EV equivalent at required power rating','Grid reinforcement cost prohibitive at current energy prices'], confidence:0.38 },
+  { id:'v10', name:'Loader-LD1', type:'Construction', currentFuel:'Diesel', annualKm:15000, avgPayloadT:0, dailyDwellHours:5, readinessScore:36, readinessTier:'Not Suitable', recommendedEV:'N/A  -  No commercial option', oem:' - ', listPriceK:0, deliveryLeadWeeks:0, estAnnualSavingsK:0, co2ReductionT:12, blockers:['No commercially available EV equivalent at required power rating','Grid reinforcement cost prohibitive at current energy prices'], confidence:0.38 },
 ];
 
 const TIER_COLOR: Record<VehicleReadiness['readinessTier'], string> = {
@@ -183,16 +183,16 @@ export default function ReadinessPage() {
                       <td style={{ fontSize: 10 }}>{v.recommendedEV}</td>
                       <td>{v.oem}</td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right' }}>
-                        {v.listPriceK > 0 ? `Â£${v.listPriceK.toLocaleString()}k` : 'â€”'}
+                        {v.listPriceK > 0 ? `Â£${v.listPriceK.toLocaleString()}k` : ' - '}
                       </td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right' }}>
-                        {v.deliveryLeadWeeks > 0 ? `${v.deliveryLeadWeeks}w` : 'â€”'}
+                        {v.deliveryLeadWeeks > 0 ? `${v.deliveryLeadWeeks}w` : ' - '}
                       </td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right', color: '#155724', fontWeight: 'bold' }}>
-                        {v.estAnnualSavingsK > 0 ? `Â£${v.estAnnualSavingsK}k` : 'â€”'}
+                        {v.estAnnualSavingsK > 0 ? `Â£${v.estAnnualSavingsK}k` : ' - '}
                       </td>
                       <td style={{ fontFamily: 'Courier New,monospace', textAlign: 'right', color: '#004085' }}>
-                        {v.co2ReductionT > 0 ? `${v.co2ReductionT}t` : 'â€”'}
+                        {v.co2ReductionT > 0 ? `${v.co2ReductionT}t` : ' - '}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -219,7 +219,7 @@ export default function ReadinessPage() {
               {/* Procurement card */}
               <div className="win-panel" style={{ overflow: 'hidden' }}>
                 <div className="win-section-header">
-                  Procurement Recommendation â€” {selected.name}
+                  Procurement Recommendation  -  {selected.name}
                 </div>
                 <div style={{ padding: '10px 12px' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>

@@ -59,7 +59,7 @@ export default function FleetDashboard() {
   return (
     <>
       <Navbar
-        title="Fleet APM â€” Battery Health Monitor"
+        title="Fleet APM  -  Battery Health Monitor"
         subtitle="Real-time state-of-health and predictive maintenance across all deployed assets"
         alertCount={summary?.openAlerts}
         onRefresh={() => { setRefreshing(true); load(); }}
@@ -78,7 +78,7 @@ export default function FleetDashboard() {
             <StatCard label="Data Stale"     value={summary.staleAssets}    icon={<Clock size={16}/>} />
             <StatCard
               label="Fleet Avg SoH"
-              value={summary.avgSoh != null ? `${Number(summary.avgSoh).toFixed(1)}%` : 'â€”'}
+              value={summary.avgSoh != null ? `${Number(summary.avgSoh).toFixed(1)}%` : ' - '}
               icon={<TrendingDown size={16}/>}
               variant={Number(summary.avgSoh) >= 85 ? 'success' : Number(summary.avgSoh) >= 80 ? 'warning' : 'danger'}
               subValue="State of Health"
@@ -204,7 +204,7 @@ export default function FleetDashboard() {
                         {asset.totalCycles.toLocaleString()}
                       </td>
                       <td style={{ fontSize: 11, color: '#6a6a6a' }}>
-                        {asset.lastTelemetryAt ? formatDateTime(asset.lastTelemetryAt) : 'â€”'}
+                        {asset.lastTelemetryAt ? formatDateTime(asset.lastTelemetryAt) : ' - '}
                       </td>
                       <td onClick={e => e.stopPropagation()}>
                         <Link to={'/supply-chain/trace/' + asset.id} style={{ fontSize: 10, color: '#316ac5' }}>Trace</Link>
