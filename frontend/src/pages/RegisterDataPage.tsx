@@ -104,7 +104,7 @@ function AddSupplierForm() {
         </Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Supplier'}</button>
+        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registering...' : 'Register Supplier'}</button>
       </div>
     </form>
   );
@@ -173,7 +173,7 @@ function AddMaterialLotForm() {
         <Field label="Quality score (0â€“100)"><input type="number" min="0" max="100" style={inputStyle} value={qualScore} onChange={e => setQualScore(e.target.value)} placeholder="Optional" /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Material Lot'}</button>
+        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registering...' : 'Register Material Lot'}</button>
       </div>
     </form>
   );
@@ -229,7 +229,7 @@ function AddCellBatchForm() {
         <Field label="Production date"><input type="date" style={inputStyle} value={prodDate} onChange={e => setProdDate(e.target.value)} /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Cell Batch'}</button>
+        <button type="submit" disabled={loading || suppliers.length === 0} className="win-btn win-btn-primary">{loading ? 'Registering...' : 'Register Cell Batch'}</button>
       </div>
     </form>
   );
@@ -282,7 +282,7 @@ function AddBatteryPackForm() {
         <Field label="Assembly date"><input type="date" style={inputStyle} value={assemblyDate} onChange={e => setAssemblyDate(e.target.value)} /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Battery Pack'}</button>
+        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registering...' : 'Register Battery Pack'}</button>
       </div>
     </form>
   );
@@ -322,7 +322,7 @@ function AddAssetForm() {
         <Field label="Battery pack ID" required><input style={inputStyle} required value={packId} onChange={e => setPackId(e.target.value)} placeholder="Paste the battery pack UUID" /></Field>
       </FormWrap>
       <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registeringâ€¦' : 'Register Asset'}</button>
+        <button type="submit" disabled={loading} className="win-btn win-btn-primary">{loading ? 'Registering...' : 'Register Asset'}</button>
       </div>
     </form>
   );

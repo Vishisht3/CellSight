@@ -170,7 +170,7 @@ export default function ProfilePage() {
               </table>
               <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
                 <button type="submit" disabled={pwLoading} className="win-btn win-btn-primary">
-                  {pwLoading ? 'Updatingâ€¦' : 'Update Password'}
+                  {pwLoading ? 'Updating...' : 'Update Password'}
                 </button>
               </div>
             </form>

@@ -262,7 +262,7 @@ export default function SignUpPage() {
                   className="win-btn win-btn-primary"
                 >
                   <LogIn size={12} />
-                  {isLoading ? 'Creating accountâ€¦' : 'Create Account'}
+                  {isLoading ? 'Creating account...' : 'Create Account'}
                 </button>
               </div>
             </form>

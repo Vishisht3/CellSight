@@ -131,7 +131,7 @@ export default function SupplyChainDashboard() {
           </div>
 
           {loading ? (
-            <LoadingSpinner fullPage label="Loading suppliersâ€¦" />
+            <LoadingSpinner fullPage label="Loading suppliers..." />
           ) : suppliers.length === 0 && tierFilter === 'all' && !highRisk ? (
             <EmptyState
               icon={PackageSearch}

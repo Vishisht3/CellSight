@@ -155,7 +155,7 @@ export default function FleetDashboard() {
 
           {/* table */}
           {loading ? (
-            <LoadingSpinner fullPage label="Loading fleet dataâ€¦" />
+            <LoadingSpinner fullPage label="Loading fleet data..." />
           ) : assets.length === 0 && statusFilter === 'all' && !typeFilter ? (
             <EmptyState
               icon={Truck}

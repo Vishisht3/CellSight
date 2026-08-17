@@ -70,7 +70,7 @@ export default function TraceView() {
         {error && <ErrorBanner message={error} />}
 
         {loading ? (
-          <LoadingSpinner fullPage size="lg" label="Loading traceâ€¦" />
+          <LoadingSpinner fullPage size="lg" label="Loading trace..." />
         ) : !trace ? (
           <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#721c24', padding:16 }}>
             <AlertCircle size={14}/> No trace data found for this asset.

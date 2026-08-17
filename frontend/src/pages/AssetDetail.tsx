@@ -72,7 +72,7 @@ export default function AssetDetail() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (loading) return <LoadingSpinner fullPage size="lg" label="Loading assetâ€¦" />;
+  if (loading) return <LoadingSpinner fullPage size="lg" label="Loading asset..." />;
   if (!asset)  return <div style={{ padding: 16, color: '#721c24' }}>{error || 'Asset not found.'}</div>;
 
   const sohData = sohHistory.map(h => ({
@@ -107,7 +107,7 @@ export default function AssetDetail() {
     <>
       <Navbar
         title={`Asset Detail  -  ${asset.name}`}
-        subtitle={`${assetTypeLabel[asset.assetType] ?? asset.assetType} Â· Battery pack ${asset.batteryPackId.slice(0,8)}â€¦`}
+        subtitle={`${assetTypeLabel[asset.assetType] ?? asset.assetType} Â· Battery pack ${asset.batteryPackId.slice(0,8)}...`}
         alertCount={alerts.filter(a => a.status === 'open').length}
         actions={
           <button onClick={() => navigate('/fleet')} className="win-btn" style={{ fontSize: 11 }}>
@@ -232,7 +232,7 @@ export default function AssetDetail() {
                   <tr key={a.id}>
                     <td style={{ maxWidth: 320 }}>
                       <div style={{ fontWeight: 'bold' }}>{a.title}</div>
-                      <div style={{ fontSize: 10, color: '#6a6a6a', marginTop: 1 }}>{a.description.slice(0, 120)}{a.description.length > 120 ? 'â€¦' : ''}</div>
+                      <div style={{ fontSize: 10, color: '#6a6a6a', marginTop: 1 }}>{a.description.slice(0, 120)}{a.description.length > 120 ? '...' : ''}</div>
                     </td>
                     <td>{alertTypeLabel[a.type]}</td>
                     <td><SeverityBadge severity={a.severity} /></td>

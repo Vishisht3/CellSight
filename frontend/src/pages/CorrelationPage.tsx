@@ -77,7 +77,7 @@ export default function CorrelationPage() {
           <button onClick={runAnalysis} disabled={running}
             className="win-btn win-btn-primary" style={{ fontSize: 11 }}>
             <Zap size={11} />
-            {running ? 'Running analysisâ€¦' : 'Run Correlation Analysis'}
+            {running ? 'Running analysis...' : 'Run Correlation Analysis'}
           </button>
         }
       />
@@ -167,7 +167,7 @@ export default function CorrelationPage() {
           </div>
 
           {loading ? (
-            <LoadingSpinner fullPage label="Calculating correlationsâ€¦" />
+            <LoadingSpinner fullPage label="Calculating correlations..." />
           ) : rows.length === 0 ? (
             <EmptyState icon={GitMerge} title="No correlation data"
               description="Run the analysis above, or seed more demo data." />

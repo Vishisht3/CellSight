@@ -138,7 +138,7 @@ export default function AlertsPage() {
           </div>
 
           {loading ? (
-            <LoadingSpinner fullPage label="Loading alertsâ€¦" />
+            <LoadingSpinner fullPage label="Loading alerts..." />
           ) : alerts.length === 0 ? (
             <EmptyState icon={Bell} title="No alerts found" description="Adjust filters or check back later." />
           ) : (
