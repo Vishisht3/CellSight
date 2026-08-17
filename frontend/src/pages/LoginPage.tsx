@@ -29,6 +29,17 @@ export default function LoginPage() {
     setPassword('demo123');
     setCompany('CellSight Demo');
     setError('');
+    // Auto-submit immediately — no extra click needed for demos
+    setTimeout(() => {
+      login('fleet@cellsight.com', 'demo123')
+        .then(() => navigate('/'))
+        .catch((err: unknown) => {
+          const msg =
+            (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+            'Invalid email or password.';
+          setError(msg);
+        });
+    }, 0);
   }
 
   async function handleSubmit(e: FormEvent) {

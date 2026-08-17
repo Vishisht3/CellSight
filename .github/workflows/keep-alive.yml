@@ -1,0 +1,24 @@
+name: Keep Backend Alive
+
+# Ping the Railway backend every 5 minutes so it never cold-starts.
+# GitHub Actions cron minimum is every 5 minutes.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # allow manual trigger too
+
+jobs:
+  ping:
+    name: Ping Railway backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          URL="https://cellsight-api-production.up.railway.app/api/health"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$URL")
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "Backend is warm."
+          else
+            echo "Backend responded with HTTP $STATUS (may have been sleeping, now waking)."
+          fi
