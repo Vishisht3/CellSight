@@ -17,7 +17,7 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  demoSwitch: (role: 'fleet' | 'supply' | 'maintenance') => void;
+  demoSwitch: (role: 'fleet' | 'supply' | 'maintenance') => Promise<void>;
   hasRole: (...roles: UserRole[]) => boolean;
 }
 
@@ -102,21 +102,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authApi.logout().catch(() => {/* silent */});
   }, [navigate]);
 
-  const demoSwitch = useCallback((role: 'fleet' | 'supply' | 'maintenance') => {
-    // Instantly swap user context with no server call.
-    // The real API token is kept so existing requests still work — we only
-    // swap the user object so the UI re-renders immediately for the new role.
-    setUser(DEMO_USERS[role]);
-    // Fire a real login in the background to get a proper token + cookie,
-    // but don't block the UI on it.
+  const demoSwitch = useCallback(async (role: 'fleet' | 'supply' | 'maintenance') => {
     const emails: Record<string, string> = {
       fleet: 'fleet@cellsight.com',
       supply: 'supply@cellsight.com',
       maintenance: 'maintenance@cellsight.com',
     };
-    authApi.login(emails[role], 'demo123')
-      .then(data => { setToken(data.accessToken); setUser(data.user); })
-      .catch(() => { /* silent — UI is already showing the right role */ });
+    // Set stub user immediately so the UI renders the right name/role at once.
+    setUser(DEMO_USERS[role]);
+    // Await the real login so the Bearer token is in place BEFORE the caller
+    // navigates and data fetches fire. This prevents the 401 logout loop.
+    const data = await authApi.login(emails[role], 'demo123');
+    setToken(data.accessToken);
+    setUser(data.user);
   }, []);
 
   const hasRole = useCallback(

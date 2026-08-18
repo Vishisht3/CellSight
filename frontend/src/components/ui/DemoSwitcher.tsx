@@ -1,23 +1,33 @@
 /**
  * DemoSwitcher — always visible, even on login page.
- * One click = instant role switch, no server wait.
+ * Awaits real token before navigating so data fetches never fire with no auth.
  */
+import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const ROLES = [
-  { key: 'fleet'       as const, label: 'Fleet Manager',  color: '#2563eb', dest: '/fleet' },
-  { key: 'supply'      as const, label: 'Supply Chain',   color: '#7c3aed', dest: '/supply-chain' },
-  { key: 'maintenance' as const, label: 'Maintenance',    color: '#0891b2', dest: '/maintenance' },
+  { key: 'fleet'        as const, label: 'Fleet Manager', color: '#2563eb', dest: '/fleet' },
+  { key: 'supply'       as const, label: 'Supply Chain',  color: '#7c3aed', dest: '/supply-chain' },
+  { key: 'maintenance'  as const, label: 'Maintenance',   color: '#0891b2', dest: '/maintenance' },
 ];
 
 export default function DemoSwitcher() {
   const { user, demoSwitch } = useAuth();
   const navigate = useNavigate();
+  const [switching, setSwitching] = useState<string | null>(null);
 
-  function handleSwitch(role: 'fleet' | 'supply' | 'maintenance', dest: string) {
-    demoSwitch(role);
-    navigate(dest, { replace: true });
+  async function handleSwitch(role: 'fleet' | 'supply' | 'maintenance', dest: string) {
+    if (switching) return;
+    setSwitching(role);
+    try {
+      await demoSwitch(role);   // waits for real JWT before returning
+      navigate(dest, { replace: true });
+    } catch {
+      // Railway might be cold — try normal login as fallback
+    } finally {
+      setSwitching(null);
+    }
   }
 
   const activeKey = user?.email?.startsWith('fleet') ? 'fleet'
@@ -42,36 +52,38 @@ export default function DemoSwitcher() {
       fontFamily: "'Inter',system-ui,sans-serif",
     }}>
       <span style={{
-        fontSize: 9,
-        color: '#3b82f6',
-        fontWeight: 800,
-        letterSpacing: 1,
-        textTransform: 'uppercase',
-        marginRight: 4,
+        fontSize: 9, color: '#3b82f6', fontWeight: 800,
+        letterSpacing: 1, textTransform: 'uppercase', marginRight: 4,
       }}>
         Demo
       </span>
-      {ROLES.map(r => (
-        <button
-          key={r.key}
-          onClick={() => handleSwitch(r.key, r.dest)}
-          style={{
-            background: activeKey === r.key ? r.color : 'rgba(255,255,255,.06)',
-            color: activeKey === r.key ? '#fff' : '#94a3b8',
-            border: `1px solid ${activeKey === r.key ? r.color : '#334155'}`,
-            borderRadius: 6,
-            padding: '5px 12px',
-            fontSize: 11,
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all .1s',
-            fontFamily: 'inherit',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {r.label}
-        </button>
-      ))}
+      {ROLES.map(r => {
+        const isActive = activeKey === r.key;
+        const isThis = switching === r.key;
+        return (
+          <button
+            key={r.key}
+            onClick={() => handleSwitch(r.key, r.dest)}
+            disabled={switching !== null}
+            style={{
+              background: isActive ? r.color : 'rgba(255,255,255,.06)',
+              color: isActive ? '#fff' : '#94a3b8',
+              border: `1px solid ${isActive ? r.color : '#334155'}`,
+              borderRadius: 6,
+              padding: '5px 12px',
+              fontSize: 11,
+              fontWeight: 600,
+              cursor: switching ? 'wait' : 'pointer',
+              transition: 'all .1s',
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+              opacity: switching && !isThis ? 0.45 : 1,
+            }}
+          >
+            {isThis ? 'Signing in...' : r.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

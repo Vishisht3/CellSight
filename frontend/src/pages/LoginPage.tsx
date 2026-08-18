@@ -20,9 +20,8 @@ export default function LoginPage() {
   const [showPw,   setShowPw]   = useState(false);
   const [error,    setError]    = useState('');
 
-  function switchToAdmin() {
-    // Use demoSwitch — sets user instantly, no server wait at all.
-    demoSwitch('fleet');
+  async function switchToAdmin() {
+    await demoSwitch('fleet');
     navigate('/fleet', { replace: true });
   }
 
