@@ -95,7 +95,7 @@ export default function AssetDetail() {
     domain?: [number, number];
   }> = {
     soh:     { label: 'State of Health',   data: sohData, lines: [{ key:'SoH',         color:'#316ac5', unit:'%'  }], refs: [{ y:85,color:'#b87000',label:'Warn'},{y:80,color:'#c00000',label:'Crit'}], domain:[70,102] },
-    temp:    { label: 'Temperature (Â°C)',  data: telData, lines: [{ key:'Temperature',  color:'#c00000', unit:'Â°C' }], refs: [{ y:45,color:'#c00000',label:'Max'},{y:-10,color:'#316ac5',label:'Min'}], domain:undefined },
+    temp:    { label: 'Temperature (°C)',  data: telData, lines: [{ key:'Temperature',  color:'#c00000', unit:'°C' }], refs: [{ y:45,color:'#c00000',label:'Max'},{y:-10,color:'#316ac5',label:'Min'}], domain:undefined },
     soc:     { label: 'State of Charge',   data: telData, lines: [{ key:'SoC',          color:'#2a8a2a', unit:'%'  }], refs: [{ y:80,color:'#b87000',label:'Opt max'},{y:20,color:'#b87000',label:'Opt min'}], domain:[0,105] },
     voltage: { label: 'Voltage (V)',        data: telData, lines: [{ key:'Voltage',      color:'#6030a0', unit:'V'  }], refs: [], domain:undefined },
   };
@@ -257,7 +257,7 @@ export default function AssetDetail() {
             <table style={{ width: '100%', fontSize: 11 }}>
               <thead>
                 <tr>
-                  {['Timestamp','Voltage (V)','Current (A)','Temp (Â°C)','SoC (%)','Cycles'].map(h => (
+                  {['Timestamp','Voltage (V)','Current (A)','Temp (°C)','SoC (%)','Cycles'].map(h => (
                     <th key={h}>{h}</th>
                   ))}
                 </tr>

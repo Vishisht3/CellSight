@@ -25,6 +25,9 @@ const API_BASE = ((import.meta as any).env?.VITE_API_URL ?? '') + '/api';
 // ── In-memory access token (not persisted — survives only for session) ─────
 let _accessToken: string | null = null;
 let _user: User | null = null;
+// Set to true while a demo login is in flight so the 401 interceptor
+// does not call clearSession and redirect to /login prematurely.
+let _loginInFlight = false;
 
 function setAccessToken(token: string | null) { _accessToken = token; }
 function getAccessToken(): string | null { return _accessToken; }
@@ -95,6 +98,9 @@ client.interceptors.response.use(
 // Does a hard redirect as a last resort — React state is already stale at
 // this point and the user needs to re-authenticate from scratch.
 function clearSession() {
+  // Don't redirect during an active login attempt — the token is just
+  // not set yet; the login will set it momentarily.
+  if (_loginInFlight) return;
   setAccessToken(null);
   setUser(null);
   window.location.href = '/login';
@@ -104,10 +110,15 @@ function clearSession() {
 
 export const authApi = {
   login: async (email: string, password: string) => {
-    const { data } = await client.post('/auth/login', { email, password });
-    setAccessToken(data.accessToken);
-    setUser(data.user);
-    return data as { accessToken: string; user: User };
+    _loginInFlight = true;
+    try {
+      const { data } = await client.post('/auth/login', { email, password });
+      setAccessToken(data.accessToken);
+      setUser(data.user);
+      return data as { accessToken: string; user: User };
+    } finally {
+      _loginInFlight = false;
+    }
   },
 
   signup: async (companyName: string, orgType: string, email: string, password: string) => {

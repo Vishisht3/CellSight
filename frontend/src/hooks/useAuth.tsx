@@ -47,7 +47,7 @@ const DEMO_USERS: Record<'fleet' | 'supply' | 'maintenance', User> = {
     id: 'demo-maintenance-user',
     email: 'maintenance@cellsight.com',
     name: 'Maya Patel, Maintenance Planner',
-    role: 'fleet_manager',
+    role: 'fleet_manager' as const,
     organizationId: DEMO_ORG_ID,
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',

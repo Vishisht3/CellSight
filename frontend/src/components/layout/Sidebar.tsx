@@ -131,7 +131,7 @@ export default function Sidebar() {
                 {user.name}
               </div>
               <div style={{ color: '#7090c0', fontSize: 9, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {user.role?.replace(/_/g, ' ')}
+                {user.name?.includes(',') ? user.name.split(',')[1].trim() : user.role?.replace(/_/g, ' ')}
               </div>
             </div>
             <NavLink
