@@ -1,45 +1,29 @@
 ﻿import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Zap, LogIn, Building2 } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { Eye, EyeOff, Zap, LogIn, Building2 } from 'lucide-react';import { useAuth } from '../hooks/useAuth';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 export default function LoginPage() {
-  const { login, isLoading, isAuthenticated } = useAuth();
+  const { login, demoSwitch, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   useDocumentMeta({ title: 'Sign In', description: 'Sign in to CellSight to monitor your EV fleet battery health and supply chain risk in real time.' });
 
   // Redirect already-authenticated users away from the login page
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (isAuthenticated) {
       navigate('/', { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
-  const [company,  setCompany]  = useState('');
   const [showPw,   setShowPw]   = useState(false);
   const [error,    setError]    = useState('');
-  const [adminMode, setAdminMode] = useState(false);
 
   function switchToAdmin() {
-    setAdminMode(true);
-    setEmail('fleet@cellsight.com');
-    setPassword('demo123');
-    setCompany('CellSight Demo');
-    setError('');
-    // Auto-submit immediately — no extra click needed for demos
-    setTimeout(() => {
-      login('fleet@cellsight.com', 'demo123')
-        .then(() => navigate('/'))
-        .catch((err: unknown) => {
-          const msg =
-            (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
-            'Invalid email or password.';
-          setError(msg);
-        });
-    }, 0);
+    // Use demoSwitch — sets user instantly, no server wait at all.
+    demoSwitch('fleet');
+    navigate('/fleet', { replace: true });
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -55,7 +39,6 @@ export default function LoginPage() {
       setError(msg);
     }
   }
-
   return (
     <div style={{
       minHeight: '100vh',
@@ -130,17 +113,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Admin mode notice */}
-          {adminMode && (
-            <div style={{
-              background: '#e8f0fb', border: '1px solid #7f9db9', borderRadius: 2,
-              padding: '5px 10px', marginBottom: 12, fontSize: 11, color: '#0a246a',
-              display: 'flex', alignItems: 'center', gap: 6,
-            }}>
-              <Building2 size={12} /> Signing in as administrator  -  credentials pre-filled
-            </div>
-          )}
-
           {/* Login form */}
           <fieldset style={{ border: '1px solid #7f9db9', borderRadius: 3, padding: '10px 12px', marginBottom: 14 }}>
             <legend style={{ fontSize: 11, fontWeight: 'bold', color: '#0a246a', padding: '0 4px' }}>
@@ -149,22 +121,6 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <tbody>
-                  {adminMode && (
-                    <tr>
-                      <td style={{ padding: '4px 8px 4px 0', fontSize: 12, whiteSpace: 'nowrap', color: '#1a1a1a', border: 'none', background: 'transparent' }}>
-                        <label htmlFor="company">Company:</label>
-                      </td>
-                      <td style={{ padding: 4, border: 'none', background: 'transparent' }}>
-                        <input
-                          id="company"
-                          type="text"
-                          value={company}
-                          onChange={e => setCompany(e.target.value)}
-                          style={{ width: '100%', boxSizing: 'border-box' }}
-                        />
-                      </td>
-                    </tr>
-                  )}
                   <tr>
                     <td style={{ padding: '4px 8px 4px 0', fontSize: 12, whiteSpace: 'nowrap', color: '#1a1a1a', border: 'none', background: 'transparent' }}>
                       <label htmlFor="email">Email address:</label>
@@ -214,22 +170,20 @@ export default function LoginPage() {
               <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
                 <button
                   type="submit"
-                  disabled={isLoading}
                   className="win-btn win-btn-primary"
                 >
                   <LogIn size={12} />
-                  {isLoading ? 'Signing in...' : 'Sign In'}
+                  Sign In
                 </button>
-                {!adminMode && (
-                  <button
-                    type="button"
-                    onClick={switchToAdmin}
-                    className="win-btn"
-                  >
-                    <Building2 size={12} />
-                    Admin Login
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={switchToAdmin}
+                  className="win-btn win-btn-primary"
+                  style={{ background: 'linear-gradient(to bottom, #2a7a2a, #1a5a1a)', borderColor: '#1a5a1a' }}
+                >
+                  <Building2 size={12} />
+                  Admin Login (Instant)
+                </button>
               </div>
             </form>
           </fieldset>
